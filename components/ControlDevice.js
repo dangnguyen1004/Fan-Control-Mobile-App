@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
   control: {
     color:'#2196F3',
     fontSize: 30,
-    fontWeight: 'bold',
-    paddingLeft:50,
+   // fontWeight: 'bold',
+    paddingLeft:20,
   },
   nameRoom: {
     fontSize:15,
