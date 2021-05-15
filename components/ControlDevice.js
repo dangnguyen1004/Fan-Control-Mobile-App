@@ -1,77 +1,71 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,Button } from 'react-native';
 import fan from '../assets/fan.jpg'
 import dieuhoa from '../assets/dieuhoa.jpg'
 
 import { AntDesign } from '@expo/vector-icons';
+
 export default class ControlDevice extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity>
-            <AntDesign name="arrowleft" size={30} color="white" style={{marginTop:25}}/>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.body}>      
-          <View style={styles.content}>
-            <Text style={styles.control}>Control <Text style={styles.nameRoom}>Room 101 - H6</Text> </Text>
-          </View> 
-          <TouchableOpacity style={styles.add}>
-            <View>
-            
-              <View >
-                <Text style={{textAlign:'center', color:'blue', fontWeight:'bold' }}>ADD NEW DEVICE</Text>
+
+        <View style={styles.container}>
+          <View style={styles.body}>      
+            <View style={styles.content}>
+              <Text style={styles.control}>Control <Text style={styles.nameRoom}>Room 101 - H6</Text> </Text>
+            </View> 
+            <TouchableOpacity style={styles.add}>
+              <View>
+              
+                <View >
+                  <Text style={{textAlign:'center', color:'blue', fontWeight:'bold' }}>ADD NEW DEVICE</Text>
+                </View>
+              
+            </View>
+            </TouchableOpacity>
+
+            <View style={styles.other}>
+              <View style={styles.areafan}>
+                <View style={styles.fan}>
+                <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
+                <Image source={fan} style={styles.imageFan} ></Image>
+                <Button title="control">
+                </Button> 
+              </View>
+
+                <View style={styles.fan}>
+              <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
+                <Image source={fan} style={styles.imageFan} ></Image>
+                <Button title="control"> 
+                {/* <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text>  */}
+                </Button> 
               </View>
             
+            </View>
+            <View style={styles.areaOther}>
+              <View style={styles.fan}>
+                  <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
+                  <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
+                  <Button title="control">
+                  </Button> 
+                </View>
+
+                <View style={styles.fan}>
+                <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
+                  <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
+                  <Button title="control">
+                  </Button> 
+                </View>
+            </View>
+            <View style={styles.areaBottom}>
+
+            </View>
           </View>
-          </TouchableOpacity>
-
-          <View style={styles.other}>
-            <View style={styles.areafan}>
-              <View style={styles.fan}>
-              <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
-              <Image source={fan} style={styles.imageFan} ></Image>
-              <TouchableOpacity> 
-                <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text>
-              </TouchableOpacity> 
-            </View>
-
-              <View style={styles.fan}>
-            <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
-              <Image source={fan} style={styles.imageFan} ></Image>
-              <TouchableOpacity> 
-              <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text> 
-              </TouchableOpacity> 
-            </View>
           
           </View>
-          <View style={styles.areaOther}>
-            <View style={styles.fan}>
-                <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
-                <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
-                <TouchableOpacity> 
-                  <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text>
-                </TouchableOpacity> 
-              </View>
-
-              <View style={styles.fan}>
-              <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
-                <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
-                <TouchableOpacity> 
-                <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text> 
-                </TouchableOpacity> 
-              </View>
-          </View>
-          <View style={styles.areaBottom}>
-
-          </View>
         </View>
-        
-        </View>
-      </View>
     );
   }
 }
@@ -136,7 +130,7 @@ const styles = StyleSheet.create({
   },
   fan:{
     width: 165,
-    height: 155,
+    height: 165,
   
 
     borderTopColor: 'black',
