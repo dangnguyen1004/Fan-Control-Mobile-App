@@ -20,12 +20,12 @@ const styles = StyleSheet.create({
     },
     key: {
         color: colors.third,
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: '500',
     },
     value: {
         color: colors.primary,
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: '500',
     }
 

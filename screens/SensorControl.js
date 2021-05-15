@@ -1,34 +1,32 @@
-import React, { version } from 'react';
-import { View, StyleSheet, ImageBackground, TouchableHighlight, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Text } from 'react-native';
 import BlueBackground from '../components/BlueBackground';
 import OnOffButton from '../components/OnOffButton'
 import BackButton from '../components/BackButton';
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import AppButton from '../components/AppButton';
 import colors from '../config/color'
 import SettingDetail from '../components/SettingDetail';
 
-function FanControl(props) {
+function SensorControl(props) {
     return (
         <BlueBackground>
             <BackButton></BackButton>
-            {/* <FontAwesome5 style={styles.icon} name="fan" size={120} color="white" /> */}
-            <MaterialCommunityIcons style={styles.icon} name="fan" size={120} color="white" />
+            <Feather style={styles.icon} name="cpu" size={120} color="white" />
             <View style={styles.whiteBackground}></View>
             <View style={styles.OnOffButtonContainer}>
-                <OnOffButton status='OFF'></OnOffButton>
+                <OnOffButton status='ON'></OnOffButton>
+            </View>
+            <View style={styles.humidityContainer}>
+                <Text style={styles.humidity}>50%</Text>
+                <Text style={styles.description}>Humidity sensor</Text>
             </View>
             <View style={styles.settings}>
-                <SettingDetail detail='Auto mode' value='Change'></SettingDetail>
-                <SettingDetail detail='Device id' value='F2546'></SettingDetail>
+                <SettingDetail detail='Sensor Id' value='S0515412'></SettingDetail>
                 <SettingDetail detail='Room' value='805 - H1'></SettingDetail>
-                <SettingDetail detail='Name' value='Quạt trần nha'></SettingDetail>
             </View>
             <View style={styles.buttonContainer}>
-                <AppButton style={{
-                    marginBottom: 10,
-                }} title='Change limit temp & humidity' onPress={() => console.log('change limit')}></AppButton>
-                <AppButton title='Delete device' onPress={() => console.log('delete')}></AppButton>
+                <AppButton title='Delete sensor' onPress={() => console.log('delete')}></AppButton>
             </View>
         </BlueBackground>
     );
@@ -62,9 +60,22 @@ const styles = StyleSheet.create({
     settings: {
         width: '100%',
         position: 'absolute',
-        top: 350,
+        top: 500,
         padding: 20,
+    },
+    humidityContainer:{
+        position: 'absolute',
+        top: 360,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center'
+    },
+    humidity: {
+        fontSize: 60,
+    },
+    description: {
+        fontSize: 18,
     }
 })
 
-export default FanControl;
+export default SensorControl;
