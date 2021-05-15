@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   content: {
    flex: 1,
-   //marginTop: 40
+   
   },
   control: {
     color:'#2196F3',
@@ -104,6 +104,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginLeft: 80,
     marginRight:80,
+    marginTop:20,
+    marginBottom:20,
     borderRadius:100,
     shadowColor:'black',
     shadowOpacity:0.4,
@@ -119,7 +121,9 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems: 'center' ,
     
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    marginTop:20,
+    marginBottom:30
   },
   areaOther:{
     flex:2,
