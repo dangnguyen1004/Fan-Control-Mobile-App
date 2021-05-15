@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { StyleSheet, Text, View, Image, TouchableOpacity,Button } from 'react-native';
 import fan from '../assets/fan.jpg'
 import dieuhoa from '../assets/dieuhoa.jpg'
-
+import blue from '../assets/blue.png'
 import { AntDesign } from '@expo/vector-icons';
 
 export default class ControlDevice extends Component {
@@ -12,6 +12,9 @@ export default class ControlDevice extends Component {
     return (
 
         <View style={styles.container}>
+          <View style={styles.header}>
+            <Image source={blue} style={{width:'100%', height: '100%'}}></Image>
+          </View>
           <View style={styles.body}>      
             <View style={styles.content}>
               <Text style={styles.control}>Control <Text style={styles.nameRoom}>Room 101 - H6</Text> </Text>
@@ -80,7 +83,6 @@ const styles = StyleSheet.create({
   },
   header:{
     flex:1,
-    backgroundColor:'#2196F3'
   },
   content: {
    flex: 1,
