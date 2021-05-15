@@ -20,7 +20,7 @@ export default class ControlDevice extends Component {
               <View>
               
                 <View >
-                  <Text style={{textAlign:'center', color:'blue', fontWeight:'bold' }}>ADD NEW DEVICE</Text>
+                  <Text style={{textAlign:'center', color:'#2196F3', fontWeight:'bold' }}>ADD NEW DEVICE</Text>
                 </View>
               
             </View>
@@ -80,14 +80,14 @@ const styles = StyleSheet.create({
   },
   header:{
     flex:1,
-    backgroundColor:'blue'
+    backgroundColor:'#2196F3'
   },
   content: {
    flex: 1,
    //marginTop: 40
   },
   control: {
-    color:'blue',
+    color:'#2196F3',
     fontSize: 30,
     fontWeight: 'bold',
     paddingLeft:50,
