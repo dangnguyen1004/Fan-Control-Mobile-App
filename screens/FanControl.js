@@ -1,4 +1,4 @@
-import React, { version } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ImageBackground, TouchableHighlight, Text, TouchableOpacity } from 'react-native';
 import BlueBackground from '../components/BlueBackground';
 import OnOffButton from '../components/OnOffButton'
@@ -8,7 +8,25 @@ import AppButton from '../components/AppButton';
 import colors from '../config/color'
 import SettingDetail from '../components/SettingDetail';
 
+function switchFan(status) {
+    const levelOfFan = status === 'OFF'? 0 : 3;
+    const data = {
+        level: status,
+        data: 10
+    }
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        mode: "no-cors",
+    };
+    fetch('http://127.0.0.1:3000/api/fan', requestOptions)
+        .then(response => response.json())
+        .then(data => console.log(data));
+}
+
 function FanControl(props) {
+    const [fanStatus, setFanStatus] = useState('OFF');
     return (
         <BlueBackground>
             <BackButton></BackButton>
@@ -16,7 +34,16 @@ function FanControl(props) {
             <MaterialCommunityIcons style={styles.icon} name="fan" size={120} color="white" />
             <View style={styles.whiteBackground}></View>
             <View style={styles.OnOffButtonContainer}>
-                <OnOffButton status='OFF'></OnOffButton>
+                <OnOffButton status={fanStatus} onPress={() => {
+                    if (fanStatus === 'OFF') {
+                        setFanStatus('ON')
+                        switchFan(fanStatus)
+                    }
+                    else { 
+                        setFanStatus('OFF')
+                        switchFan(fanStatus) 
+                    }
+                }}></OnOffButton>
             </View>
             <View style={styles.settings}>
                 <SettingDetail detail='Auto mode' value='Change'></SettingDetail>

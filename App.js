@@ -6,7 +6,7 @@ import SensorControl from './screens/SensorControl';
 
 export default function App() {
   return (
-    <SensorControl></SensorControl>
+    <FanControl></FanControl>
   );
 }
 

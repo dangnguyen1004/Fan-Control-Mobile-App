@@ -8,6 +8,7 @@ import AppButton from '../components/AppButton';
 import colors from '../config/color'
 import SettingDetail from '../components/SettingDetail';
 
+
 function SensorControl(props) {
     return (
         <BlueBackground>
@@ -15,7 +16,7 @@ function SensorControl(props) {
             <Feather style={styles.icon} name="cpu" size={120} color="white" />
             <View style={styles.whiteBackground}></View>
             <View style={styles.OnOffButtonContainer}>
-                <OnOffButton status='ON'></OnOffButton>
+                <OnOffButton status='OFF'></OnOffButton>
             </View>
             <View style={styles.humidityContainer}>
                 <Text style={styles.humidity}>50%</Text>

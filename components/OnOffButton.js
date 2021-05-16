@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import colors from '../config/color'
 
-function OnOffButton({status, style}) {
+function OnOffButton({status, style, onPress}) {
     return (
         <View style={[styles.buttonContainer, style]}>
             <View style={styles.buttonBackground}></View>
-            <TouchableOpacity style={styles.button} onPress={() => console.log()}>
+            <TouchableOpacity style={[styles.button, status === 'ON' ? styles.buttonON : styles.buttonOFF]} onPress={onPress}>
                 <Text
                     style={{
                         color: 'white',
@@ -31,10 +32,19 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 120,
         height: 120,
-        backgroundColor: 'black',
+        backgroundColor: colors.black,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 60,
+    },
+    buttonON: {
+        backgroundColor: colors.primary,
+        elevation: 5,
+        shadowOffset: {width: 0, height: 0  },
+        shadowRadius: 10,
+    },
+    buttonOFF: {
+        backgroundColor: colors.black,
     }
 })
 
