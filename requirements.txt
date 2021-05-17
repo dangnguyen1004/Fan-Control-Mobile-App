@@ -1,0 +1,14 @@
+npm install
+expo install
+npm i @react-native-community/hooks
+
+Project folder:
+
+expo install react-native-svg
+
+npm i react-native-svg-transformer --save-dev
+
+
+npm install react-native-elements
+
+expo install expo-linear-gradient
