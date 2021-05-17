@@ -7,14 +7,12 @@ import blue from '../assets/blue.png'
 
 import { AntDesign } from '@expo/vector-icons';
 
-export default class ChooseRoom extends Component {
-  render() {
+export default function ChooseRoom ({navigation}) {
     return (
         <View style={styles.container}>
           
           <View style={styles.header}>
-            
-              <View style={styles.imageHeader}>
+            <View style={styles.imageHeader}>
                   
                   <Image source={blue} style={{width:'100%', height: '100%'}}></Image>
               </View>
@@ -44,7 +42,7 @@ export default class ChooseRoom extends Component {
               
                 <Text style= {{color:'gray'}}>H1</Text>
                 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=> navigation.navigate('CONTROL DEVICE')}>
                   <View style={styles.room}> 
                     <Text style={{paddingLeft:20, flex: 1}}>Room 101 - H1 </Text>
                     <AntDesign  name="arrowright" size={30} color="blue" style={{flex:1, textAlign:'right'}}/> 
@@ -54,21 +52,21 @@ export default class ChooseRoom extends Component {
 
                 <TouchableOpacity>
                   <View style={styles.room}> 
-                    <Text style={{paddingLeft:20, flex: 1}}>Room 101 - H1 </Text>
+                    <Text style={{paddingLeft:20, flex: 1}}>Room 102 - H1 </Text>
                     <AntDesign  name="arrowright" size={30} color="blue" style={{flex:1, textAlign:'right'}}/> 
                   </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity>
                   <View style={styles.room}> 
-                    <Text style={{paddingLeft:20, flex: 1}}>Room 101 - H1 </Text>
+                    <Text style={{paddingLeft:20, flex: 1}}>Room 103 - H1 </Text>
                     <AntDesign  name="arrowright" size={30} color="blue" style={{flex:1, textAlign:'right'}}/> 
                   </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity>
                   <View style={styles.room}> 
-                    <Text style={{paddingLeft:20, flex: 1}}>Room 101 - H1 </Text>
+                    <Text style={{paddingLeft:20, flex: 1}}>Room 104 - H1 </Text>
                     <AntDesign  name="arrowright" size={30} color="blue" style={{flex:1, textAlign:'right'}}/> 
                   </View>
                 </TouchableOpacity>
@@ -93,7 +91,6 @@ export default class ChooseRoom extends Component {
       
     );
   }
-}
 const styles = StyleSheet.create({
   container: {
     flex:1,
