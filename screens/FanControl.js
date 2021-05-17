@@ -9,20 +9,30 @@ import colors from '../config/color'
 import SettingDetail from '../components/SettingDetail';
 
 function switchFan(status) {
-    const levelOfFan = status === 'OFF'? 0 : 3;
     const data = {
-        level: status,
-        data: 10
+        status: status,
     }
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-        mode: "no-cors",
+        // mode: "no-cors",
     };
     fetch('http://127.0.0.1:3000/api/fan', requestOptions)
         .then(response => response.json())
         .then(data => console.log(data));
+    // const URL = 'http://127.0.0.1:3000'
+    // fetch(URL).then(response => {
+    //     if (response.status === 200) {
+    //         console.log(response)
+    //     } else {
+    //         throw new Error('Something wrong')
+    //     }
+    // }). then(responseText => {
+    //     console.log(responseText)
+    // }). catch(error => {
+    //     console.error(error.message)
+    // })
 }
 
 function FanControl(props) {
@@ -35,13 +45,13 @@ function FanControl(props) {
             <View style={styles.whiteBackground}></View>
             <View style={styles.OnOffButtonContainer}>
                 <OnOffButton status={fanStatus} onPress={() => {
-                    if (fanStatus === 'OFF') {
-                        setFanStatus('ON')
+                    if (fanStatus === 'ON') {
                         switchFan(fanStatus)
-                    }
-                    else { 
                         setFanStatus('OFF')
-                        switchFan(fanStatus) 
+                    }
+                    else {
+                        switchFan(fanStatus)
+                        setFanStatus('ON')
                     }
                 }}></OnOffButton>
             </View>
