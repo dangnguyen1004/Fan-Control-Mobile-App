@@ -10,7 +10,10 @@ import SettingDetail from '../components/SettingDetail';
 
 function switchFan(status) {
     const data = {
-        status: status,
+        id: 1,
+        name: 'LED',
+        data: status === 'ON'? '0' : '2',
+        unit: '',
     }
     const requestOptions = {
         method: 'POST',
