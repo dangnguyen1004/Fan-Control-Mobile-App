@@ -1,77 +1,74 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,Button } from 'react-native';
 import fan from '../assets/fan.jpg'
 import dieuhoa from '../assets/dieuhoa.jpg'
-
+import blue from '../assets/blue.png'
 import { AntDesign } from '@expo/vector-icons';
+
 export default class ControlDevice extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity>
-            <AntDesign name="arrowleft" size={30} color="white" style={{marginTop:25}}/>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.body}>      
-          <View style={styles.content}>
-            <Text style={styles.control}>Control <Text style={styles.nameRoom}>Room 101 - H6</Text> </Text>
-          </View> 
-          <TouchableOpacity style={styles.add}>
-            <View>
-            
-              <View >
-                <Text style={{textAlign:'center', color:'blue', fontWeight:'bold' }}>ADD NEW DEVICE</Text>
+
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Image source={blue} style={{width:'100%', height: '100%'}}></Image>
+          </View>
+          <View style={styles.body}>      
+            <View style={styles.content}>
+              <Text style={styles.control}>Control <Text style={styles.nameRoom}>Room 101 - H1</Text> </Text>
+            </View> 
+            <TouchableOpacity style={styles.add}>
+              <View>
+              
+                <View >
+                  <Text style={{textAlign:'center', color:'#2196F3', fontWeight:'bold' }}>ADD NEW DEVICE</Text>
+                </View>
+              
+            </View>
+            </TouchableOpacity>
+
+            <View style={styles.other}>
+              <View style={styles.areafan}>
+                <View style={styles.fan}>
+                <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
+                <Image source={fan} style={styles.imageFan} ></Image>
+                <Button title="control">
+                </Button> 
+              </View>
+
+                <View style={styles.fan}>
+              <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
+                <Image source={fan} style={styles.imageFan} ></Image>
+                <Button title="control"> 
+                {/* <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text>  */}
+                </Button> 
               </View>
             
+            </View>
+            <View style={styles.areaOther}>
+              <View style={styles.fan}>
+                  <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
+                  <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
+                  <Button title="control">
+                  </Button> 
+                </View>
+
+                <View style={styles.fan}>
+                <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
+                  <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
+                  <Button title="control">
+                  </Button> 
+                </View>
+            </View>
+            <View style={styles.areaBottom}>
+
+            </View>
           </View>
-          </TouchableOpacity>
-
-          <View style={styles.other}>
-            <View style={styles.areafan}>
-              <View style={styles.fan}>
-              <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
-              <Image source={fan} style={styles.imageFan} ></Image>
-              <TouchableOpacity> 
-                <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text>
-              </TouchableOpacity> 
-            </View>
-
-              <View style={styles.fan}>
-            <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
-              <Image source={fan} style={styles.imageFan} ></Image>
-              <TouchableOpacity> 
-              <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text> 
-              </TouchableOpacity> 
-            </View>
           
           </View>
-          <View style={styles.areaOther}>
-            <View style={styles.fan}>
-                <Text style={{color:'gray', textAlign:'center'}}>F1205 - TOP</Text>
-                <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
-                <TouchableOpacity> 
-                  <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text>
-                </TouchableOpacity> 
-              </View>
-
-              <View style={styles.fan}>
-              <Text style={{color:'gray', textAlign:'center'}}>F1205 - BOTTOM</Text>
-                <Image source={dieuhoa} style={styles.imageDieuhoa} ></Image>
-                <TouchableOpacity> 
-                <Text style={{fontWeight:'bold', fontSize:20, color:'blue', textAlign:'center'}}>control</Text> 
-                </TouchableOpacity> 
-              </View>
-          </View>
-          <View style={styles.areaBottom}>
-
-          </View>
         </View>
-        
-        </View>
-      </View>
     );
   }
 }
@@ -80,23 +77,22 @@ const styles = StyleSheet.create({
     flex:1,
   },
   body: {
-    flex:9,
+    flex:18,
     width:'100%',
     height:'100%',
   },
   header:{
     flex:1,
-    backgroundColor:'blue'
   },
   content: {
    flex: 1,
-   //marginTop: 40
+   
   },
   control: {
-    color:'blue',
+    color:'#2196F3',
     fontSize: 30,
-    fontWeight: 'bold',
-    paddingLeft:50,
+   // fontWeight: 'bold',
+    paddingLeft:20,
   },
   nameRoom: {
     fontSize:15,
@@ -108,6 +104,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginLeft: 80,
     marginRight:80,
+    marginTop:20,
+    marginBottom:20,
     borderRadius:100,
     shadowColor:'black',
     shadowOpacity:0.4,
@@ -123,7 +121,9 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems: 'center' ,
     
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    marginTop: 20,
+    marginBottom:30
   },
   areaOther:{
     flex:2,
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   fan:{
     width: 165,
-    height: 155,
+    height: 165,
   
 
     borderTopColor: 'black',
