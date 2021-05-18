@@ -6,20 +6,22 @@ import blue from '../assets/blue.png'
 
 import { AntDesign } from '@expo/vector-icons';
 
-export default class Choosemanage extends Component{
-    render() {
+export default function Choosemanage ({navigation}) {
+   
         return (
             <View style ={css.container}> 
                 <View style={css.header}>
-                    <Image source ={blue} style={{flex:1, width:'100%', height:70,} }></Image>
-                    <View style={{flex:1}}>
+                    
+                    <Image source ={blue} style={{flex:1, width:'100%', height:10,} }></Image>
+                    
+                    <View style={{flex:2}}>
                         <Text style={{fontSize: 30, color:'#2196F3', marginLeft: 20}}>Management </Text>
                         <Text style={{fontSize:12, marginLeft:20, color:'gray'}}>Manage your devices in room </Text>
                     </View>
                 </View>
                 <View style={css.body}> 
                     <View style={css.air}>
-                        <TouchableOpacity onPress={()=>{console.log('click to ...')}}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('CONTROL DEVICE')}>
                             <Text style={{
                                 fontSize:40,                     
                                 position:'absolute',
@@ -34,7 +36,7 @@ export default class Choosemanage extends Component{
                     </View>
                     <View style={css.sensor}>
 
-                        <TouchableOpacity onPress={()=>{console.log('click to ...')}}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('SENSOR')}>
                             <Text style={{
                                 fontSize:40,                     
                                 position:'absolute',
@@ -54,7 +56,7 @@ export default class Choosemanage extends Component{
             </View>
         );
     }
-}
+
 const css = StyleSheet.create({
     container:{
         flex: 1,
@@ -64,13 +66,12 @@ const css = StyleSheet.create({
     },
     
     body:{
-        flex:1,
-        marginTop:20
+        flex:3,
     },
     air:{
         flex:1,
         marginLeft:20,
-        marginRight:20
+        marginRight:20,
     },
     sensor:{
         flex:1,
