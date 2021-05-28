@@ -1,27 +1,77 @@
 import React from 'react';
-import {StyleSheet, View,Text, Button  } from 'react-native';
+import {StyleSheet, View,Text, Button, ActivityIndicator, Image  } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Component } from 'react';
+import  firebase from 'firebase/app'
+import logo from '../assets/logo.jpg'
+import 'firebase/auth'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default class SignIn extends Component {
+    constructor() {
+        super()
+        this.state = {
+            email: '',
+            password: '',
+            isLoading: false
+        }
+    }
+    onSignIn = async () => {
+        if(this.state.email && this.state.password) {
+            this.setState({isLoading: true})
+            try{
+                const response = await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+                if (response) {
+                    alert('Sign In Success')
+                    this.props.navigation.replace('Loading Screen SignIn')
+                    this.setState({isLoading: false})
+                }
+            }catch(error) {
+                this.setState({isLoading: false})
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                        alert('A user with that email does not exist. Try signing');
+                    break;
+                    case 'auth/invalid-email':
+                        alert('Please enter an email address')
+                    break;
+                    default: alert('Password is incorrect')
+                }
+            }
+        } else {
+            alert('Please enter email or password')
+        }
+    }
     render (){
         return (
             <View style={styles.container}>
+                {this.state.isLoading? 
+                    <View style={[StyleSheet.absoluteFill, {alignItems:'center',
+                    justifyContent:'center', zIndex:1000, elevation:1000}]}>
+                        <ActivityIndicator size="large"/>
+                    </View> 
+                :null}
                 <View style={styles.content}>
                     <View style={styles.form}>
+                        <MaterialCommunityIcons name="hydraulic-oil-temperature" size={100} color="red" style={{textAlign:'center'}}/>
                         <Text style={{fontSize:30, color:'#09C0FF', textAlign:'center', marginTop:'10%'}}>CONTROL</Text>
-                        <TextInput style={styles.account} placeholder='Account'></TextInput>
+                        <TextInput style={styles.account} placeholder='Email' autoCapitalize="none"
+                            keyboardType="email-address"
+                            onChangeText = {email => this.setState({email})}
+                        ></TextInput>
                         <MaterialIcons name="account-circle" size={24} color="black"  style={styles.logoAccount}/>
 
-                        <TextInput style={styles.account} placeholder='Password' secureTextEntry={true}></TextInput>
+                        <TextInput style={styles.account} placeholder='Password' secureTextEntry={true}
+                            onChangeText = {password => this.setState({password})}
+                        ></TextInput>
                         <AntDesign style={styles.logoPass} name="lock" size={24} color="black" />
                     </View>
                 </View> 
 
                 <View style={styles.process}>
-                    <Button title="Sign In" onPress={() => this.props.navigation.replace('ACCOUNT')}></Button>
+                    <Button title="Sign In" onPress={this.onSignIn}></Button>
                     <View style={{marginTop:'10%'}}>
                         <Text style={{textAlign:'center', marginBottom:'10%'}}>If you don't have an account</Text>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('SIGN UP')} >
@@ -39,13 +89,12 @@ const styles = StyleSheet.create({
         flex:1,
     },
     content: {
-        flex:1,
-        justifyContent:'center',
-        alignContent:'center'
-
+        flex:1.2,
     },
     form: {
         flex:1,
+        justifyContent:'space-around',
+        alignContent:'center',
         width: '70%',
         backgroundColor:'white',
         marginLeft:'15%'
@@ -66,12 +115,12 @@ const styles = StyleSheet.create({
     },
     logoAccount:{
         position: 'absolute',
-        top: 97,
+        top: '70%',
         left: 30
     },
     logoPass: {
         position: 'absolute',
-        top: 152,
+        top: '90%',
         left: 30
     }
 });
