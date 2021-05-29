@@ -4,6 +4,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
 import  firebase from 'firebase/app'
 import 'firebase/auth'
+import 'firebase/database'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default class SignIn extends Component {
@@ -21,9 +22,16 @@ export default class SignIn extends Component {
         if(this.state.email && this.state.password && this.state.phone && this.state.username) {
             this.setState({isLoading: true})
             try {
-                const response = await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+                const response = await firebase
+                .auth()
+                .createUserWithEmailAndPassword(this.state.email, this.state.password);
                 if(response) {
+                    const user = await firebase
+                    .database()
+                    .ref('users/')
+                    .child(response.user.uid).set({email:response.user.email, uid:response.user.uid, phone:this.state.phone, username:this.state.username});
                     alert('Sign Up Success')
+                    this.props.navigation.navigate('SIGN IN')
                     this.setState({isLoading: false})
                 }
             } catch (error) {
