@@ -25,14 +25,16 @@ export default class SignIn extends Component {
                 const response = await firebase
                 .auth()
                 .createUserWithEmailAndPassword(this.state.email, this.state.password);
-                if(response) {
+                if(response) {   
+                    this.setState({isLoading: false});
                     const user = await firebase
                     .database()
                     .ref('users/')
                     .child(response.user.uid).set({email:response.user.email, uid:response.user.uid, phone:this.state.phone, username:this.state.username});
-                    alert('Sign Up Success')
-                    this.props.navigation.navigate('SIGN IN')
-                    this.setState({isLoading: false})
+                    
+                    alert('Sign Up Success');
+                    this.props.navigation.navigate('SIGN IN');
+                 
                 }
             } catch (error) {
                 this.setState({isLoading: false})
@@ -41,7 +43,7 @@ export default class SignIn extends Component {
                 } else if (error.code == 'auth/invalid-email') {
                     alert('Please enter an email address')
                 } else {
-                    alert('Email not exist')
+                    alert(error)
                 }
             }
         } else {
