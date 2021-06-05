@@ -1,32 +1,40 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity,Button, TextInput, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import { StyleSheet, Text, View, Image, TouchableOpacity, Button, TextInput, FlatList, TextComponent } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import SwitchSelector from 'react-native-switch-selector'
 import firebase from 'firebase/app'
-import {Ionicons} from '@expo/vector-icons'
-import {snapshotToArray} from '../firebase/LoadingData.js'
+import { Ionicons } from '@expo/vector-icons'
+import { snapshotToArray } from '../firebase/LoadingData.js'
 
 const options = [
   { label: "OFF", value: "0" },
   { label: "ON", value: "1" }
 ];
 
-export default class ControlDevice extends Component{
+export default class ControlDevice extends Component {
   constructor() {
     super()
     this.state = {
       nameroom: "",
-      textInputData:'',
+      textInputData: '',
       currentUser_control: {},
-      devices:[],
-      mode:'',
+      devices: [],
+      mode: '',
+      temperature: '',
+      humid: '',
     }
+
   }
 
   componentWillMount = async () => {
-    const user =  this.props.route.params.user
+    const mqtt = require('mqtt');
+    const client = mqtt.connect('mqtt://io.adafruit.com', {
+      username: 'NguyenDang',
+      password: 'aio_lxJO32oydwFmK5J19lU9jpHt2Gbw',
+    });
+    const user = this.props.route.params.user
     const room = this.props.route.params.listitem
     const currentUserData = await firebase
       .database()
@@ -41,27 +49,55 @@ export default class ControlDevice extends Component{
       .child(room[0].name)
       .once('value')
     if (devices) {
-      const devicesArray = snapshotToArray(devices) 
-    
-      this.setState({devices: devicesArray})
+      const devicesArray = snapshotToArray(devices)
+
+      this.setState({ devices: devicesArray })
     }
 
-    this.setState({currentUser_control: currentUserData.val() , nameroom: room[0].name})
+    this.setState({ currentUser_control: currentUserData.val(), nameroom: room[0].name })
+
+    const setTemAndHumid = (temp, humid) => {
+      this.setState({
+        temperature: temp,
+        humid: humid
+      })
+    }
+
+    client.on('connect', () => {
+      client.subscribe('NguyenDang/feeds/bk-iottemp-humid')
+      console.log('Subscribe CSE_BBC/feeds/bk-iot-temp-humid')
+    })
+    client.on('message', function (topic, message, packet) {
+      // message is Buffer
+      let data = JSON.parse(message.toString())
+      console.log('Receive data from topic: ' + topic.toString())
+      // console.log(data.data)
+      const str = data.data;
+      const pattTemp = /[0-9]*/;
+      const pattHumid = /-[0-9]*/
+      const temp = str.match(pattTemp)[0];
+      const humid = str.match(pattHumid)[0].substr(1, 2);
+      setTemAndHumid(temp, humid)
+    })
   }
 
+
+
   renderItem = (item, index) => (
-    <TouchableOpacity style={{    shadowColor:'black',
-      shadowOpacity:0.4,
+    <TouchableOpacity style={{
+      shadowColor: 'black',
+      shadowOpacity: 0.4,
       shadowRadius: 5,
-      shadowOffset: {width:0, height:4},
-      elevation: 9,}}>
-      <View style={{height:50, width:'100%', backgroundColor:'#a5deba', alignItems:'center', flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-        <View style={{alignItems:'center', flexDirection:'row' }}>
+      shadowOffset: { width: 0, height: 4 },
+      elevation: 9,
+    }}>
+      <View style={{ height: 50, width: '100%', backgroundColor: '#a5deba', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+        <View style={{ alignItems: 'center', flexDirection: 'row' }}>
           <FontAwesome5 name="fan" size={24} color="25" />
-          <Text style={{marginLeft:10,fontSize:20, color:'#007AFF', fontWeight:'bold'}}>{item.name}</Text>
+          <Text style={{ marginLeft: 10, fontSize: 20, color: '#007AFF', fontWeight: 'bold' }}>{item.name}</Text>
         </View>
 
-        <View style={{width:125}}>
+        <View style={{ width: 125 }}>
           <SwitchSelector
             backgroundColor='gray'
             options={options}
@@ -72,25 +108,25 @@ export default class ControlDevice extends Component{
       </View>
     </TouchableOpacity>
   )
-  
-  checkmode = async (selectdevice, index, value) => {
-    let device_select = this.state.devices.filter(device => device === selectdevice );
-    
-    const update_mod = await firebase 
-        .database()
-        .ref('devices')
-        .child(this.state.currentUser_control.uid)
-        .child(this.state.nameroom)
-        .child(device_select[0].key)
-        .update({
-        mode: value,
-        })
-  }
-  
-  addDevice = async (device) => {
-    if(device === "QUẠT TRÊN" || device === "QUẠT GIỮA" ||device === "QUẠT DƯỚI" ) {
 
-      try{
+  checkmode = async (selectdevice, index, value) => {
+    let device_select = this.state.devices.filter(device => device === selectdevice);
+
+    const update_mod = await firebase
+      .database()
+      .ref('devices')
+      .child(this.state.currentUser_control.uid)
+      .child(this.state.nameroom)
+      .child(device_select[0].key)
+      .update({
+        mode: value,
+      })
+  }
+
+  addDevice = async (device) => {
+    if (device === "QUẠT TRÊN" || device === "QUẠT GIỮA" || device === "QUẠT DƯỚI") {
+
+      try {
         const snapshot_device = await firebase
           .database()
           .ref('devices')
@@ -117,16 +153,16 @@ export default class ControlDevice extends Component{
             .child(this.state.currentUser_control.uid)
             .child(this.state.nameroom)
             .child(deviceID)
-            .set({name: device, manager:this.state.currentUser_control.username, phone:this.state.currentUser_control.phone, room:this.state.nameroom, mode: '0'})
-          
+            .set({ name: device, manager: this.state.currentUser_control.username, phone: this.state.currentUser_control.phone, room: this.state.nameroom, mode: '0' })
+
           this.uploadfirebase()
           alert('Add succecs')
         }
-      } catch(error) {
+      } catch (error) {
         alert(error)
       }
-    } else {  
-        alert('PLEASE ENTERN AGAIN, EXAMPLE: QUẠT TRÊN | GIỮA | DƯỚI')
+    } else {
+      alert('PLEASE ENTERN AGAIN, EXAMPLE: QUẠT TRÊN | GIỮA | DƯỚI')
     }
   }
 
@@ -137,59 +173,59 @@ export default class ControlDevice extends Component{
       .child(this.state.currentUser_control.uid)
       .child(this.state.nameroom)
       .once('value')
-    
-    const devicesArray = snapshotToArray(devices) 
-    
-    this.setState({devices: devicesArray})
+
+    const devicesArray = snapshotToArray(devices)
+
+    this.setState({ devices: devicesArray })
   }
   render() {
     return (
-        <View style={styles.container}>
-          <View style={styles.body}>      
-            <View style={styles.content}>
-              <Text style={styles.control}>Control <Text style={{fontSize:15, color:'grey'}}>{"Room "+this.state.nameroom}</Text> </Text>
-            </View> 
-              <View style={{height:50, flexDirection:'row', marginBottom:20}}>
-
-                <TextInput style={{flex:1, backgroundColor:'white', paddingLeft:5}}
-                placeholder="Enter Device: QUẠT TRÊN"
-                placeholderTextColor="grey"
-                onChangeText={text => this.setState({textInputData: text})}
-                />
-              <TouchableOpacity onPress={() => this.addDevice(this.state.textInputData)}>
-                <View style={{width:50, height:50, backgroundColor:'#a5deba', alignItems:'center', justifyContent:'center'}}>
-                  <Ionicons name='ios-checkmark' color='white' size={40}></Ionicons>
-                </View>
-              </TouchableOpacity>
-              </View>
-          
+      <View style={styles.container}>
+        <View style={styles.body}>
+          <View style={styles.content}>
+            <Text style={styles.control}>Control <Text style={{ fontSize: 15, color: 'grey' }}>{"Room " + this.state.nameroom}</Text> </Text>
           </View>
-          <View style={{flex:5}}>
-              <View style={{flex:1}}>
-                  <View style={{flex:1, backgroundColor:'white', alignItems:'center', flexDirection:'row', justifyContent:'space-between'}}>
-                      <View style={{alignItems:'center', flexDirection:'row' }}>
-                        <MaterialCommunityIcons name="temperature-celsius" size={25} color="red" />
-                        <Text style={{marginLeft:10,fontSize:20, color:'red', fontWeight:'bold'}}>TEMPERATURE</Text>
-                      </View>
-                      <View>
-                        <Text style={{fontSize:20, color:'red', fontWeight:'bold'}}>37</Text>
-                      </View>
-                  </View>
-                  <View>
+          <View style={{ height: 50, flexDirection: 'row', marginBottom: 20 }}>
 
-                  </View>
-                  <View style={{flex:1, backgroundColor:'white', alignItems:'center', flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-                      <View style={{alignItems:'center', flexDirection:'row' }}>
-                        <Icon name="water" style={{fontSize:25, color: '#007AFF' }}></Icon>
-                        <Text style={{marginLeft:10, fontSize:20, color:'#007AFF', fontWeight:'bold'}}>HUMIDITY</Text>
-                      </View>
-                      <View>
-                        <Text style={{fontSize:20, color:'#007AFF', fontWeight:'bold'}}>34.2</Text>
-                      </View>
-                  </View>
+            <TextInput style={{ flex: 1, backgroundColor: 'white', paddingLeft: 5 }}
+              placeholder="Enter Device: QUẠT TRÊN"
+              placeholderTextColor="grey"
+              onChangeText={text => this.setState({ textInputData: text })}
+            />
+            <TouchableOpacity onPress={() => this.addDevice(this.state.textInputData)}>
+              <View style={{ width: 50, height: 50, backgroundColor: '#a5deba', alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name='ios-checkmark' color='white' size={40}></Ionicons>
               </View>
-              <View style={{flex:7, marginTop:10}}>
-                {/* <TouchableOpacity style={{    shadowColor:'black',
+            </TouchableOpacity>
+          </View>
+
+        </View>
+        <View style={{ flex: 5 }}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                <MaterialCommunityIcons name="temperature-celsius" size={25} color="red" />
+                <Text style={{ marginLeft: 10, fontSize: 20, color: 'red', fontWeight: 'bold' }}>TEMPERATURE</Text>
+              </View>
+              <View>
+                <Text style={{ fontSize: 20, color: 'red', fontWeight: 'bold' }}>{this.state.temperature}</Text>
+              </View>
+            </View>
+            <View>
+
+            </View>
+            <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                <Icon name="water" style={{ fontSize: 25, color: '#007AFF' }}></Icon>
+                <Text style={{ marginLeft: 10, fontSize: 20, color: '#007AFF', fontWeight: 'bold' }}>HUMIDITY</Text>
+              </View>
+              <View>
+                <Text style={{ fontSize: 20, color: '#007AFF', fontWeight: 'bold' }}>{this.state.humid}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={{ flex: 7, marginTop: 10 }}>
+            {/* <TouchableOpacity style={{    shadowColor:'black',
                   shadowOpacity:0.4,
                   shadowRadius: 5,
                   shadowOffset: {width:0, height:4},
@@ -229,56 +265,56 @@ export default class ControlDevice extends Component{
                       </View>
                   </View>
                 </TouchableOpacity> */}
-                <FlatList 
-                  data={this.state.devices}
-                  renderItem={({item}, index)=> this.renderItem(item, index)}
-                  ListEmptyComponent = {
-                    <View style={{marginTop: 50, alignItems:'center'}}> 
-                      <Text style={{fontWeight:'bold'}}>Not Have Devices</Text>
-                    </View>
-                  }
-                />
-              </View>
+            <FlatList
+              data={this.state.devices}
+              renderItem={({ item }, index) => this.renderItem(item, index)}
+              ListEmptyComponent={
+                <View style={{ marginTop: 50, alignItems: 'center' }}>
+                  <Text style={{ fontWeight: 'bold' }}>Not Have Devices</Text>
+                </View>
+              }
+            />
           </View>
         </View>
+      </View>
     );
   }
-  }
+}
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
   },
   body: {
-    flex:1,
-    width:'100%',
-    height:'100%',
+    flex: 1,
+    width: '100%',
+    height: '100%',
 
   },
   content: {
-   flex: 1,
-   
+    flex: 1,
+
   },
   control: {
-    color:'#2196F3',
+    color: '#2196F3',
     fontSize: 30,
-   // fontWeight: 'bold',
-    paddingLeft:20,
+    // fontWeight: 'bold',
+    paddingLeft: 20,
   },
   add: {
-    flex:1, //e6eaeb
-    justifyContent:'center',
+    flex: 1, //e6eaeb
+    justifyContent: 'center',
     backgroundColor: 'white',
     marginLeft: 80,
-    marginRight:80,
-    marginTop:20,
-    marginBottom:20,
-    borderRadius:100,
-    shadowColor:'black',
-    shadowOpacity:0.4,
+    marginRight: 80,
+    marginTop: 20,
+    marginBottom: 20,
+    borderRadius: 100,
+    shadowColor: 'black',
+    shadowOpacity: 0.4,
     shadowRadius: 5,
-    shadowOffset: {width:0, height:4},
+    shadowOffset: { width: 0, height: 4 },
     elevation: 9,
   },
-  
+
 });
 
