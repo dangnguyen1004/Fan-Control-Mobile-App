@@ -22,8 +22,8 @@ export default class ControlDevice extends Component {
       currentUser_control: {},
       devices: [],
       mode: '',
-      temperature: '',
-      humid: '',
+      temperature: '0',
+      humid: '0',
     }
 
   }
