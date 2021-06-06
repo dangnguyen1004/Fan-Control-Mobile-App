@@ -7,6 +7,7 @@ import SwitchSelector from 'react-native-switch-selector'
 import firebase from 'firebase/app'
 import { Ionicons } from '@expo/vector-icons'
 import { snapshotToArray } from '../firebase/LoadingData.js'
+import { useNavigation } from '@react-navigation/core';
 
 const options = [
   { label: "OFF", value: "0" },
@@ -29,17 +30,23 @@ export default class ControlDevice extends Component {
 
   }
 
+
+
   componentWillMount = async () => {
     const user = this.props.route.params.user
     const room = this.props.route.params.listitem
     const userNameServer = this.props.route.params.userNameServer
-    const activeKey = this.props.route.params.userNameServer.activeKey
+    const activeKey = this.props.route.params.activeKey
 
     const mqtt = require('mqtt');
     const client = mqtt.connect('mqtt://io.adafruit.com', {
       username: userNameServer,
       password: activeKey,
     });
+
+    const sendDataToAda = (data, feed) => {
+      client.publish(feed, JSON.stringify(data));
+    }
 
     const currentUserData = await firebase
       .database()
@@ -69,7 +76,7 @@ export default class ControlDevice extends Component {
     }
 
     client.on('connect', () => {
-      client.subscribe('NguyenDang/feeds/bk-iottemp-humid')
+      client.subscribe(userNameServer.toString() + '/feeds/bk-iottemp-humid')
       alert('success')
       console.log('Subscribe CSE_BBC/feeds/bk-iot-temp-humid')
     })
@@ -88,7 +95,7 @@ export default class ControlDevice extends Component {
   }
   renderItem = (item, index) => (
     <View style={{ height: 100, width: '100%', backgroundColor: '#a5deba', justifyContent: 'space-between', marginTop: 20 }}>
-      <View style={{ flex:1, width: '100%', flexDirection: 'row', justifyContent: 'space-between',alignItems:'center' }}>
+      <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View style={{ alignItems: 'center', flexDirection: 'row' }}>
           <FontAwesome5 name="fan" size={24} color="25" />
           <Text style={{ marginLeft: 10, fontSize: 20, color: '#007AFF', fontWeight: 'bold' }}>{item.name}</Text>
@@ -99,12 +106,15 @@ export default class ControlDevice extends Component {
             backgroundColor='gray'
             options={options}
             initial={item.mode}
-            onPress={value => this.checkmode(item, index, value)}
+            onPress={value => {
+              this.checkmode(item, index, value)
+
+            }}
           />
         </View>
       </View>
-      <View style={{ flex:1, flexDirection: 'row' }}>
-        <TextInput style={{backgroundColor: '#deada5', paddingLeft: 5, width:'100%' }}
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <TextInput style={{ backgroundColor: '#deada5', paddingLeft: 5, width: '100%' }}
           placeholder={"feed: " + item.feed}
           placeholderTextColor="grey"
           onChangeText={text => this.setState({ textFeed: text })}
@@ -115,8 +125,8 @@ export default class ControlDevice extends Component {
 
   checkmode = async (selectdevice, index, value) => {
     let device_select = this.state.devices.filter(device => device === selectdevice);
-    
-    if(this.state.textFeed ==='EMPTY') {
+
+    if (this.state.textFeed === 'EMPTY') {
       alert("Please Enter Feed, If you haven't entered, turn on the fan just for fun")
     }
     else {
@@ -139,7 +149,9 @@ export default class ControlDevice extends Component {
         .update({
           mode: value,
         })
+      sendDataToAda()   
     }
+    
   }
 
   addDevice = async (device) => {
