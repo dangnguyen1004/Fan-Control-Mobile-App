@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { ActionSheetIOS } from 'react-native';
 import firebase from 'firebase/app'
 import { snapshotToArray } from '../firebase/LoadingData.js'
+import { Button } from 'react-native';
 
 
 class ChooseRoom extends Component {
@@ -12,10 +13,17 @@ class ChooseRoom extends Component {
 		super(props)
 		this.state = {
 			currentUser: {},
-
 			isAddNewBookVisible: false,
 			textInputData: '',
-			rooms: []
+			rooms: [],
+      		checkserver: true,
+     		userNameServer: 'Empty',
+      		activeKey: 'Empty',
+			
+			loadServer: {
+
+			}
+			// loadServer để lưu object username và key từ firebase
 		}
 	}
 
@@ -32,25 +40,37 @@ class ChooseRoom extends Component {
 
 		const roomsArray = snapshotToArray(rooms)
 
-		this.setState({ currentUser: currentUserData.val(), rooms: roomsArray })
+		this.setState({ currentUser: currentUserData.val(), rooms: roomsArray})
+
+		const server = await firebase
+			.database()
+			.ref('server')
+			.child(user.uid)
+			.once('value')
+		try {
+			this.setState({checkserver: false, loadServer:server.val()})
+			this.loadNameAndKey()
+		}
+		catch(e) {
+			this.setState({checkserver: true})
+			alert('Server Not Connected')
+		}
 	}
-
-	componentDidMount = async () => {
-		// const user =  this.props.route.params.user
-
-		// const currentUserData = await firebase.database().ref('users').child(user.uid).once('value')
-
-		// const rooms = await firebase
-		//   .database()
-		//   .ref('showrooms')
-		//   .child(user.uid)
-		//   .once('value')
-
-		// const roomsArray = snapshotToArray(rooms)
-
-		// this.setState({currentUser: currentUserData.val(), rooms:roomsArray})
-
+	loadNameAndKey = () => {
+		this.setState({userNameServer:this.state.loadServer.userName, activeKey: this.state.loadServer.key})
 	}
+	// componentDidMount = async () => {
+	// 	const user = this.props.route.params.user
+	// 	const server = await firebase
+	// 		.database()
+	// 		.ref('server')
+	// 		.child(user.uid)
+	// 		.once('value')
+	// 	if(server) {
+	// 		this.setState({checkserver: false})
+	// 	}
+
+	// }
 
 	showAddNewRoom = () => {
 		this.setState({ isAddNewBookVisible: true })
@@ -128,9 +148,51 @@ class ChooseRoom extends Component {
 	controlroom = (item, index) => {
 		const user = this.props.route.params.user
 		let listitem = this.state.rooms.filter(room => room === item);
-		this.props.navigation.navigate('CONTROL DEVICE', { user, listitem })
+
+    	if(this.state.userNameServer ==='Empty' || this.state.activeKey === 'Empty')
+    	{
+      		alert('Please enter user name and key of server')
+    	} 	else {
+      		const userNameServer = this.state.userNameServer
+      		const activeKey = this.state.activeKey
+			this.props.navigation.navigate('CONTROL DEVICE', { user, listitem, userNameServer, activeKey })
+   		}
 	}
 
+  saveServer = async (name, key) => {
+    if(name === 'Empty' || key === 'Empty') {
+      alert('user name or key is empty')
+    } else {
+		const adafruit = await firebase
+		.database()
+		.ref('server')
+		.child(this.state.currentUser.uid)
+		.set({ userName: name, key: key})
+
+		this.setState({checkserver: true})
+        alert('save success')
+		this.reduxServer()
+    }
+  }
+  	changeServer = () => {
+		  this.setState({checkserver: true})
+		  
+	}
+	reduxServer = async () => {
+		const server = await firebase
+			.database()
+			.ref('server')
+			.child(this.state.currentUser.uid)
+			.once('value')
+		try {
+			this.setState({checkserver: false, loadServer:server.val()})
+			this.loadNameAndKey()
+		}
+		catch(e) {
+			this.setState({checkserver: true})
+			alert('Server Not Connected')
+		}
+	}
 	renderItem = (item, index) => (
 		<View style={{ height: 50, flexDirection: 'row', marginTop: 10 }}>
 			<View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'white' }}>
@@ -153,47 +215,83 @@ class ChooseRoom extends Component {
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
-				<View style={{ marginBottom: 20, marginTop: 20 }}>
-					<Text style={{ color: '#007AFF', fontWeight: 'bold', fontSize: 20, textAlign: 'center' }}>CHOOSE ROOM TO CONTROL</Text>
-				</View>
-				{this.state.isAddNewBookVisible && (
-					<View style={{ height: 50, flexDirection: 'row' }}>
+		<View style={{ flex: 1 }}>
+			<View style={{ flex: 2 }}>
+			<View style={{ marginBottom: 20, marginTop: 20 }}>
+				<Text style={{ color: '#007AFF', fontWeight: 'bold', fontSize: 20, textAlign: 'center' }}>CHOOSE ROOM TO CONTROL</Text>
+			</View>
+			{this.state.isAddNewBookVisible && (
+				<View style={{ height: 50, flexDirection: 'row' }}>
 
-						<TextInput style={{ flex: 1, backgroundColor: 'white', paddingLeft: 5 }}
-							placeholder="Enter Room Name: 102-H1"
-							placeholderTextColor="grey"
-							onChangeText={text => this.setState({ textInputData: text })}
-						/>
-						<TouchableOpacity onPress={() => this.addRoom(this.state.textInputData)}>
-							<View style={{ width: 50, height: 50, backgroundColor: '#a5deba', alignItems: 'center', justifyContent: 'center' }}>
-								<Ionicons name='ios-checkmark' color='white' size={40}></Ionicons>
-							</View>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={this.hideAddNewRoom}>
-							<View style={{ width: 50, height: 50, backgroundColor: '#deada5', alignItems: 'center', justifyContent: 'center' }}>
-								<Ionicons name='ios-close' color='white' size={40}></Ionicons>
-							</View>
-						</TouchableOpacity>
-					</View>
-				)}
-				<FlatList
-					data={this.state.rooms}
-					renderItem={({ item }, index) => this.renderItem(item, index)}
-					ListEmptyComponent={
-						<View style={{ marginTop: 50, alignItems: 'center' }}>
-							<Text style={{ fontWeight: 'bold' }}>You have not booked any rooms yet</Text>
-						</View>
-					}
+				<TextInput style={{ flex: 1, backgroundColor: 'white', paddingLeft: 5 }}
+					placeholder="Enter Room Name: 102-H1"
+					placeholderTextColor="grey"
+					onChangeText={text => this.setState({ textInputData: text })}
 				/>
-				<TouchableOpacity style={{ position: 'absolute', right: 20, bottom: 20 }}
-					onPress={this.showAddNewRoom}>
-					<View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#AAD1E6', alignItems: 'center', justifyContent: 'center' }}>
-						<Text style={{ color: 'white', fontSize: 30 }}>+</Text>
+				<TouchableOpacity onPress={() => this.addRoom(this.state.textInputData)}>
+					<View style={{ width: 50, height: 50, backgroundColor: '#a5deba', alignItems: 'center', justifyContent: 'center' }}>
+					<Ionicons name='ios-checkmark' color='white' size={40}></Ionicons>
 					</View>
 				</TouchableOpacity>
-
+				<TouchableOpacity onPress={this.hideAddNewRoom}>
+					<View style={{ width: 50, height: 50, backgroundColor: '#deada5', alignItems: 'center', justifyContent: 'center' }}>
+					<Ionicons name='ios-close' color='white' size={40}></Ionicons>
+					</View>
+				</TouchableOpacity>
+				</View>
+			)}
+			<FlatList
+				data={this.state.rooms}
+				renderItem={({ item }, index) => this.renderItem(item, index)}
+				ListEmptyComponent={
+				<View style={{ marginTop: 50, alignItems: 'center' }}>
+					<Text style={{ fontWeight: 'bold' }}>You have not booked any rooms yet</Text>
+				</View>
+				}
+			/>
+			<TouchableOpacity style={{ position: 'absolute', right: 20, bottom: 20 }}
+				onPress={this.showAddNewRoom}>
+				<View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#AAD1E6', alignItems: 'center', justifyContent: 'center' }}>
+				<Text style={{ color: 'white', fontSize: 30 }}>+</Text>
+				</View>
+			</TouchableOpacity>
 			</View>
+			<View style={{ flex: 1, borderTopColor:'grey', borderTopWidth:1}}>
+
+          		<Text style={{flex:1, fontSize:20,textAlign:'center', fontWeight:'bold', color:'#007AFF'}}>Connect Server</Text>
+            {this.state.checkserver && ( <View style={{flex:4}}>
+				<View style={{flex:2, height: 50, flexDirection: 'row',alignItems:'center', justifyContent:'space-evenly'}}>
+              <Text style={{fontSize:15, fontWeight:'bold', color:'#007AFF'}}>Enter Username</Text>
+              <TextInput style={{height: 50, backgroundColor: 'white', paddingLeft: 5 }}
+                placeholder={this.state.userNameServer}
+                placeholderTextColor="grey"
+                onChangeText={text => this.setState({ userNameServer: text })}
+              />
+            </View>
+            	<View style={{ flex:2,height: 50, flexDirection: 'row',alignItems:'center', justifyContent:'space-evenly'}}>
+              <Text style={{fontSize:15, fontWeight:'bold', color:'#007AFF'}}>Enter Active Key</Text>
+              <TextInput style={{height: 50,  backgroundColor: 'white', paddingLeft: 5 }}
+                placeholder={this.state.activeKey}
+                placeholderTextColor="grey"
+                onChangeText={text => this.setState({ activeKey: text })}
+              />
+            </View>
+            	<View style={{flex:1, width:'50%', marginLeft:'25%'}}>
+              		<Button title='Save' onPress={() => this.saveServer(this.state.userNameServer, this.state.activeKey)}></Button>
+				</View>
+			</View>
+			)}
+
+			{this.state.checkserver != true && (
+				<View style={{flex:4, justifyContent:'center', alignItems:'center'}}>
+					<Text  style={{flex:1, fontSize:15 , fontWeight: 'bold',color:'#007AFF'}}>Server Connect</Text>
+					<Text style={{flex:1, fontSize:15 , fontWeight: 'bold',color:'#007AFF'}}>{"User Name: " + this.state.userNameServer} </Text>
+					<Text style={{flex:1, fontSize:15 , fontWeight: 'bold',color:'#007AFF'}}>{"Active Key: " + this.state.activeKey} </Text>
+					<Button title='Change Server' onPress={this.changeServer}></Button>
+				</View>
+			)}
+		</View>
+		</View>
 		);
 	}
 }

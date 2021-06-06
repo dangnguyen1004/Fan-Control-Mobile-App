@@ -24,18 +24,23 @@ export default class ControlDevice extends Component {
       mode: '',
       temperature: '0',
       humid: '0',
+      textFeed: 'EMPTY',
     }
 
   }
 
   componentWillMount = async () => {
-    const mqtt = require('mqtt');
-    const client = mqtt.connect('mqtt://io.adafruit.com', {
-      username: 'NguyenDang',
-      password: 'aio_lxJO32oydwFmK5J19lU9jpHt2Gbw',
-    });
     const user = this.props.route.params.user
     const room = this.props.route.params.listitem
+    const userNameServer = this.props.route.params.userNameServer
+    const activeKey = this.props.route.params.userNameServer.activeKey
+
+    const mqtt = require('mqtt');
+    const client = mqtt.connect('mqtt://io.adafruit.com', {
+      username: userNameServer,
+      password: activeKey,
+    });
+
     const currentUserData = await firebase
       .database()
       .ref('users')
@@ -65,6 +70,7 @@ export default class ControlDevice extends Component {
 
     client.on('connect', () => {
       client.subscribe('NguyenDang/feeds/bk-iottemp-humid')
+      alert('success')
       console.log('Subscribe CSE_BBC/feeds/bk-iot-temp-humid')
     })
     client.on('message', function (topic, message, packet) {
@@ -80,18 +86,9 @@ export default class ControlDevice extends Component {
       setTemAndHumid(temp, humid)
     })
   }
-
-
-
   renderItem = (item, index) => (
-    <TouchableOpacity style={{
-      shadowColor: 'black',
-      shadowOpacity: 0.4,
-      shadowRadius: 5,
-      shadowOffset: { width: 0, height: 4 },
-      elevation: 9,
-    }}>
-      <View style={{ height: 50, width: '100%', backgroundColor: '#a5deba', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+    <View style={{ height: 100, width: '100%', backgroundColor: '#a5deba', justifyContent: 'space-between', marginTop: 20 }}>
+      <View style={{ flex:1, width: '100%', flexDirection: 'row', justifyContent: 'space-between',alignItems:'center' }}>
         <View style={{ alignItems: 'center', flexDirection: 'row' }}>
           <FontAwesome5 name="fan" size={24} color="25" />
           <Text style={{ marginLeft: 10, fontSize: 20, color: '#007AFF', fontWeight: 'bold' }}>{item.name}</Text>
@@ -106,21 +103,43 @@ export default class ControlDevice extends Component {
           />
         </View>
       </View>
-    </TouchableOpacity>
+      <View style={{ flex:1, flexDirection: 'row' }}>
+        <TextInput style={{backgroundColor: '#deada5', paddingLeft: 5, width:'100%' }}
+          placeholder={"feed: " + item.feed}
+          placeholderTextColor="grey"
+          onChangeText={text => this.setState({ textFeed: text })}
+        />
+      </View>
+    </View>
   )
 
   checkmode = async (selectdevice, index, value) => {
     let device_select = this.state.devices.filter(device => device === selectdevice);
+    
+    if(this.state.textFeed ==='EMPTY') {
+      alert("Please Enter Feed, If you haven't entered, turn on the fan just for fun")
+    }
+    else {
+      const update_mod = await firebase
+        .database()
+        .ref('devices')
+        .child(this.state.currentUser_control.uid)
+        .child(this.state.nameroom)
+        .child(device_select[0].key)
+        .update({
+          feed: this.state.textFeed,
+        })
 
-    const update_mod = await firebase
-      .database()
-      .ref('devices')
-      .child(this.state.currentUser_control.uid)
-      .child(this.state.nameroom)
-      .child(device_select[0].key)
-      .update({
-        mode: value,
-      })
+      const update_feed = await firebase
+        .database()
+        .ref('devices')
+        .child(this.state.currentUser_control.uid)
+        .child(this.state.nameroom)
+        .child(device_select[0].key)
+        .update({
+          mode: value,
+        })
+    }
   }
 
   addDevice = async (device) => {
@@ -153,7 +172,7 @@ export default class ControlDevice extends Component {
             .child(this.state.currentUser_control.uid)
             .child(this.state.nameroom)
             .child(deviceID)
-            .set({ name: device, manager: this.state.currentUser_control.username, phone: this.state.currentUser_control.phone, room: this.state.nameroom, mode: '0' })
+            .set({ name: device, manager: this.state.currentUser_control.username, phone: this.state.currentUser_control.phone, room: this.state.nameroom, mode: '0', feed: this.state.textFeed })
 
           this.uploadfirebase()
           alert('Add succecs')
@@ -225,46 +244,6 @@ export default class ControlDevice extends Component {
             </View>
           </View>
           <View style={{ flex: 7, marginTop: 10 }}>
-            {/* <TouchableOpacity style={{    shadowColor:'black',
-                  shadowOpacity:0.4,
-                  shadowRadius: 5,
-                  shadowOffset: {width:0, height:4},
-                  elevation: 9,}}>
-                   <View style={{height:50, width:'100%', backgroundColor:'white', alignItems:'center', flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-                      <View style={{alignItems:'center', flexDirection:'row' }}>
-                        <FontAwesome5 name="fan" size={24} color="25" />
-                        <Text style={{marginLeft:10,fontSize:20, color:'#007AFF', fontWeight:'bold'}}>QUẠT GIỮA</Text>
-                      </View>
-                      <View style={{width:125}}>
-                        <SwitchSelector
-                          backgroundColor='gray'
-                          options={options}
-                          initial={0}
-                          onPress={value => console.log(`Call onPress with value: ${value}`)}
-                        />
-                      </View>
-                  </View>
-                </TouchableOpacity>
-                 <TouchableOpacity style={{    shadowColor:'black',
-                  shadowOpacity:0.4,
-                  shadowRadius: 5,
-                  shadowOffset: {width:0, height:4},
-                  elevation: 9,}}>
-                   <View style={{height:50, width:'100%', backgroundColor:'white', alignItems:'center', flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-                      <View style={{alignItems:'center', flexDirection:'row' }}>
-                        <FontAwesome5 name="fan" size={24} color="25" />
-                        <Text style={{marginLeft:10,fontSize:20, color:'#007AFF', fontWeight:'bold'}}>QUẠT DƯỚI</Text>
-                      </View>
-                      <View style={{width:125}}>
-                        <SwitchSelector
-                          backgroundColor='gray'
-                          options={options}
-                          initial={0}
-                          onPress={value => console.log(`Call onPress with value: ${value}`)}
-                        />
-                      </View>
-                  </View>
-                </TouchableOpacity> */}
             <FlatList
               data={this.state.devices}
               renderItem={({ item }, index) => this.renderItem(item, index)}
