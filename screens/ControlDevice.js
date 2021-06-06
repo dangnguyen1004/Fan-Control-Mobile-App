@@ -26,6 +26,8 @@ export default class ControlDevice extends Component {
       temperature: '0',
       humid: '0',
       textFeed: 'EMPTY',
+      userNameServer: '',
+      keyServer: '',
     }
 
   }
@@ -37,6 +39,8 @@ export default class ControlDevice extends Component {
     const room = this.props.route.params.listitem
     const userNameServer = this.props.route.params.userNameServer
     const activeKey = this.props.route.params.activeKey
+    this.setState({ userNameServer: userNameServer })
+    this.setState({ keyServer: activeKey })
 
     const mqtt = require('mqtt');
     const client = mqtt.connect('mqtt://io.adafruit.com', {
@@ -44,9 +48,6 @@ export default class ControlDevice extends Component {
       password: activeKey,
     });
 
-    const sendDataToAda = (data, feed) => {
-      client.publish(feed, JSON.stringify(data));
-    }
 
     const currentUserData = await firebase
       .database()
@@ -75,6 +76,17 @@ export default class ControlDevice extends Component {
       })
     }
 
+    const checkTempAndHumid = (temp, humid) => {
+      if (temp > 70 || humid > 70) {
+        client.publish(this.state.textFeed, JSON.stringify({
+          "id": "1",
+          "name": "LED",
+          "data": "1",
+          "unit": ""
+        }))
+      }
+    }
+
     client.on('connect', () => {
       client.subscribe(userNameServer.toString() + '/feeds/bk-iottemp-humid')
       alert('success')
@@ -90,6 +102,7 @@ export default class ControlDevice extends Component {
       const pattHumid = /-[0-9]*/
       const temp = str.match(pattTemp)[0];
       const humid = str.match(pattHumid)[0].substr(1, 2);
+      checkTempAndHumid(temp, humid)
       setTemAndHumid(temp, humid)
     })
   }
@@ -123,8 +136,8 @@ export default class ControlDevice extends Component {
     </View>
   )
 
-  checkmode = async (selectdevice, index, value) => {
-    let device_select = this.state.devices.filter(device => device === selectdevice);
+  checkmode = async (selectDevice, index, value) => {
+    let device_select = this.state.devices.filter(device => device === selectDevice);
 
     if (this.state.textFeed === 'EMPTY') {
       alert("Please Enter Feed, If you haven't entered, turn on the fan just for fun")
@@ -149,9 +162,20 @@ export default class ControlDevice extends Component {
         .update({
           mode: value,
         })
-      sendDataToAda()   
+      const dataToAda = {
+        "id": "1",
+        "name": "LED",
+        "data": value,
+        "unit": ""
+      }
+      const mqtt = require('mqtt');
+      const client = mqtt.connect('mqtt://io.adafruit.com', {
+        username: this.state.userNameServer,
+        password: this.state.keyServer,
+      });
+      client.publish(this.state.textFeed, JSON.stringify(dataToAda));
     }
-    
+
   }
 
   addDevice = async (device) => {
