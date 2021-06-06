@@ -6,12 +6,17 @@ import color from '../config/color';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import AccountItemSeparator from '../components/AccountItemSeparator';
 
-function ChooseRoomScreen(props) {
+function ChooseRoomScreen({navigation}) {
+    const handleAdd = () => {
+        navigation.navigate('AddRoom')
+    }
+
     return (
         <ScreenApp style={styles.container}>
             <Text style={styles.logo}>YOUR ROOMS</Text>
             <AppButton
                 title='Add new room'
+                onPress={handleAdd}
             ></AppButton>
             <FlatList
                 style={styles.listRooms}

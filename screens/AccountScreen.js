@@ -5,7 +5,6 @@ import AccountItemSeparator from '../components/AccountItemSeparator';
 import Icon from '../components/Icon';
 import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
-import { Entypo } from '@expo/vector-icons';
 
 const menuItems = [
     {
@@ -13,7 +12,8 @@ const menuItems = [
         icon: {
             name: 'server',
             backGroundColor: color.primary,
-        }
+        },
+        route: 'AdaAccount',
     },
     {
         title: "Notification",
@@ -21,6 +21,7 @@ const menuItems = [
             name: 'bell',
             backGroundColor: '#fed766',
         },
+        route: '',
     },
     {
         title: "Password",
@@ -28,6 +29,7 @@ const menuItems = [
             name: 'onepassword',
             backGroundColor: '#e6e6ea',
         },
+        route: '',
     },
     {
         title: "Phone",
@@ -35,10 +37,11 @@ const menuItems = [
             name: 'cellphone',
             backGroundColor: color.secondary,
         },
+        route: '',
     },
 ]
 
-function AccountScreen(props) {
+function AccountScreen({ navigation }) {
     return (
         <ScreenApp style={{
             backgroundColor: color.light
@@ -67,7 +70,7 @@ function AccountScreen(props) {
                             IconComponent={
                                 <Icon name={item.icon.name} style={styles.icon} backgroundColor={item.icon.backGroundColor} />
                             }
-                            onPress={() => console.log(item.title)}
+                            onPress={() => navigation.navigate(item.route)}
                         ></AccountItem>
                     }
                 ></FlatList>

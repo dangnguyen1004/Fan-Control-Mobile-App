@@ -4,13 +4,14 @@ import AppButton from '../components/AppButton';
 import ErrorMessage from '../components/ErrorMessage';
 import InputField from '../components/InputField';
 import ScreenApp from '../components/ScreenApp';
+import ScreenTitle from '../components/ScreenTitle';
 import TextButton from '../components/TextButton';
 import color from '../config/color';
 
-function SignUpScreen(props) {
+function SignUpScreen({navigation}) {
     return (
         <ScreenApp style={styles.container}>
-            <Text style={styles.logo}>Sign Up</Text>
+            <ScreenTitle style={styles.logo}>Sign Up</ScreenTitle>
             <ErrorMessage
                 title='Email in valid'
                 visible={true}
@@ -27,7 +28,7 @@ function SignUpScreen(props) {
                 secureTextEntry={true}
             ></InputField>
             <InputField
-                placeholder='Retype Password'
+                placeholder='Confirm Password'
                 secureTextEntry={true}
             ></InputField>
             <AppButton
@@ -38,7 +39,7 @@ function SignUpScreen(props) {
             <TextButton
                 style={styles.login}
                 title='Login'
-                onPress={() => console.log('Login')}
+                onPress={() => navigation.navigate('Login')}
             ></TextButton>
         </ScreenApp>
     );
@@ -52,9 +53,6 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
     },
     logo: {
-        fontSize: color.fontSizeTitle,
-        fontWeight: 'bold',
-        marginTop: 50,
         marginBottom: 30,
     },
     signup: {

@@ -5,6 +5,7 @@ import AppButton from '../components/AppButton';
 import AppPicker from '../components/AppPicker';
 import InputField from '../components/InputField';
 import ScreenApp from '../components/ScreenApp';
+import ScreenTitle from '../components/ScreenTitle';
 import color from '../config/color';
 
 function AddRoomScreen(props) {
@@ -13,7 +14,7 @@ function AddRoomScreen(props) {
 
     return (
         <ScreenApp style={styles.container}>
-            <Text style={styles.logo}>ADD NEW ROOM</Text>
+            <ScreenTitle style={styles.logo}>ADD NEW ROOM</ScreenTitle>
             <AppPicker
                 items={buildings}
                 selectedItem={selectedBuilding}
@@ -32,9 +33,6 @@ function AddRoomScreen(props) {
             <InputField
                 placeholder='Sensors feed'
             ></InputField>
-            <InputField
-                placeholder='Devices feed'
-            ></InputField>
             <AppButton
                 style={styles.button}
                 title='ADD'
@@ -51,9 +49,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     logo: {
-        fontSize: color.fontSizeTitle,
-        fontWeight: 'bold',
-        marginTop: 50,
         marginBottom: 20,
     },
     button: {

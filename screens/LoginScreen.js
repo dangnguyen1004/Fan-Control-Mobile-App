@@ -4,13 +4,14 @@ import AppButton from '../components/AppButton';
 import ErrorMessage from '../components/ErrorMessage';
 import InputField from '../components/InputField';
 import ScreenApp from '../components/ScreenApp';
+import ScreenTitle from '../components/ScreenTitle';
 import TextButton from '../components/TextButton';
 import color from '../config/color';
 
-function LoginScreen(props) {
+function LoginScreen({navigation}) {
     return (
         <ScreenApp style={styles.container}>
-            <Text style={styles.logo}>FanControl</Text>
+            <ScreenTitle style={styles.logo}>FanControl</ScreenTitle>
             <ErrorMessage
                 title='Wrong password'
                 visible={true}
@@ -38,7 +39,7 @@ function LoginScreen(props) {
             <TextButton
                 style={styles.register}
                 title='Sign Up'
-                onPress={() => console.log('Register')}
+                onPress={() => navigation.navigate('SignUp')}
             ></TextButton>
         </ScreenApp>
     );
@@ -52,9 +53,6 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
     },
     logo: {
-        fontSize: color.fontSizeTitle,
-        fontWeight: 'bold',
-        paddingTop: 50,
         paddingBottom: 70,
     },
     email: {

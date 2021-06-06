@@ -4,7 +4,12 @@ import InputField from '../components/InputField';
 import ScreenApp from '../components/ScreenApp';
 import AppButton from '../components/AppButton'
 
-function AdaAccountScreen(props) {
+function AdaAccountScreen({ navigation }) {
+    const handleConnect = () => {
+        console.log('connect ada account')
+        navigation.navigate('Account')
+    }
+
     return (
         <ScreenApp style={styles.container}>
             <Text style={styles.logo}>Connect to Adafruit</Text>
@@ -14,10 +19,10 @@ function AdaAccountScreen(props) {
             <InputField
                 placeholder='Key'
             ></InputField>
-            <AppButton 
+            <AppButton
                 style={styles.button}
                 title='CONNECT'
-                onPress={() => console.log('connect to ada')}
+                onPress={handleConnect}
             ></AppButton>
         </ScreenApp>
     );

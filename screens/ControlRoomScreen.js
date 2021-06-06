@@ -8,7 +8,11 @@ import color from '../config/color';
 import { } from '@expo/vector-icons';
 import DeviceItem from '../components/DeviceItem';
 
-function ControlRoomScreen(props) {
+function ControlRoomScreen({ navigation }) {
+    const handleAdd = () => {
+        navigation.navigate('AddDevice')
+    }
+    
     const [currentRoom, setCurrentRoom] = useState('H1 - 105')
     return (
         <ScreenApp style={styles.container}>
@@ -16,6 +20,7 @@ function ControlRoomScreen(props) {
             <AppButton
                 style={styles.button}
                 title='Add new device'
+                onPress={handleAdd}
             ></AppButton>
             <View style={styles.temperature}>
                 <Text style={{ fontSize: color.fontSize, color: color.danger, fontWeight: 'bold', }}>Temperature</Text>
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
     },
     listDevices: {
         width: '100%',
-        
+
     }
 });
 
