@@ -77,7 +77,8 @@ export default class ControlDevice extends Component {
     }
 
     const checkTempAndHumid = (temp, humid) => {
-      if (temp > 70 || humid > 70) {
+      if (temp > 30 || humid > 70) {
+        console.log('bat quat do qua nhiet do')
         client.publish(this.state.textFeed, JSON.stringify({
           "id": "1",
           "name": "LED",
@@ -135,7 +136,7 @@ export default class ControlDevice extends Component {
       </View>
     </View>
   )
-
+  
   checkmode = async (selectDevice, index, value) => {
     let device_select = this.state.devices.filter(device => device === selectDevice);
 
