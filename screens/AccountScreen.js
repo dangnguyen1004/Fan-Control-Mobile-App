@@ -5,33 +5,34 @@ import AccountItemSeparator from '../components/AccountItemSeparator';
 import Icon from '../components/Icon';
 import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
+import { Entypo } from '@expo/vector-icons';
 
 const menuItems = [
     {
         title: "Adafruit Account",
         icon: {
-            name: 'format-list-bulleted',
+            name: 'server',
             backGroundColor: color.primary,
         }
     },
     {
         title: "Notification",
         icon: {
-            name: 'email',
-            backGroundColor: color.secondary,
+            name: 'bell',
+            backGroundColor: '#fed766',
         },
     },
     {
         title: "Password",
         icon: {
-            name: 'email',
-            backGroundColor: color.secondary,
+            name: 'onepassword',
+            backGroundColor: '#e6e6ea',
         },
     },
     {
         title: "Phone",
         icon: {
-            name: 'email',
+            name: 'cellphone',
             backGroundColor: color.secondary,
         },
     },
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     },
     email: {
         fontSize: 25,
-        fontWeight: 600,
+        fontWeight: 'bold',
     },
     name: {
         fontSize: color.fontSize,

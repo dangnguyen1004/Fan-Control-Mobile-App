@@ -9,4 +9,5 @@ export default {
     danger: '#ff5252',
     fontSize: 20,
     padding: 10,
+    fontSizeTitle: 30,
 }

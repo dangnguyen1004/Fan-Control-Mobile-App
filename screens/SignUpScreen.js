@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
     },
     logo: {
-        fontSize: 40,
-        fontWeight: 600,
-        marginTop: 90,
+        fontSize: color.fontSizeTitle,
+        fontWeight: 'bold',
+        marginTop: 50,
         marginBottom: 30,
     },
     signup: {

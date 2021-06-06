@@ -52,10 +52,10 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
     },
     logo: {
-        fontSize: 30,
-        fontWeight: 600,
-        paddingTop: 90,
-        paddingBottom: 90,
+        fontSize: color.fontSizeTitle,
+        fontWeight: 'bold',
+        paddingTop: 50,
+        paddingBottom: 70,
     },
     email: {
         marginTop: 10,
