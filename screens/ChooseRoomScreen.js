@@ -10,6 +10,7 @@ function ChooseRoomScreen({navigation}) {
     const handleAdd = () => {
         navigation.navigate('AddRoom')
     }
+    
 
     return (
         <ScreenApp style={styles.container}>

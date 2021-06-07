@@ -15,6 +15,7 @@
     "expo": "~41.0.1",
     "expo-status-bar": "~1.0.4",
     "firebase": "8.2.3",
+    "formik": "^2.2.9",
     "mqtt": "^4.2.6",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -26,7 +27,8 @@
     "react-native-switch-selector": "^2.1.4",
     "react-native-web": "~0.13.12",
     "toggle-switch-react-native": "^3.2.0",
-    "yarn": "^1.22.10"
+    "yarn": "^1.22.10",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

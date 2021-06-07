@@ -10,6 +10,7 @@ function InputField({placeholder, style, keyboardType, autoCompleteType = 'off',
             placeholderTextColor={color.medium}
             keyboardType={keyboardType}
             secureTextEntry={secureTextEntry}
+            {...otherProps}
         ></TextInput>
     );
 }   

@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import color from '../config/color';
 
 function ErrorMessage({ title, visible = false, style }) {
-    if (!visible) return null
+    if (!visible || !title) return null
     return (
         <View style={[styles.container, style]}>
             <Text style={styles.text}>{title}</Text>

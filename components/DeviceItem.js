@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import ToggleSwitch from 'toggle-switch-react-native'
+// import ToggleSwitch from 'toggle-switch-react-native'
 import color from '../config/color';
 
 

@@ -24,7 +24,7 @@ function App(props) {
    const [selectedBlock, setSelectedBlock] = useState()
    return (
 	   <NavigationContainer>
-         <AppNavigator></AppNavigator>
+         <AuthNavigator></AuthNavigator>
 	   </NavigationContainer>
 	);
 }
