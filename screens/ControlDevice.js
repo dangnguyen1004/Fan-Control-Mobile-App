@@ -28,11 +28,11 @@ export default class ControlDevice extends Component {
       textFeed: 'EMPTY',
       userNameServer: '',
       keyServer: '',
+      chekcfeed:{},
+      checkEnterFeed: false
     }
 
   }
-
-
 
   componentWillMount = async () => {
     const user = this.props.route.params.user
@@ -76,6 +76,10 @@ export default class ControlDevice extends Component {
       })
     }
 
+    const uploadModeInFirebase = () => {
+
+    }
+    
     const checkTempAndHumid = (temp, humid) => {
       if (temp > 30 || humid > 70) {
         console.log('bat quat do qua nhiet do')
@@ -85,6 +89,8 @@ export default class ControlDevice extends Component {
           "data": "1",
           "unit": ""
         }))
+
+        uploadModeInFirebase() // là bật quạt
       }
     }
 
@@ -131,30 +137,50 @@ export default class ControlDevice extends Component {
         <TextInput style={{ backgroundColor: '#deada5', paddingLeft: 5, width: '100%' }}
           placeholder={"feed: " + item.feed}
           placeholderTextColor="grey"
-          onChangeText={text => this.setState({ textFeed: text })}
+          onChangeText={text => this.setState({textFeed:text})
+          }
         />
+        <Button title='Save Feed' onPress={() => this.updatefeed(item, index, this.state.textFeed)}></Button>
       </View>
     </View>
   )
-  
-  checkmode = async (selectDevice, index, value) => {
-    let device_select = this.state.devices.filter(device => device === selectDevice);
-
-    if (this.state.textFeed === 'EMPTY') {
-      alert("Please Enter Feed, If you haven't entered, turn on the fan just for fun")
-    }
-    else {
-      const update_mod = await firebase
+  updatefeed = async(item, index, text) => {
+    if(text === 'EMPTY') {
+      alert('Enter Feed')
+    } else {
+      let device_select = this.state.devices.filter(device => device === item);
+      const update_feed = await firebase 
         .database()
         .ref('devices')
         .child(this.state.currentUser_control.uid)
         .child(this.state.nameroom)
         .child(device_select[0].key)
         .update({
-          feed: this.state.textFeed,
+          feed: text,
         })
+        this.setState({textFeed:text, checkEnterFeed: true })
+        alert('Save Success')
+      }
+  }
+  checkmode = async (selectDevice, index, value ) => {
+    let device_select = this.state.devices.filter(device => device === selectDevice);
+    const room = this.props.route.params.listitem
 
-      const update_feed = await firebase
+    const devices = await firebase
+      .database()
+      .ref('devices')
+      .child(this.state.currentUser_control.uid)
+      .child(room[0].name)
+      .child(device_select[0].key)
+      .once('value')
+    this.setState({chekcfeed: devices.val()})
+
+    if (this.state.chekcfeed.feed === 'EMPTY') {
+      alert("Please Enter Feed")
+    }
+    else {
+      this.setState({checkEnterFeed: true})
+      const update_mod = await firebase
         .database()
         .ref('devices')
         .child(this.state.currentUser_control.uid)
@@ -174,7 +200,7 @@ export default class ControlDevice extends Component {
         username: this.state.userNameServer,
         password: this.state.keyServer,
       });
-      client.publish(this.state.textFeed, JSON.stringify(dataToAda));
+      client.publish(this.state.chekcfeed.feed, JSON.stringify(dataToAda));
     }
 
   }
@@ -333,4 +359,3 @@ const styles = StyleSheet.create({
   },
 
 });
-
