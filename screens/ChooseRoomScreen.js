@@ -5,12 +5,39 @@ import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import AccountItemSeparator from '../components/AccountItemSeparator';
+import firebase from '../firebase/connectFirebase'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
-function ChooseRoomScreen({navigation}) {
+function ChooseRoomScreen({ navigation }) {
+    const [roomsNew, setRoomsNew] = useState()
+    let roomsData
+
+    const getRoomsData = () => {
+    }
+    
+    useEffect(() => {
+        let data
+        const roomsRef = firebase.database().ref('rooms')
+        roomsRef.on('value', (snapshot) => {
+            if (snapshot.val()) {
+                data = snapshot.val()
+                setRoomsNew(Object.values(data));
+            }
+        })
+    }, [])
+    // const roomsRef = firebase.database().ref('rooms')
+    // roomsRef.on("value", function (snapshot) {
+    //     console.log(snapshot.val());
+    //     setRoomsNew(snapshot.val())
+    // }, function (error) {
+    //     console.log("Error: " + error.code);
+    // });
+
     const handleAdd = () => {
         navigation.navigate('AddRoom')
     }
-    
+
 
     return (
         <ScreenApp style={styles.container}>
@@ -21,13 +48,15 @@ function ChooseRoomScreen({navigation}) {
             ></AppButton>
             <FlatList
                 style={styles.listRooms}
-                data={rooms}
-                keyExtractor={item => item.value.toString()}
+                data={roomsNew}
+                keyExtractor={item => item.name.toString()}
                 ItemSeparatorComponent={AccountItemSeparator}
                 renderItem={({ item }) => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={
+                        navigation.navigate('ControlRoom', { room: item.name.toString() })
+                    }>
                         <View style={styles.room}>
-                            <Text style={{fontSize: color.fontSize}}>{item.name.toString()}</Text>
+                            <Text style={{ fontSize: color.fontSize }}>{item.name.toString()}</Text>
                             <MaterialCommunityIcons name='chevron-right' size={30} ></MaterialCommunityIcons>
                         </View>
                     </TouchableOpacity>
@@ -95,31 +124,31 @@ const rooms = [
     {
         value: 7,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 8,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 9,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 10,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 11,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 12,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 13,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 14,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 15,
         name: 'H2 - 105',
-    },    {
+    }, {
         value: 16,
         name: 'H2 - 105',
     },

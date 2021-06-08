@@ -8,12 +8,17 @@ import color from '../config/color';
 import { } from '@expo/vector-icons';
 import DeviceItem from '../components/DeviceItem';
 
-function ControlRoomScreen({ navigation }) {
+function ControlRoomScreen({ route, navigation }) {
+    const [currentRoom, setCurrentRoom] = useState('H1 - 105')
+    const {roomSelected} = route.params
+    setCurrentRoom(roomSelected)
+    console.log(currentRoom)
+
     const handleAdd = () => {
         navigation.navigate('AddDevice')
     }
-    
-    const [currentRoom, setCurrentRoom] = useState('H1 - 105')
+        
+
     return (
         <ScreenApp style={styles.container}>
             <Text style={styles.logo}>{currentRoom}</Text>

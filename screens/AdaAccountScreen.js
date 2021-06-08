@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../components/ErrorMessage';
+import { useEffect } from 'react';
 
 const validationSchema = Yup.object().shape({
     account: Yup.string().required().label('Account'),
@@ -16,6 +17,19 @@ const validationSchema = Yup.object().shape({
 })
 
 function AdaAccountScreen({ navigation }) {
+    const [account, setAccount] = useState()
+    const [key, setKey] = useState()
+
+    useEffect(() => {
+        const adaRef = firebase.database().ref('adaAccount')
+        adaRef.once('value').then((snapshot) => {
+            let data = snapshot.val()
+            console.log(data)
+            setKey(data.key)
+            setAccount(data.account)
+        })
+    }, [])
+
     const handleConnect = (values) => {
         console.log('connect ada account')
         firebase.database().ref('adaAccount').set({
@@ -36,6 +50,7 @@ function AdaAccountScreen({ navigation }) {
                 <>
                     <InputField
                         placeholder='Account'
+                        defaultValue={account}
                         onChangeText={handleChange('account')}
                         onBlur={() => setFieldTouched('account')}
                     ></InputField>
@@ -46,6 +61,7 @@ function AdaAccountScreen({ navigation }) {
 
                     <InputField
                         placeholder='Key'
+                        defaultValue={key}
                         onChangeText={handleChange('key')}
                         onBlur={() => setFieldTouched('key')}
                     ></InputField>

@@ -60,7 +60,7 @@ function AccountScreen({ navigation }) {
             console.log(data)
             setUserName(data.name)
         })
-    })
+    }, [])
 
 
     const handleSignOut = () => {
