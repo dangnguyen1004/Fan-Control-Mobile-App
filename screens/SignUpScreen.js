@@ -9,6 +9,9 @@ import TextButton from '../components/TextButton';
 import color from '../config/color';
 import { Formik } from 'formik'
 import * as Yup from 'yup'
+import firebase from '../firebase/connectFirebase'
+import { useState } from 'react';
+
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label('Email'),
@@ -18,8 +21,38 @@ const validationSchema = Yup.object().shape({
 })
 
 function SignUpScreen({ navigation }) {
+    // const database = firebase.database()
+    // const ref = database.ref()
+    // ref.on('value', function (snapshot) {
+    //     // Code xử lí ở đây.
+    //     let data = snapshot.val();
+    //     console.log(data)
+    // });
+
+    const [errorSignUp, setErrorSignUp] = useState()
+    let userName = ''
+
+    const createUserDatabase = (userCredential) => {
+        let user = userCredential.user
+        console.log(user.uid)
+        console.log(userName)
+        const ref = firebase.database().ref().child('users')
+        ref.child(user.uid).set({
+            email: user.email,
+            uid: user.uid,
+            name: userName,
+        })
+    }
+
     const handleSignUp = (values) => {
-        console.log(values)
+        console.log(values.name)
+        userName = values.name
+        console.log(userName)
+        firebase
+            .auth()
+            .createUserWithEmailAndPassword(values.email, values.password)
+            .then(createUserDatabase)
+            .catch(error => {setErrorSignUp(error.message); console.log(error.message)})
     }
 
     return (
@@ -36,6 +69,10 @@ function SignUpScreen({ navigation }) {
                 validationSchema={validationSchema}
             >{({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
                 <>
+                    <ErrorMessage
+                        title={errorSignUp}
+                        visible={true}
+                    ></ErrorMessage>
                     <InputField
                         placeholder='Email'
                         keyboardType='email-address'

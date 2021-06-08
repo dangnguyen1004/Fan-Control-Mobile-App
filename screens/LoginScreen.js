@@ -9,6 +9,10 @@ import TextButton from '../components/TextButton';
 import color from '../config/color';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import firebase from '../firebase/connectFirebase'
+import { useState } from 'react';
+
+
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label('Email'),
@@ -16,9 +20,21 @@ const validationSchema = Yup.object().shape({
 })
 
 function LoginScreen({ navigation }) {
+    const [errorMessage, setErrorMessage] = useState()
 
     const handleLogin = (values) => {
         console.log(values)
+        firebase.auth().signInWithEmailAndPassword(values.email, values.password)
+            .then((userCredential) => {
+                var user = userCredential.user;
+                console.log(user)
+            })
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorMessage)
+                setErrorMessage(errorMessage)
+            });
     }
 
     return (
@@ -31,6 +47,10 @@ function LoginScreen({ navigation }) {
             >
                 {({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
                     <>
+                        <ErrorMessage
+                            title={errorMessage}
+                            visible={true}
+                        ></ErrorMessage>
                         <InputField
                             style={styles.email}
                             placeholder='Email'
@@ -43,12 +63,12 @@ function LoginScreen({ navigation }) {
                             title={errors.email}
                             visible={touched.email}
                         ></ErrorMessage>
-                        
+
                         <InputField
                             style={styles.password}
                             placeholder="Password"
                             secureTextEntry={true}
-                            textContentType='password' 
+                            textContentType='password'
                             onChangeText={handleChange('password')}
                             onBlur={() => setFieldTouched('password')}
                         ></InputField>

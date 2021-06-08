@@ -1,10 +1,14 @@
+import { useFormik } from 'formik';
 import React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
 import { View, StyleSheet, Text, Image, FlatList } from 'react-native';
 import AccountItem from '../components/AccountItem';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import Icon from '../components/Icon';
 import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
+import firebase from '../firebase/connectFirebase'
 
 const menuItems = [
     {
@@ -42,18 +46,43 @@ const menuItems = [
 ]
 
 function AccountScreen({ navigation }) {
+    const [userEmail, setUserEmail] = useState()
+    const [userName, setUserName] = useState()
+    const [userId, setUserId] = useState()
+
+    useEffect(() => {
+        let user = firebase.auth().currentUser
+        setUserEmail(user.email)
+        setUserId(user.uid)
+        const userRef = firebase.database().ref('users/' + user.uid)
+        userRef.once('value').then((snapshot) => {
+            let data = snapshot.val()
+            console.log(data)
+            setUserName(data.name)
+        })
+    })
+
+
+    const handleSignOut = () => {
+        firebase.auth().signOut().then(() => {
+            console.log('sign out')
+        }).catch((error) => {
+            console.log(error.message)
+        });
+    }
+
     return (
         <ScreenApp style={{
             backgroundColor: color.light
         }}>
             <View style={styles.accountInfo}>
                 <Image
-                    source={require('../assets/NguyenHaiDang.png')}
+                    source={require('../assets/account.png')}
                     style={styles.avatar}
                 ></Image>
                 <View style={styles.infoDetail}>
-                    <Text style={styles.email}>Account email</Text>
-                    <Text style={styles.name}>Account name</Text>
+                    <Text style={styles.email}>{userEmail}</Text>
+                    <Text style={styles.name}>{userName}</Text>
                 </View>
             </View>
 
@@ -81,7 +110,7 @@ function AccountScreen({ navigation }) {
                     <Icon name='logout' size={40} style={styles.icon} backgroundColor={color.danger}></Icon>
                 }
                 title='Log out'
-                onPress={() => console.log('Log out')}
+                onPress={handleSignOut}
             ></AccountItem>
         </ScreenApp>
     );

@@ -17,16 +17,23 @@ import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import AuthNavigator from './navigator/AuthNavigator'
 import AppNavigator from './navigator/AppNavigator';
-
+import { useEffect } from 'react';
+import firebase from './firebase/connectFirebase'
 
 
 function App(props) {
-   const [selectedBlock, setSelectedBlock] = useState()
+   const [user, setUser] = useState()
+   useEffect(() => {
+      firebase.auth().onAuthStateChanged(user => {
+         setUser(user)
+      })
+   })
+
    return (
-	   <NavigationContainer>
-         <AuthNavigator></AuthNavigator>
-	   </NavigationContainer>
-	);
+      <NavigationContainer>
+         {user ? <AppNavigator></AppNavigator> : <AuthNavigator></AuthNavigator>}
+      </NavigationContainer>
+   );
 }
 
 const styles = StyleSheet.create({
