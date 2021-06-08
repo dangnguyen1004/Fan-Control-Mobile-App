@@ -1,20 +1,22 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableOpacity } from 'react-native';
-import {Headline} from './header';
-import {InputBox} from './inputBox';
+import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard  } from 'react-native';
+import {Headline} from '../components/header';
+import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from './assets/logout.svg';
+import Logout from '../assets/logout.svg';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
-export default function Account() {
+export default function RegisterRoom() {
   const GradientAttribute = {
     colors: ['#2F80ED', '#56CCF2'],
     start: { x: 0, y: 0.5 },
     end: { x: 1, y: 0.5 },
   }
   return (
+    <TouchableWithoutFeedback 
+        onPress={() => Keyboard.dismiss()}>
     <KeyboardAvoidingView style={styles.container}>
       <StatusBar   
         backgroundColor = "#102542"
@@ -32,21 +34,11 @@ export default function Account() {
         <Text style={styles.completeP} >Choose room</Text>
         <Text style={styles.title}>Building</Text>
         <View style={styles.holder}>
-          <TouchableOpacity
-            style={styles.touch}
-          >
-             <Text style= {{fontSize: 18, alignSelf: 'center'}}>H1</Text>
-            <Icon name="chevron-down" size={18} style={{alignSelf: 'center',marginLeft: 'auto', paddingRight: 0.04 *windowWidth}}/>
-          </TouchableOpacity>
+          <InfoBox value = 'H1' />
         </View>
         <Text style={styles.title}>Room</Text>
         <View style={styles.holder}>
-          <TouchableOpacity
-            style={styles.touch}
-          >
-            <Text style= {{fontSize: 18, alignSelf: 'center'}}>105</Text>
-            <Icon name="chevron-down" size={18} style={{alignSelf: 'center',marginLeft: 'auto', paddingRight: 0.04 *windowWidth}}/>
-          </TouchableOpacity>
+          <InfoBox value = '601' />
         </View>
         <Button containerStyle = {styles.register}
           buttonStyle = {styles.button}
@@ -69,6 +61,7 @@ export default function Account() {
         />
       </View>
       </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({
@@ -109,6 +102,7 @@ const styles = StyleSheet.create({
   },
   completeP: {
     left: 0.04 * windowWidth,
+    paddingBottom: 20,
     width: windowWidth,
     color: '#C4C4C4',
     fontSize: 18
@@ -147,14 +141,5 @@ const styles = StyleSheet.create({
   navigationButton:
   {
     width: '50%'
-  },
-  touch: {
-    height: 40,
-    margin: 12,
-    paddingLeft: 0.05 * windowWidth,
-    fontSize: 16,
-    borderRadius: 26,
-    borderWidth: 1,
-    flexDirection: 'row',
   }
 });
