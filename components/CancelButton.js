@@ -2,10 +2,10 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import color from '../config/color';
 
-function AppButton({ style, onPress, title, textColor = color.white }) {
+function CancelButton({ style, onPress, title }) {
     return (
         <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-            <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+                <Text style={styles.text}>{title}</Text>
         </TouchableOpacity>
     );
 }
@@ -13,16 +13,18 @@ function AppButton({ style, onPress, title, textColor = color.white }) {
 const styles = StyleSheet.create({
     button: {
         width: '100%',
-        backgroundColor: color.primary,
+        backgroundColor: color.light,
         borderRadius: 10,
         alignItems: 'center',
         height: 50,
         justifyContent: 'center',
+        borderWidth: 2,
+        borderColor: color.primary
     },
     text: {
         fontSize: color.fontSize,
-        color: color.white,
+        color: color.primary,
     }
 });
 
-export default AppButton;
+export default CancelButton;

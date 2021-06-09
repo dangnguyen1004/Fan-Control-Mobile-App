@@ -6,23 +6,18 @@ import color from '../config/color';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import firebase from '../firebase/connectFirebase'
-import { useEffect } from 'react';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 function ChooseRoomScreen({ navigation }) {
-    const [roomsNew, setRoomsNew] = useState()
-    let roomsData
+    const [rooms, setRooms] = useState()
 
-    const getRoomsData = () => {
-    }
-    
     useEffect(() => {
-        let data
         const roomsRef = firebase.database().ref('rooms')
-        roomsRef.on('value', (snapshot) => {
+        roomsRef.on('value', snapshot => {
             if (snapshot.val()) {
-                data = snapshot.val()
-                setRoomsNew(Object.values(data));
+                let data = Object.values(snapshot.val())
+                setRooms(Object.values(data))
             }
         })
     }, [])
@@ -48,12 +43,12 @@ function ChooseRoomScreen({ navigation }) {
             ></AppButton>
             <FlatList
                 style={styles.listRooms}
-                data={roomsNew}
+                data={rooms}
                 keyExtractor={item => item.name.toString()}
                 ItemSeparatorComponent={AccountItemSeparator}
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={
-                        navigation.navigate('ControlRoom', { room: item.name.toString() })
+                        () => navigation.navigate('ControlRoom', { room: item.name.toString() })
                     }>
                         <View style={styles.room}>
                             <Text style={{ fontSize: color.fontSize }}>{item.name.toString()}</Text>

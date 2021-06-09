@@ -10,6 +10,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../components/ErrorMessage';
 import { useEffect } from 'react';
+import CancelButton from '../components/CancelButton';
 
 const validationSchema = Yup.object().shape({
     account: Yup.string().required().label('Account'),
@@ -75,6 +76,10 @@ function AdaAccountScreen({ navigation }) {
                         title='CONNECT'
                         onPress={handleSubmit}
                     ></AppButton>
+                    <CancelButton
+                        title='Cancel'
+                        onPress={() => navigation.goBack()}
+                    ></CancelButton>
                 </>
             )}</Formik>
         </ScreenApp>
@@ -96,6 +101,7 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 30,
+        marginBottom: 10,
     }
 });
 

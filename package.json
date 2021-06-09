@@ -26,6 +26,7 @@
     "react-native-screens": "^3.3.0",
     "react-native-switch-selector": "^2.1.4",
     "react-native-web": "~0.13.12",
+    "react-switch": "^6.0.0",
     "toggle-switch-react-native": "^3.2.0",
     "yarn": "^1.22.10",
     "yup": "^0.32.9"

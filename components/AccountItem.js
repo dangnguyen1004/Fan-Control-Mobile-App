@@ -3,10 +3,10 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import color from '../config/color';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-function AccountItem({ title, IconComponent, onPress }) {
+function AccountItem({ title, IconComponent, onPress, style }) {
     return (
         <TouchableOpacity onPress={onPress}>
-            <View style={styles.outNerContainer}>
+            <View style={[styles.outNerContainer, style]}>
                 <View style={styles.container}>
                     {IconComponent}
                     <Text style={styles.title}>{title}</Text>
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
-        backgroundColor: color.white,
         height: 60,
+        backgroundColor: color.white,
         justifyContent: 'space-between'
     },
     container: {
