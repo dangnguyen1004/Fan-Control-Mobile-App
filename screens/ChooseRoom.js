@@ -59,18 +59,6 @@ class ChooseRoom extends Component {
 	loadNameAndKey = () => {
 		this.setState({userNameServer:this.state.loadServer.userName, activeKey: this.state.loadServer.key})
 	}
-	// componentDidMount = async () => {
-	// 	const user = this.props.route.params.user
-	// 	const server = await firebase
-	// 		.database()
-	// 		.ref('server')
-	// 		.child(user.uid)
-	// 		.once('value')
-	// 	if(server) {
-	// 		this.setState({checkserver: false})
-	// 	}
-
-	// }
 
 	showAddNewRoom = () => {
 		this.setState({ isAddNewBookVisible: true })
@@ -137,12 +125,32 @@ class ChooseRoom extends Component {
 		this.setState({ rooms: roomsArray })
 	}
 
-	deleteRoom = (selectRoom, index) => {
-		let newList = this.state.rooms.filter(room => room !==
-			selectRoom);
-		this.setState(prevState => ({
-			rooms: newList
-		}));
+	deleteRoom = async (selectRoom, index) => {
+		try {
+			let deleteroom = this.state.rooms.filter(room => room ===
+				selectRoom);
+			let newList = this.state.rooms.filter(room => room !==
+				selectRoom);
+			await firebase 
+				.database()
+				.ref('showrooms')
+				.child(this.state.currentUser.uid)
+				.child(deleteroom[0].key)
+				.remove();
+
+			await firebase 
+				.database()
+				.ref('checkrooms')
+				.child(deleteroom[0].name)
+				.remove()
+			alert('Delete Success')
+			this.setState(prevState => ({
+				rooms: newList
+			}));
+		} catch (error) {
+			alert(error)
+		}
+
 	}
 
 	controlroom = (item, index) => {
@@ -153,6 +161,7 @@ class ChooseRoom extends Component {
     	{
       		alert('Please enter user name and key of server')
     	} 	else {
+
       		const userNameServer = this.state.userNameServer
       		const activeKey = this.state.activeKey
 			this.props.navigation.navigate('CONTROL DEVICE', { user, listitem, userNameServer, activeKey })

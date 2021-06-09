@@ -113,6 +113,30 @@ export default class ControlDevice extends Component {
       setTemAndHumid(temp, humid)
     })
   }
+
+	deleteDevice = async (selectDevice, index) => {
+		try {
+			let deletedevice = this.state.devices.filter(device => device ===
+				selectDevice);
+			let newList = this.state.devices.filter(device => device !==
+				selectDevice);
+			await firebase 
+				.database()
+				.ref('devices')
+				.child(this.state.currentUser_control.uid)
+				.child(this.state.nameroom)
+        .child(deletedevice[0].key)
+				.remove();
+			alert('Delete Success')
+			this.setState(prevState => ({
+				devices: newList
+			}));
+		} catch (error) {
+			alert(error)
+		}
+
+	}
+  
   renderItem = (item, index) => (
     <View style={{ height: 100, width: '100%', backgroundColor: '#a5deba', justifyContent: 'space-between', marginTop: 20 }}>
       <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -121,26 +145,34 @@ export default class ControlDevice extends Component {
           <Text style={{ marginLeft: 10, fontSize: 20, color: '#007AFF', fontWeight: 'bold' }}>{item.name}</Text>
         </View>
 
-        <View style={{ width: 125 }}>
-          <SwitchSelector
-            backgroundColor='gray'
-            options={options}
-            initial={item.mode}
-            onPress={value => {
-              this.checkmode(item, index, value)
-
-            }}
-          />
+        <View style={{ width: '40%', alignItems:'center', flexDirection:'row', justifyContent:'space-between' }}>
+          <View style={{flex:1 }}> 
+            <SwitchSelector
+              backgroundColor='gray'
+              options={options}
+              initial={item.mode}
+              onPress={value => {
+                this.checkmode(item, index, value)
+              }}
+            />
+          </View>  
+          <TouchableOpacity onPress={() => this.deleteDevice(item, index)}>
+            <View style={{ width: 50, height: 50, backgroundColor: '#deada5', alignItems: 'center', justifyContent: 'center' }}>
+            <Ionicons name='ios-close' color='white' size={40}></Ionicons>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
-      <View style={{ flex: 1, flexDirection: 'row' }}>
-        <TextInput style={{ backgroundColor: '#deada5', paddingLeft: 5, width: '100%' }}
+      <View style={{flexDirection: 'row', alignItems:'center'}}>
+        <TextInput style={{flex:1, backgroundColor: '#deada5', paddingLeft: 5, width: '100%', height:'100%' }}
           placeholder={"feed: " + item.feed}
           placeholderTextColor="grey"
           onChangeText={text => this.setState({textFeed:text})
           }
         />
-        <Button title='Save Feed' onPress={() => this.updatefeed(item, index, this.state.textFeed)}></Button>
+        <View style={{ alignItems:'center'}}>
+          <Button title='Save Feed' onPress={() => this.updatefeed(item, index, this.state.textFeed)}></Button>
+        </View>
       </View>
     </View>
   )
