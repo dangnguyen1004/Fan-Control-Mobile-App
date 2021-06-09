@@ -67,42 +67,51 @@ class ChooseRoom extends Component {
 	hideAddNewRoom = () => {
 		this.setState({ isAddNewBookVisible: false })
 	}
+
+	validateTextRoom = (room) => {
+		var re = /[1-9][0-9][0-9]-[A-Z][1-9]/
+		return re.test(room);
+	};
 	addRoom = async room => {
 		try {
 			// room id === key
-			const snapshot = await firebase
-				.database()
-				.ref('checkrooms')
-				.orderByChild('name')
-				.equalTo(room)
-				.once('value');
-
-			if (snapshot.exists()) {
-				alert('The room is already registered, please register another room')
+			if(!this.validateTextRoom(room)) {
+				alert('You entered the wrong format, please re-enter e.g. 102-H1 (no spaces)')
 			} else {
-				const roomID = await firebase
-					.database()
-					.ref('showrooms')
-					.child(this.state.currentUser.uid)
-					.push()
-					.key
-
-				const showrooms = await firebase
-					.database()
-					.ref('showrooms')
-					.child(this.state.currentUser.uid)
-					.child(roomID)
-					.set({ name: room, manager: this.state.currentUser.username, phone: this.state.currentUser.phone, register: true })
-
-				const checkrooms = await firebase
+				const snapshot = await firebase
 					.database()
 					.ref('checkrooms')
-					.child(room)
-					.set({ name: room, manager: this.state.currentUser.username, phone: this.state.currentUser.phone, register: true })
+					.orderByChild('name')
+					.equalTo(room)
+					.once('value');
 
-				this.uploadfirebase()
+				if (snapshot.exists()) {
+					alert('The room is already registered, please register another room')
+				} else {
+					const roomID = await firebase
+						.database()
+						.ref('showrooms')
+						.child(this.state.currentUser.uid)
+						.push()
+						.key
 
-				alert('Register succecs')
+					const showrooms = await firebase
+						.database()
+						.ref('showrooms')
+						.child(this.state.currentUser.uid)
+						.child(roomID)
+						.set({ name: room, manager: this.state.currentUser.username, phone: this.state.currentUser.phone, register: true })
+
+					const checkrooms = await firebase
+						.database()
+						.ref('checkrooms')
+						.child(room)
+						.set({ name: room, manager: this.state.currentUser.username, phone: this.state.currentUser.phone, register: true })
+
+					this.uploadfirebase()
+
+					alert('Register succecs')
+				}
 			}
 		} catch (error) {
 			alert(error)
