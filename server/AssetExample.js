@@ -3,13 +3,9 @@ import { TouchableOpacity, Text, View, StyleSheet, Image, Button, Alert } from '
 //import Logo from '../assets/snack-icon.png';
 
 import MqttClient from './mqtt-client';
+import AppButton from '../components/AppButton'
+import CancelButton from '../components/CancelButton';
 
-
-const AppButton = ({ onPress, title }) => (
-  <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
-    <Text style={styles.appButtonText}>{title}</Text>
-  </TouchableOpacity>
-);
 
 
 
@@ -18,13 +14,14 @@ export default function AssetExample() {
   return (
     <View style={styles.container}>
       <MqttClient />
-        
-      
       <Text style={styles.paragraph}>
         Local files and assets can be imported by dragging and dropping them into the editor
       </Text>
-      <Button  onPress={() => Alert.alert("Hello World")} title="Hi There"/>
-      <AppButton onPress={() => Alert.alert("Styled Button")} title="sheeesh" />
+      <AppButton
+        title='Hi there'
+        onPress={() => Alert.alert('Hello World')}
+      ></AppButton>
+      <CancelButton onPress={() => Alert.alert("Styled Button")} title="Sheeesh" />
     </View>
   );
 }
@@ -33,7 +30,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    marginTop: 24,
   },
   paragraph: {
     margin: 24,

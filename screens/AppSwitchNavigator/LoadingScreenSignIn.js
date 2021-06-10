@@ -3,13 +3,13 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import { View, ActivityIndicator } from 'react-native';
 export default class LoadingScreenSignIn extends Component {
-    componentDidMount(){
+    componentDidMount() {
         this.checkIfLoggedIn()
     }
     checkIfLoggedIn = () => {
         this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
-            if(user) {
-                this.props.navigation.replace('ACCOUNT', {user})
+            if (user) {
+                this.props.navigation.replace('ACCOUNT', { user })
             } else {
                 this.props.navigation.replace("SIGN IN")
             }
@@ -20,10 +20,10 @@ export default class LoadingScreenSignIn extends Component {
     }
     render() {
         return (
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                 <ActivityIndicator size="large"></ActivityIndicator>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator size="large"></ActivityIndicator>
             </View>
-           
+
         );
     }
 }

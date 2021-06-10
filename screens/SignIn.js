@@ -1,13 +1,16 @@
 import React from 'react';
-import {StyleSheet, View,Text, Button, ActivityIndicator, Image  } from 'react-native';
+import { StyleSheet, View, Text, Button, ActivityIndicator, Image } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Component } from 'react';
-import  firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import logo from '../assets/logo.jpg'
 import 'firebase/auth'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import color from '../config/color';
+import AppButton from '../components/AppButton';
+import TextButton from '../components/TextButton'
 
 export default class SignIn extends Component {
     constructor() {
@@ -19,24 +22,23 @@ export default class SignIn extends Component {
         }
     }
     onSignIn = async () => {
-        if(this.state.email && this.state.password) {
-            this.setState({isLoading: true})
-            try{
+        if (this.state.email && this.state.password) {
+            this.setState({ isLoading: true })
+            try {
                 const response = await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
                 if (response) {
-                    alert('Sign In Success')
                     this.props.navigation.replace('Loading Screen SignIn')
-                    this.setState({isLoading: false})
+                    this.setState({ isLoading: false })
                 }
-            }catch(error) {
-                this.setState({isLoading: false})
-                switch(error.code) {
+            } catch (error) {
+                this.setState({ isLoading: false })
+                switch (error.code) {
                     case 'auth/user-not-found':
                         alert('A user with that email does not exist. Try signing');
-                    break;
+                        break;
                     case 'auth/invalid-email':
                         alert('Please enter an email address')
-                    break;
+                        break;
                     default: alert('Password is incorrect')
                 }
             }
@@ -44,40 +46,41 @@ export default class SignIn extends Component {
             alert('Please enter email or password')
         }
     }
-    render (){
+    render() {
         return (
             <View style={styles.container}>
-                {this.state.isLoading? 
-                    <View style={[StyleSheet.absoluteFill, {alignItems:'center',
-                    justifyContent:'center', zIndex:1000, elevation:1000}]}>
-                        <ActivityIndicator size="large"/>
-                    </View> 
-                :null}
-                <View style={styles.content}>
-                    <View style={styles.form}>
-                        <MaterialCommunityIcons name="hydraulic-oil-temperature" size={100} color="red" style={{textAlign:'center'}}/>
-                        <Text style={{fontSize:30, color:'#09C0FF', textAlign:'center', marginTop:'10%'}}>CONTROL</Text>
+                {this.state.isLoading ?
+                    <View style={[StyleSheet.absoluteFill, {
+                        alignItems: 'center',
+                        justifyContent: 'center', zIndex: 1000, elevation: 1000
+                    }]}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                    : null}
+                <View style={styles.form}>
+                    <MaterialCommunityIcons name="hydraulic-oil-temperature" size={100} color="red" style={{ textAlign: 'center', marginTop: 80, }} />
+                    <Text style={{ fontSize: 30, color: color.primary, textAlign: 'center', marginTop: '5%', fontWeight: 'bold', marginBottom: '10%' }}>CONTROL</Text>
+
+                    <View style={styles.accountContainer}>
+                        <MaterialIcons name="account-circle" size={25} color="grey" style={styles.logoAccount} />
                         <TextInput style={styles.account} placeholder='Email' autoCapitalize="none"
                             keyboardType="email-address"
-                            onChangeText = {email => this.setState({email})}
+                            onChangeText={email => this.setState({ email })}
                         ></TextInput>
-                        <MaterialIcons name="account-circle" size={24} color="grey"  style={styles.logoAccount}/>
-
-                        <TextInput style={styles.account} placeholder='Password' secureTextEntry={true}
-                            onChangeText = {password => this.setState({password})}
-                        ></TextInput>
-                        <AntDesign style={styles.logoPass} name="lock" size={24} color="grey" />
                     </View>
-                </View> 
+
+                    <View style={styles.accountContainer}>
+                        <AntDesign style={styles.logoAccount} name="lock" size={25} color="grey" />
+                        <TextInput style={styles.account} placeholder='Password' secureTextEntry={true}
+                            onChangeText={password => this.setState({ password })}
+                        ></TextInput>
+                    </View>
+                </View>
 
                 <View style={styles.process}>
-                    <Button title="Sign In" onPress={this.onSignIn}></Button>
-                    <View style={{marginTop:'10%'}}>
-                        <Text style={{textAlign:'center', marginBottom:'10%'}}>If you don't have an account</Text>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('SIGN UP')} >
-                            <Text style={{color:'blue',textAlign:'center', fontWeight:'bold'}}>Sign Up</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <AppButton title='SIGN IN' onPress={this.onSignIn}></AppButton>
+                    <Text style={{ textAlign: 'center', marginBottom: '4%',marginTop: '10%',  }}>If you don't have an account</Text>
+                    <TextButton title='Sign Up' onPress={() => this.props.navigation.navigate('SIGN UP')}></TextButton>
                 </View>
             </View>
         );
@@ -86,37 +89,40 @@ export default class SignIn extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex:1,
-    },
-    content: {
-        flex:1.2,
+        flex: 1,
+        backgroundColor: color.white,
     },
     form: {
-        flex:1,
-        justifyContent:'space-around',
-        alignContent:'center',
-        width: '70%',
-        backgroundColor:'white',
-        marginLeft:'15%'
+        flex: 1,
+        justifyContent: 'space-around',
+        alignContent: 'center',
+        width: '100%',
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     process: {
-        marginTop: '10%',
-        flex:1,
-        width: '70%',
-        marginLeft:'15%'
+        flex: 1,
+        paddingTop: 20,
+        paddingLeft: 10,
+        paddingRight: 10,
+        alignItems: 'center',
+    },
+    accountContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: color.light,
+        width: '100%',
+        marginBottom: 10,
     },
     account: {
-        height:30, 
-        width:'50%', 
-        marginLeft:'25%', 
-        marginTop:'10%',
-        borderBottomColor: 'black',
-        borderBottomWidth: StyleSheet.hairlineWidth,
+        height: 30,
+        flex: 1,
+        marginLeft: 10,
+        fontSize: color.fontSize,
     },
-    logoAccount:{
-        position: 'absolute',
-        top: '70%',
-        left: 30
+    logoAccount: {
     },
     logoPass: {
         position: 'absolute',

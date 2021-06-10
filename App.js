@@ -32,16 +32,16 @@ export default class App extends Component {
 	render() {
 		return (
 			<NavigationContainer>
-				<StackScreen.Navigator>
+				<StackScreen.Navigator screenOptions={{ headerShown: false }}>
 					<StackScreen.Screen name="SIGN IN" component={SignIn} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }} ></StackScreen.Screen>
-					<StackScreen.Screen name="Loading Screen SignIn" component={LoadingScreenSignIn} title=''></StackScreen.Screen>
+					<StackScreen.Screen name="ACCOUNT" component={Account} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
 					<StackScreen.Screen name="CONTROL DEVICE" component={ControlDevice} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="ADD DEVICE" component={AddDevice} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
 					<StackScreen.Screen name="CHOOSE ROOM" component={ChooseRoom} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
+					<StackScreen.Screen name="SIGN UP" component={SignUp} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
+					<StackScreen.Screen name="Loading Screen SignIn" component={LoadingScreenSignIn} title=''></StackScreen.Screen>
+					<StackScreen.Screen name="ADD DEVICE" component={AddDevice} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
 					<StackScreen.Screen name="FAN CONTROL" component={FanControl} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
 					<StackScreen.Screen name="SENSOR CONTROL" component={SensorControl} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="ACCOUNT" component={Account} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="SIGN UP" component={SignUp} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
 				</StackScreen.Navigator>
 			</NavigationContainer>
 		);
