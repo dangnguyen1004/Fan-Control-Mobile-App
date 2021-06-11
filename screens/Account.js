@@ -34,10 +34,15 @@ export default function Account( {navigation,route}) {
   const handleOnRegisterPress = () => {
     navigation.navigate('RegisterRoom',user)
   }
+  const handleControlPress = () => {
+    navigation.navigate('ChooseRoom',user)
+  }
   if (loading)
   {
     return (
-    <Text>Loading</Text>
+     <View style={styles.container}>  
+        <Headline/>
+      </View>
     )
   }
   else
@@ -92,6 +97,7 @@ export default function Account( {navigation,route}) {
             titleStyle={{color: '#908C8C', fontSize: 20}}
             containerStyle={styles.navigationButton}
             type="clear"
+            onPress={handleControlPress}
           />
         </View>
       </View>
@@ -171,7 +177,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: windowWidth,
     top: 0.9 * windowHeight,
-    height: 0.1 * windowHeight,
     position: 'absolute'
   },
   navigationButton:

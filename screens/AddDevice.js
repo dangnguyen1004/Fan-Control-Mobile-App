@@ -22,6 +22,7 @@ const ModeList = [
     </TouchableOpacity>
   );
 export default function AddDevice({ navigation, route}) {
+  console.log(route.params)
   const renderItem = ({ item  }) => {
     return (
       <Item
@@ -49,11 +50,22 @@ export default function AddDevice({ navigation, route}) {
     setVisibleType(!visibleType);
     setTimeout(() => nameRef.current.focus(),0);
   }
+  const handleAccountPress = () => {
+    navigation.navigate('Account',route.params[1])
+  }
+  const handleControlPress = () => {
+    navigation.navigate('ChooseRoom',route.params[1])
+  }
   const handleTypePress = () => {
     setVisibleType(!visibleType)
   }
   const handleModePress = () => {
     setVisibleMode(!visibleMode)
+  }
+  const handleAddPress = () => {
+    const itemData = {Name: name, Mode: mode, Type: type}
+    console.log([itemData,route.params[0],route.params[1]])
+    navigation.navigate('RoomControl',route.params)
   }
     return (
       <TouchableWithoutFeedback 
@@ -95,6 +107,7 @@ export default function AddDevice({ navigation, route}) {
           <Button containerStyle = {styles.register}
             buttonStyle = {styles.button}
             title="Add"
+            onPress={handleAddPress}
         />
           <Overlay isVisible={visibleType} onBackdropPress={handleTypePress} >
             <SafeAreaView style={styles.container}>
@@ -123,12 +136,14 @@ export default function AddDevice({ navigation, route}) {
             titleStyle={{color: '#908C8C', fontSize: 20}}
             containerStyle={styles.navigationButton}
             type="clear"
+            onPress={handleAccountPress}
           />
           <Button
             title="CONTROL"
             titleStyle={{ fontSize: 20}}
             containerStyle={styles.navigationButton}
             type="clear"
+            onPress={handleControlPress}
           />
         </View>
         </KeyboardAvoidingView>

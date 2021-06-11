@@ -164,7 +164,7 @@ export default function SignUp({navigation}) {
             </View>
         <View elevation={16} style={styles.signBox}>
           <View style={styles.smallHeader}>
-            <Text style={styles.textH1}>Lightning control</Text>
+            <Text style={styles.textH1}>Lighting control</Text>
           </View>
           <View style={styles.smallContainer}>
             <View style ={styles.inputContainer}>

@@ -9,16 +9,20 @@ import SignUp from '../screens/SignUp';
 import ForgotPassword from '../screens/ForgotPassword';
 import AddDevice from '../screens/AddDevice';
 import ChooseRoom from '../screens/ChooseRoom';
+import RoomControl from '../screens/RoomControl';
+import DeviceControl from '../screens/DeviceControl';
 const { Navigator, Screen } = createStackNavigator();
 
 const HomeNavigator = () => (
   <Navigator headerMode="none">
+     <Screen name="SignIn" component={SignIn} />
     <Screen name="ChooseRoom" component={ChooseRoom}/>
-    <Screen name="SignIn" component={SignIn} />
+     <Screen name="DeviceControl" component={DeviceControl}/>
+    <Screen name="RegisterRoom" component={RegisterRoom}/>
+    <Screen name="RoomControl" component={RoomControl}/>
     <Screen name="SignUp" component={SignUp} />
     <Screen name="Account" component={Account} />
     <Screen name="AccountProfile" component={AccountProfile}/>
-    <Screen name="RegisterRoom" component={RegisterRoom}/>
     <Screen name="ForgotPassword" component={ForgotPassword}/>
     <Screen name="AddDevice" component={AddDevice}/>
   </Navigator>

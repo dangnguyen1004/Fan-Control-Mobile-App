@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableWithoutFeedback,Keyboard,ScrollView,SafeAreaView,FlatList,TouchableOpacity  } from 'react-native';
+import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableWithoutFeedback,Keyboard,ScrollView,SafeAreaView,FlatList,TouchableOpacity,SectionList  } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {Headline} from '../components/header';
 import {InfoBox} from '../components/infoBox';
@@ -10,35 +10,50 @@ import Logout from '../assets/logout.svg';
 import { TextInput } from 'react-native';
 import firebase from '@firebase/app';
 import {getUserInformation} from '../requests/request';
+import { render } from 'react-dom';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
-const H1List = [
-  {Name: 101 , key: '1'},
+const DATA = [
+{
+  title: 'H1',
+  data: [
+    {Name: 101 , key: '1',building: 'H1'},
   {Name: 102 , key: '2'},
   {Name: 103 , key: '3'},
   {Name: 104, key: '4'}
+  ]
+},
+{
+  title: 'H2',
+  data: [
+    {Name: 101 , key: '1'},
+  {Name: 102 , key: '2'},
+  {Name: 103 , key: '3'},
+  {Name: 104, key: '4'},
+  {Name: 105, key: '5'},
+  {Name: 106, key: '6'}
+  ]
+}
 ]
 const Item = ({ item, onPress}) => (
     <TouchableOpacity
         style={styles.touch}
         onPress={onPress}
     >
-        <Text style= {{fontSize: 18, alignSelf: 'center'}}>{item.Name}</Text>
+        <Text style= {{fontSize: 18, alignSelf: 'center'}}>Room {item.Name}</Text>
     </TouchableOpacity>
 );
 export default function ChooseRoom({navigation,route}) {
   const [loading,setLoading] = React.useState(false)
-  const renderItem = ({ item }) => {
-    return (
-      <Item
-        item={item}
-        onPress={handleRoomPress(item)}
-      />
-  );
-  };
+  const [roomID,setRoom] = React.useState('')
+  const handleAccountPress = () => {
+    navigation.navigate('Account',route.params)
+  }
+  const handleControlPress = () => {
+    navigation.navigate('ChooseRoom',route.params)
+  }
   const handleRoomPress = (item) => {
-    const data = [{roomID: item.key}]
-    console.log('test')
+    navigation.navigate('RoomControl',[item,route.params])
   }
   if (loading)
   {
@@ -49,53 +64,63 @@ export default function ChooseRoom({navigation,route}) {
   else
   {
   return (
-    <TouchableWithoutFeedback 
-        onPress={() => Keyboard.dismiss()}>
     <View style={styles.container}>
         <StatusBar   
           backgroundColor = "#102542"
           barStyle = "dark-content"   
         />
+        <SafeAreaView style ={styles.wrap}>
         <View style={styles.header}>
             <Headline/>
         </View>
         <View  style={styles.body}>
           <View style={styles.usable}>
-          <View style={styles.heading}>
-            <Text style={styles.account}>Control</Text>
-          </View>
-          <Text style={styles.completeP} >Choose room</Text>
-          <Text style={styles.title}>H1</Text>
-          <View style={styles.holder}>
+            <View style={styles.heading}>
+              <Text style={styles.account}>Control</Text>
+            </View>
+            <Text style={styles.completeP} >Choose room</Text>
+                <View style={styles.SearchContainer}>
+                <TextInput
+                  style={styles.SearchBar}
+                  placeholder= 'Search'
+                  underlineColorAndroid="transparent"
+                />
+                <Icon style={styles.Icon}
+                        name='search'
+                        size={18}
+                        color = {'#908C8C'}
+                    />
+                </View>
             <SafeAreaView style={styles.container}>
-              <FlatList
-              data={H1List}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.key}
+              <SectionList
+                sections={DATA}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({ item }) => <Item item={item} onPress={()=> handleRoomPress(item)} />}
+                renderSectionHeader={({ section: { title } }) => (
+                  <Text style={styles.title}>{title}</Text>
+                )}
               />
             </SafeAreaView>
           </View>
-          <Text style={styles.title}>H2</Text>
-          <View style={styles.holder}>
-          </View>
         </View>
-        </View>
+        </SafeAreaView>
           <View style={styles.navigation}>
           <Button
             title="ACCOUNT"
             titleStyle={{ fontSize: 20,color: '#908C8C'}}
             containerStyle={styles.navigationButton}
             type="clear"
+            onPress={handleAccountPress}
           />
           <Button
             title="CONTROL"
             titleStyle={{ fontSize: 20}}
             containerStyle={styles.navigationButton}
             type="clear"
+            onPress={handleControlPress}
           />
         </View>
       </View>
-     </TouchableWithoutFeedback>
   );
   }
 }
@@ -104,6 +129,10 @@ const styles = StyleSheet.create({
     container: {
     flex: 1,
     // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  },
+  wrap: {
+    height: 0.95 * windowHeight,
+    width: windowWidth
   },
   header: {
     width: windowWidth,
@@ -146,13 +175,13 @@ const styles = StyleSheet.create({
     left: 0.04 * windowWidth,
     color: '#908C8C',
     fontSize: 20,
-    paddingTop: 0.0015 * windowHeight
 
   },
   holder: {
     alignSelf: 'center',
     paddingTop: 0.02 * windowHeight,
-    width: 0.9 * windowWidth
+    width: 0.9 * windowWidth,
+    flex: 1 
   },
   register: 
   {
@@ -188,7 +217,7 @@ const styles = StyleSheet.create({
   },
    completeP: {
     left: 0.04 * windowWidth,
-    paddingBottom: 20,
+    paddingBottom: 10,
     width: windowWidth,
     color: '#C4C4C4',
     fontSize: 18
@@ -206,5 +235,21 @@ const styles = StyleSheet.create({
     shadowRadius: 1, //IOS
     elevation: 2 // Android
 
+  },
+  SearchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 40,
+    margin: 12,
+    paddingLeft: 0.05 * windowWidth,
+   borderRadius: 26,
+    backgroundColor: '#E5E5E5',
+  },
+  SearchBar: {
+    flex: 1,
+    fontSize: 18,
+  },
+  Icon: {
+    marginRight: 12
   }
 });

@@ -25,3 +25,5 @@ npm install @react-navigation/stack
 expo install firebase
 
 expo install expo-app-loading
+
+npm i react-native-switch-toggle

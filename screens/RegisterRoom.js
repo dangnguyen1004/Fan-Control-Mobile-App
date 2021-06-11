@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard,SafeAreaView,FlatList  } from 'react-native';
+import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard,SafeAreaView,FlatList,Animated  } from 'react-native';
 import {Headline} from '../components/header';
 import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button, Overlay} from 'react-native-elements';
@@ -11,7 +11,7 @@ const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
   const Item = ({ item, onPress}) => (
     <TouchableOpacity onPress={onPress} style={styles.item}>
-      <Text style={[styles.title]}>{item.building}</Text>
+      <Text style={[styles.ItemText]}>{item.building}</Text>
     </TouchableOpacity>
   );
  const Item1 = ({ item, onPress}) => (
@@ -30,6 +30,21 @@ export default function RegisterRoom({ navigation, route}) {
   const [visibleBuilding,setVisibleBuilding] = React.useState(false);
   const [visibleRoom,setVisibleRoom] = React.useState(false);
   const [roomList,setRoomData] = React.useState([]);
+  const animate = new Animated.Value(1)
+  const [fadeAnimation,setFade] = React.useState(animate)
+   const fadeIn = () => {
+    Animated.timing(this.state.fadeAnimation, {
+      toValue: 1,
+      duration: 4000
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(this.state.fadeAnimation, {
+      toValue: 0,
+      duration: 4000
+    }).start();
+  };
   const renderItem = ({ item  }) => {
     return (
       <Item
@@ -58,19 +73,31 @@ export default function RegisterRoom({ navigation, route}) {
     }
     getData();
   },[building]);
+  const handleAccountPress = () => {
+    navigation.navigate('Account',route.params)
+  }
+  const handleControlPress = () => {
+    navigation.navigate('ChooseRoom',route.params)
+  }
   const handleBuildingPress = () => {
     setVisibleBuilding(!visibleBuilding)
   }
   const handleRoomPress = () => {
     setVisibleRoom(!visibleRoom)
   }
-  const handleOnRegisterPress = () => {
+  const handleOnRegisterPress =  async () => {
       const data = { userId: route.params.id, roomId : room.key }
+      console.log(data)
+      navigation.navigate('ChooseRoom',route.params)
   }
   if (loading)
   {
     return (
-      <Text>Loading</Text>
+      <View style={styles.container}>
+        <Animated.View style={{opacity: 1}}>
+        <Headline/>
+        </Animated.View>
+      </View>
     )
   }
   else
@@ -106,8 +133,8 @@ export default function RegisterRoom({ navigation, route}) {
             title="Register room"
             onPress= {handleOnRegisterPress}
         />
-          <Overlay isVisible={visibleBuilding} onBackdropPress={handleBuildingPress} >
-            <SafeAreaView style={styles.container}>
+          <Overlay isVisible={visibleBuilding} onBackdropPress={handleBuildingPress} overlayStyle={styles.Overlay}>
+            <SafeAreaView >
               <FlatList
                 data={buildingList}
                 renderItem={renderItem}
@@ -115,7 +142,7 @@ export default function RegisterRoom({ navigation, route}) {
               />
             </SafeAreaView>
           </Overlay>
-          <Overlay isVisible={visibleRoom} onBackdropPress={handleRoomPress}>
+          <Overlay isVisible={visibleRoom} onBackdropPress={handleRoomPress} overlayStyle={styles.Overlay}>
             <SafeAreaView style={styles.container}>
               <FlatList
                 data={roomList}
@@ -133,12 +160,14 @@ export default function RegisterRoom({ navigation, route}) {
             titleStyle={{ fontSize: 20}}
             containerStyle={styles.navigationButton}
             type="clear"
+            onPress={()=>handleAccountPress()}
           />
           <Button
             title="CONTROL"
             titleStyle={{color: '#908C8C', fontSize: 20}}
             containerStyle={styles.navigationButton}
             type="clear"
+            onPress={()=>handleControlPress()}
           />
         </View>
         </KeyboardAvoidingView>
@@ -224,10 +253,16 @@ const styles = StyleSheet.create({
   {
     width: '50%'
   },
+  Overlay: {
+    width: 0.8 * windowWidth,
+    height: 0.6 * windowHeight,
+  },
     item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    alignContent: 'center',
+    justifyContent: 'center',
+    margin: 10
+  },
+  ItemText: {
+    fontSize: 20
   }
 });

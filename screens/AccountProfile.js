@@ -7,6 +7,7 @@ import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import Logout from '../assets/logout.svg';
+import { CommonActions } from '@react-navigation/native';
 import { TextInput } from 'react-native';
 import firebase from 'firebase/app';
 const windowHeight = Dimensions.get('window').height;
@@ -23,7 +24,16 @@ export default function AccountProfile( {navigation, route}) {
   const [privacy,setPrivacy] =React.useState('Student')
   const privacyInput = React.useRef();
   const phoneInput = React.useRef();
-
+  const handleSignInPress = () => {
+      navigation.dispatch(
+        CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: 'SignIn' },
+          ],
+        })
+      );
+    }
   const completeProfile = () => {
     var err = false
     var messageError = ''
@@ -117,22 +127,15 @@ export default function AccountProfile( {navigation, route}) {
             title="Complete"
             onPress={completeProfile}
         />
+        <Text style ={{alignSelf: 'center',fontSize: 16}}>Already have an account?</Text>
+        <Button
+  title="Back to sign in"
+  type="clear"
+  onPress={handleSignInPress}
+/>
         </View>
         </View>
-          <View style={styles.navigation}>
-          <Button
-            title="ACCOUNT"
-            titleStyle={{ fontSize: 20}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-          />
-          <Button
-            title="CONTROL"
-            titleStyle={{color: '#908C8C', fontSize: 20}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-          />
-        </View>
+       
       </View>
      </TouchableWithoutFeedback>
   );
