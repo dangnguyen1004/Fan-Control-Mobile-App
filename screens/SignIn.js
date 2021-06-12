@@ -10,6 +10,10 @@ import firebase from 'firebase/app';
 import "firebase/auth";
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
 export default function SignIn( { navigation }) {
   const GradientAttribute = {
     colors: ['#2F80ED', '#56CCF2'],
@@ -135,6 +139,7 @@ export default function SignIn( { navigation }) {
       </View>
         <Button containerStyle = {styles.signIn}
           title="Sign in"
+          titleStyle= {{fontFamily: textBold}}
           ViewComponent={LinearGradient}
           linearGradientProps = {GradientAttribute}
           onPress= {validateInput}
@@ -151,6 +156,7 @@ export default function SignIn( { navigation }) {
         <View style ={styles.inputContainer}>
         <Input 
           errorMessage={errorUser}
+          inputStyle={styles.inputStyle}
           errorStyle={styles.errorStyle}
           defaultValue={userText}
           onChangeText={(text) => setText('username',text)}
@@ -261,8 +267,7 @@ shadowOpacity: 0,
 shadowRadius: 10.32,
   },
   textH1 : {
-    fontWeight: '400',
-    fontFamily: 'Roboto',
+    fontFamily: textBold,
     fontSize: 35 ,
     color: '#2F81ED',
   },
@@ -309,13 +314,14 @@ shadowRadius: 10.32,
   },
   graybutton: {
     color: '#615353',
-    fontWeight: 'bold',
     fontSize:15,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
+    fontFamily: textBold,
   },
   errorStyle: {
-    fontFamily: 'Roboto',
-    fontWeight: '700',
+    fontFamily: textSemiBold,
     color: '#DB0000'
+  },
+  inputStyle: {
   }
 });

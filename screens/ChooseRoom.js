@@ -6,11 +6,15 @@ import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from '../assets/logout.svg';
+import Logout from '../assets/images/logout.svg';
 import { TextInput } from 'react-native';
 import firebase from '@firebase/app';
 import {getUserInformation} from '../requests/request';
 import { render } from 'react-dom';
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 const DATA = [
@@ -40,7 +44,7 @@ const Item = ({ item, onPress}) => (
         style={styles.touch}
         onPress={onPress}
     >
-        <Text style= {{fontSize: 18, alignSelf: 'center'}}>Room {item.Name}</Text>
+        <Text style= {{fontSize: 18, alignSelf: 'center', fontFamily: textMedium}}>Room {item.Name}</Text>
     </TouchableOpacity>
 );
 export default function ChooseRoom({navigation,route}) {
@@ -107,14 +111,14 @@ export default function ChooseRoom({navigation,route}) {
           <View style={styles.navigation}>
           <Button
             title="ACCOUNT"
-            titleStyle={{ fontSize: 20,color: '#908C8C'}}
+            titleStyle={{ fontSize: 20,color: '#908C8C', fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={handleAccountPress}
           />
           <Button
             title="CONTROL"
-            titleStyle={{ fontSize: 20}}
+            titleStyle={{ fontSize: 20, fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={handleControlPress}
@@ -159,7 +163,8 @@ const styles = StyleSheet.create({
   account: {
     left: 0.04 * windowWidth,
     fontSize: 30,
-    color: '#2F81ED'
+    color: '#2F81ED',
+    fontFamily: textBold
   },
   exit: {
     alignSelf: 'center',
@@ -169,12 +174,14 @@ const styles = StyleSheet.create({
     left: 0.04 * windowWidth,
     width: windowWidth,
     color: '#C4C4C4',
-    fontSize: 18
+    fontSize: 18,
+    fontFamily: textBold
   },
   title: {
     left: 0.04 * windowWidth,
     color: '#908C8C',
     fontSize: 20,
+    fontFamily: textSemiBold
 
   },
   holder: {

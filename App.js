@@ -1,13 +1,13 @@
 import React from 'react';
 import { TextInput } from 'react-native';
 import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,ScrollView,Text,Button,LogBox } from 'react-native';
+import { processFontFamily, useFonts } from 'expo-font';
 import Account from './screens/Account';
 import AccountProfile from './screens/AccountProfile';
 import {SignIn} from './screens/SignIn';
 import SignUp from './screens/SignUp';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import firebase from '@firebase/app';
-import '@firebase/firestore';
 import RegisterRoom from './screens/RegisterRoom';
 import { AppNavigator } from './routes/homeStack';
 import { MainNavigator} from './routes/mainStack';
@@ -20,7 +20,12 @@ export default function App() {
    const [authenticationReady,setAuthenticationReady] = React.useState(false)
    const [authenticated,setAuthentication] = React.useState(false)
    const [user,setUser] = React.useState({})
-
+   let [fontsLoaded] = useFonts({
+      'Mulish-Bold' : require('./assets/fonts/Mulish-Bold.ttf'),
+      'Mulish-Medium' : require('./assets/fonts/Mulish-Medium.ttf'),
+      'Mulish-Regular' : require('./assets/fonts/Mulish-Regular.ttf'),
+      'Mulish-SemiBold' : require('./assets/fonts/Mulish-SemiBold.ttf'),
+  });
    // Initialize Firebase
    if (!firebase.apps.length) {
    firebase.initializeApp(firebaseConfig);
@@ -49,12 +54,17 @@ export default function App() {
 //       }
 //     });
 //   }, []);
-
+   if (!fontsLoaded) {
+      return <Text>Hello</Text>
+   }
+   else
+   {
    return(
       <View style ={styles.container}>
        {(authenticated) ? <MainNavigator/> : <AppNavigator/>}
       </View>
    )
+   }
 }
 
 const styles = StyleSheet.create({

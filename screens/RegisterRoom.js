@@ -5,8 +5,12 @@ import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button, Overlay} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from '../assets/logout.svg';
+import Logout from '../assets/images/logout.svg';
 import {getRoomOfBuilding} from '../requests/request';
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
   const Item = ({ item, onPress}) => (
@@ -131,6 +135,7 @@ export default function RegisterRoom({ navigation, route}) {
           <Button containerStyle = {styles.register}
             buttonStyle = {styles.button}
             title="Register room"
+            titleStyle= {{fontFamily: textBold}}
             onPress= {handleOnRegisterPress}
         />
           <Overlay isVisible={visibleBuilding} onBackdropPress={handleBuildingPress} overlayStyle={styles.Overlay}>
@@ -157,14 +162,14 @@ export default function RegisterRoom({ navigation, route}) {
         <View style={styles.navigation}>
           <Button
             title="ACCOUNT"
-            titleStyle={{ fontSize: 20}}
+            titleStyle={{ fontSize: 20, fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={()=>handleAccountPress()}
           />
           <Button
             title="CONTROL"
-            titleStyle={{color: '#908C8C', fontSize: 20}}
+            titleStyle={{color: '#908C8C', fontSize: 20, fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={()=>handleControlPress()}
@@ -205,6 +210,7 @@ const styles = StyleSheet.create({
   account: {
     left: 0.04 * windowWidth,
     fontSize: 30,
+    fontFamily: textBold,
     color: '#2F81ED'
   },
   exit: {
@@ -216,13 +222,15 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     width: windowWidth,
     color: '#C4C4C4',
-    fontSize: 18
+    fontSize: 18,
+    fontFamily: textBold
   },
   title: {
     left: 0.04 * windowWidth,
     color: '#908C8C',
     fontSize: 20,
-    paddingTop: 0.0015 * windowHeight
+    paddingTop: 0.0015 * windowHeight,
+    fontFamily: textSemiBold
 
   },
   holder: {

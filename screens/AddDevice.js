@@ -5,7 +5,16 @@ import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button, Overlay} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from '../assets/logout.svg';
+import Logout from '../assets/images/logout.svg';
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
+const GradientAttribute = {
+    colors: ['#2F80ED', '#56CCF2'],
+    start: { x: 0, y: 0.5 },
+    end: { x: 1, y: 0.5 },
+  }
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 const TypeList = [
@@ -107,6 +116,8 @@ export default function AddDevice({ navigation, route}) {
           <Button containerStyle = {styles.register}
             buttonStyle = {styles.button}
             title="Add"
+            ViewComponent={LinearGradient}
+            linearGradientProps = {GradientAttribute}
             onPress={handleAddPress}
         />
           <Overlay isVisible={visibleType} onBackdropPress={handleTypePress} >
@@ -133,14 +144,14 @@ export default function AddDevice({ navigation, route}) {
         <View style={styles.navigation}>
           <Button
             title="ACCOUNT"
-            titleStyle={{color: '#908C8C', fontSize: 20}}
+            titleStyle={{color: '#908C8C', fontSize: 20, fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={handleAccountPress}
           />
           <Button
             title="CONTROL"
-            titleStyle={{ fontSize: 20}}
+            titleStyle={{ fontSize: 20, fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={handleControlPress}
@@ -180,7 +191,8 @@ const styles = StyleSheet.create({
   account: {
     left: 0.04 * windowWidth,
     fontSize: 30,
-    color: '#2F81ED'
+    color: '#2F81ED',
+    fontFamily: textBold
   },
   exit: {
     alignSelf: 'center',
@@ -191,12 +203,14 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     width: windowWidth,
     color: '#C4C4C4',
-    fontSize: 18
+    fontSize: 18,
+    fontFamily: textSemiBold
   },
   title: {
     left: 0.04 * windowWidth,
     color: '#908C8C',
     fontSize: 20,
+    fontFamily: textSemiBold,
     paddingTop: 0.0015 * windowHeight
 
   },

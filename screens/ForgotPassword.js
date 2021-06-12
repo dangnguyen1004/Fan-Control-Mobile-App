@@ -5,7 +5,7 @@ import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from '../assets/logout.svg';
+import Logout from '../assets/images/logout.svg';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 export default function RegisterRoom() {

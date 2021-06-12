@@ -6,10 +6,14 @@ import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from '../assets/logout.svg';
+import Logout from '../assets/images/logout.svg';
 import { CommonActions } from '@react-navigation/native';
 import { TextInput } from 'react-native';
 import firebase from 'firebase/app';
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 export default function AccountProfile( {navigation, route}) {
@@ -125,11 +129,13 @@ export default function AccountProfile( {navigation, route}) {
           <Button containerStyle = {styles.register}
             buttonStyle = {styles.button}
             title="Complete"
+            titleStyle={{fontFamily: textBold}}
             onPress={completeProfile}
         />
-        <Text style ={{alignSelf: 'center',fontSize: 16}}>Already have an account?</Text>
+        <Text style ={{alignSelf: 'center',fontSize: 16, fontFamily: textMedium}}>Already have an account?</Text>
         <Button
   title="Back to sign in"
+  titleStyle={{fontFamily: textBold}}
   type="clear"
   onPress={handleSignInPress}
 />
@@ -172,6 +178,7 @@ const styles = StyleSheet.create({
   account: {
     left: 0.04 * windowWidth,
     fontSize: 30,
+    fontFamily: textBold,
     color: '#2F81ED'
   },
   exit: {
@@ -182,12 +189,14 @@ const styles = StyleSheet.create({
     left: 0.04 * windowWidth,
     width: windowWidth,
     color: '#C4C4C4',
-    fontSize: 18
+    fontSize: 18,
+    fontFamily: textSemiBold
   },
   title: {
     left: 0.04 * windowWidth,
     color: '#908C8C',
     fontSize: 20,
+    fontFamily: textSemiBold,
     paddingTop: 0.0015 * windowHeight
 
   },

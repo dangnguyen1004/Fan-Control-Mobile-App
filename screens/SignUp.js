@@ -10,6 +10,10 @@ import "@firebase/auth";
 import '@firebase/firestore';
 import { CommonActions } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
 const windowHeight = Dimensions.get('window').height-StatusBar.currentHeight;
 const windowWidth = Dimensions.get('window').width;
 export default function SignUp({navigation}) {
@@ -154,6 +158,7 @@ export default function SignUp({navigation}) {
                 </View>
                   <Button containerStyle = {styles.signIn}
                     title="Sign Up"
+                    titleStyle= {{fontFamily: textBold}}
                     ViewComponent={LinearGradient}
                     linearGradientProps = {GradientAttribute}
                     onPress = {validateInput}
@@ -182,7 +187,7 @@ export default function SignUp({navigation}) {
               blurOnSubmit={false}
               leftIconContainerStyle = {styles.iconLeft}
               inputContainerStyle ={styles.input}
-              placeholder='Username'
+              placeholder='Email'
               leftIcon={
                 <Icon
                   name='user'
@@ -322,8 +327,7 @@ shadowOpacity: 0,
 shadowRadius: 10.32,
   },
   textH1 : {
-    fontWeight: '400',
-    fontFamily: 'Roboto',
+    fontFamily: textBold,
     fontSize: 35 ,
     color: '#2F81ED',
   },
@@ -370,13 +374,12 @@ shadowRadius: 10.32,
   },
   graybutton: {
     color: '#615353',
-    fontWeight: 'bold',
+    fontFamily: textBold,
     fontSize:15,
     textDecorationLine: 'underline'
   },
   errorStyle: {
-    fontFamily: 'Roboto',
-    fontWeight: '700',
+    fontFamily: textSemiBold,
     color: '#DB0000'
   }
 });

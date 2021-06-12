@@ -12,10 +12,17 @@ import { TextInput } from 'react-native';
 import firebase from '@firebase/app';
 import {getUserInformation} from '../requests/request';
 import { render } from 'react-dom';
-
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
-
+const GradientAttribute = {
+    colors: ['#2F80ED', '#56CCF2'],
+    start: { x: 0, y: 0.5 },
+    end: { x: 1, y: 0.5 },
+}
 export default function DeviceControl({navigation , route}) {
     // const [device,setDevice] = React.useState(route.params[0])
     // const [room,setRoom] = React.useState(route.params[1])
@@ -39,7 +46,7 @@ export default function DeviceControl({navigation , route}) {
              <WavyHeader customStyles={styles.svgCurve} />
                  <Image
                     style={styles.Image}
-                    source={require('../assets/fan.png')}
+                    source={require('../assets/images/fan.png')}
                 />
                   <TouchableOpacity style = {isOn == 'On'? styles.Button : {...styles.Button, ...styles.DisabledButton}}  onPress={() => handleTogglePress()}>
                 <Text style={styles.ButtonText}>{isOn == 'On' ? 'ON' : 'OFF'}</Text>
@@ -53,10 +60,9 @@ export default function DeviceControl({navigation , route}) {
                     <View style={styles.contentHolder}>
                         <View style={styles.holderHeader}>
                             <Text style={styles.textHeader}>Name</Text>
-                            <Icon style={styles.iconHeader}
-                                name='pencil'
-                                size={25}
-                                color = {'#63a4ff'}
+                           <Image
+                                style={styles.iconImage}
+                                source={require('../assets/images/icons8-room-64.png')}
                             />
                         </View>
                         <View style={styles.holderValue}>
@@ -68,10 +74,9 @@ export default function DeviceControl({navigation , route}) {
                     <View style={styles.contentHolder}>
                         <View style={styles.holderHeader}>
                             <Text style={styles.textHeader}>Mode</Text>
-                            <Icon style={styles.iconHeader}
-                                name='adjust'
-                                size={25}
-                                color = {'#63a4ff'}
+                           <Image
+                                style={styles.iconImage}
+                                source={require('../assets/images/icons8-wrench-64.png')}
                             />
                         </View>
                         <View style={styles.holderValue}>
@@ -85,10 +90,9 @@ export default function DeviceControl({navigation , route}) {
                     <View style={styles.contentHolder}>
                         <View style={styles.holderHeader}>
                             <Text style={styles.textHeader}>Turn on</Text>
-                            <Icon style={styles.iconHeader}
-                                name='thermometer-chevron-up'
-                                size={22}
-                                color = {'#63a4ff'}
+                            <Image
+                                style={styles.iconImage}
+                                source={require('../assets/images/icons8-chess-clock-64.png')}
                             />
                         </View>
                         <View style={styles.holderValue}>
@@ -101,10 +105,9 @@ export default function DeviceControl({navigation , route}) {
                     <View style={styles.contentHolder}>
                         <View style={styles.holderHeader}>
                             <Text style={styles.textHeader}>Turn off</Text>
-                            <Icon style={styles.iconHeader}
-                                name= 'thermometer-chevron-down'
-                                size={22}
-                                color = {'#63a4ff' }
+                            <Image
+                                style={styles.iconImage}
+                                source={require('../assets/images/icons8-chess-clock-64.png')}
                             />
                         </View>
                         <View style={styles.holderValue}>
@@ -115,9 +118,11 @@ export default function DeviceControl({navigation , route}) {
                 </View>
             </View>
         </View>
-        <Button buttonStyle={styles.confirmButton}
-                    containerStyle={{alignItems:'center',justifyContent: 'center',flex : 1}}
+        <Button     containerStyle={styles.confirmButton}
+                    ViewComponent={LinearGradient}
+                    linearGradientProps = {GradientAttribute}
                     title="Confirm"
+                    titleStyle={styles.confirmText}
                     onPress = {handleConfirmPress}
                 />
         </View>
@@ -168,27 +173,17 @@ const styles = StyleSheet.create({
     },
     ButtonText: {
         fontSize: 30,
-        color: '#fff'
+        color: '#fff',
+        fontFamily: textBold
     },
     TextWrap: {
-        paddingTop: 50,
+        paddingTop: 0,
         flex: 8,
     },
     TextHolder: {
         margin: 10,
         justifyContent:'space-between',
         flexDirection: 'row'
-    },
-    Title: 
-    {
-        fontSize: 20,
-        fontFamily: 'Roboto',
-        color: '#615353',
-        fontWeight: '400'
-    },
-    deleteDevice: {
-        backgroundColor: '#908C8C',
-        borderRadius: 20,
     },
     svgCurve: {
     position: 'absolute',
@@ -220,6 +215,7 @@ const styles = StyleSheet.create({
   textHeader: {
       color: '#1e88e5',
       fontSize: 16,
+      fontFamily: textSemiBold,
       fontWeight: '400',
       margin: 5
   },
@@ -228,16 +224,24 @@ const styles = StyleSheet.create({
   },
   textContent: {
       fontSize: 18,
-      fontWeight: '700',
+      fontFamily: textBold,
       paddingLeft: 5,
       color: '#005cb2'
   },
   confirmButton: {
-      width: '50%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 20,
-      backgroundColor: '#3A98EF'
+    margin: 10,
+    width : 0.5 * windowWidth,
+    alignSelf : 'center',
+    borderRadius: 26
+  },
+  confirmText: {
+    fontFamily: textBold
+  },
+  iconImage: {
+      height: 25,
+      width: 25,
+      margin: 5,
+
   }
 
 });

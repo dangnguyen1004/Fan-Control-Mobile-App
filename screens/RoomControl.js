@@ -7,12 +7,15 @@ import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button,ButtonGroup} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from '../assets/logout.svg';
+import Logout from '../assets/images/logout.svg';
 import { TextInput } from 'react-native';
 import firebase from '@firebase/app';
 import {getUserInformation} from '../requests/request';
 import { render } from 'react-dom';
-
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
 const _ = require('lodash');
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -129,21 +132,20 @@ export default function DeviceControl({navigation,route}) {
             <View style={styles.heading}>
                 <Text style={styles.heading1}>
               <Text style={styles.account}>Control</Text>
-              <Text style={{fontSize: 18, color: '#C4C4C4'}}> Room 101-H1</Text>
+              <Text style={{fontSize: 18, color: '#C4C4C4', fontFamily: textBold}}> Room 101-H1</Text>
               </Text>
             </View>
                 <TouchableOpacity
                     style={styles.buttonAdd} onPress={handleAddPress}
                 >
-                    <Text style= {{fontSize: 18,color: '#2F81ED' }}>Add new device</Text>
+                    <Text style= {{fontSize: 18,color: '#2F81ED', fontFamily: textSemiBold }}>Add new device</Text>
                 </TouchableOpacity>
                 <ButtonGroup
                   onPress={handleIndex}
                   selectedIndex={selectedIndex}
                   buttons={buttons}
                   containerStyle={styles.indexStyle}
-                  buttonStyle={{borderRadius: 10}}
-                  textStyle={{fontSize: 16, fontWeight: '700'}}
+                  textStyle={{fontSize: 16, fontFamily: textBold}}
                 />
             <SafeAreaView style={styles.container}>
                <FlatList
@@ -159,14 +161,14 @@ export default function DeviceControl({navigation,route}) {
           <View style={styles.navigation}>
           <Button
             title="ACCOUNT"
-            titleStyle={{ fontSize: 20,color: '#908C8C'}}
+            titleStyle={{ fontSize: 20,color: '#908C8C', fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={handleAccountPress}
           />
           <Button
             title="CONTROL"
-            titleStyle={{ fontSize: 20}}
+            titleStyle={{ fontSize: 20, fontFamily: textBold}}
             containerStyle={styles.navigationButton}
             type="clear"
             onPress={handleControlPress}
@@ -214,40 +216,12 @@ const styles = StyleSheet.create({
   },
   account: {
     fontSize: 30,
-    color: '#2F81ED'
+    color: '#2F81ED',
+    fontFamily: textBold
   },
   exit: {
     alignSelf: 'center',
     paddingLeft: 0.5 * windowWidth
-  },
-  completeP: {
-    left: 0.04 * windowWidth,
-    width: windowWidth,
-    color: '#C4C4C4',
-    fontSize: 18
-  },
-  title: {
-    color: '#fff',
-    fontSize: 20,
-    backgroundColor: "#2F80ED"
-
-  },
-  holder: {
-    alignSelf: 'center',
-    paddingTop: 0.02 * windowHeight,
-    width: 0.9 * windowWidth,
-    flex: 1 
-  },
-  register: 
-  {
-    width: 0.9 * windowWidth,
-    alignSelf: 'center',
-    paddingTop: 0.05 * windowHeight
-  },
-  button : 
-  {
-    borderRadius: 26,
-    backgroundColor: '#908C8C'
   },
   navigation: 
   {
@@ -269,13 +243,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 26,
     borderWidth: 1
-  },
-   completeP: {
-    left: 0.04 * windowWidth,
-    paddingBottom: 10,
-    width: windowWidth,
-    color: '#C4C4C4',
-    fontSize: 18
   },
    touch: {
     height: 40,
@@ -333,7 +300,8 @@ const styles = StyleSheet.create({
   },
   ItemText: {
       fontSize: 16,
-      fontWeight: '700'
+      fontFamily: textSemiBold,
+
   },
   indexStyle: {
     elevation: 1,

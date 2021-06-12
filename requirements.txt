@@ -27,3 +27,5 @@ expo install firebase
 expo install expo-app-loading
 
 npm i react-native-switch-toggle
+
+expo install expo-font @expo-google-fonts/inter
