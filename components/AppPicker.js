@@ -45,23 +45,21 @@ function AppPicker({
                 visible={modalVisible}
                 animationType='slide'
             >
-                <ScreenApp>
-                    <Button title='Close' onPress={() => setModalVisible(false)}> </Button>
-                    <FlatList
-                        data={items}
-                        keyExtractor={item => item.value.toString()}
-                        numColumns={numberOfColumns}
-                        renderItem={({ item }) =>
-                            <PickerItemComponent
-                                item={item}
-                                label={item.label}
-                                onPress={() => {
-                                    setModalVisible(false)
-                                    onSelectItem(item)
-                                }}
-                            ></PickerItemComponent>}
-                    ></FlatList>
-                </ScreenApp>
+                <Button title='Close' onPress={() => setModalVisible(false)}> </Button>
+                <FlatList
+                    data={items}
+                    keyExtractor={item => item.value.toString()}
+                    numColumns={numberOfColumns}
+                    renderItem={({ item }) =>
+                        <PickerItemComponent
+                            item={item}
+                            label={item.label}
+                            onPress={() => {
+                                setModalVisible(false)
+                                onSelectItem(item)
+                            }}
+                        ></PickerItemComponent>}
+                ></FlatList>
             </Modal>
         </>
     );

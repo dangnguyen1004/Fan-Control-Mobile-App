@@ -19,6 +19,7 @@ import AuthNavigator from './navigator/AuthNavigator'
 import AppNavigator from './navigator/AppNavigator';
 import { useEffect } from 'react';
 import firebase from './firebase/connectFirebase'
+import PasswordScreen from './screens/PasswordScreen';
 
 
 function App(props) {
@@ -33,6 +34,7 @@ function App(props) {
       <NavigationContainer>
          {user ? <AppNavigator></AppNavigator> : <AuthNavigator></AuthNavigator>}
       </NavigationContainer>
+      // <PasswordScreen></PasswordScreen>
    );
 }
 

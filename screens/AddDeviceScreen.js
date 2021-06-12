@@ -30,15 +30,17 @@ function AddDeviceScreen({ route, navigation }) {
 
     const handleAdd = (values) => {
         if (!deviceType) {
-            setErrorType('Please select device type')
+            setErrorType('Type is required')
             return
         }
+
         
         let listAllDevicesName = listFansName.concat(listAirConsName)
         if (listAllDevicesName.includes(values.name)){
             setErrorAdd('Device already exists')
             return
         }
+        
         if (deviceType.type === 'fan') {
             let newDevices = []
             if (room.listFans) newDevices = [...room.listFans, values.name]

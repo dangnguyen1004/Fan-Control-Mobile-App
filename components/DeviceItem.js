@@ -6,9 +6,11 @@ import color from '../config/color';
 import firebase from '../firebase/connectFirebase'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import RoomDeleteAction from './RoomDeleteAction';
 
 
-function DeviceItem({ item }) {
+function DeviceItem({ item, onPressDelete }) {
     const [device, setDevice] = useState()
     const [isOn, setIsOn] = useState(false)
 
@@ -35,28 +37,22 @@ function DeviceItem({ item }) {
     }
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity>
-                <Text style={{
-                    fontSize: color.fontSize,
-                }}>{item.id}</Text>
-            </TouchableOpacity>
-            {/* <ToggleSwitch
-                isOn={device.isOn}
-                onColor="green"
-                offColor="red"
-                size="large"
-                onToggle={onToggle}
-            /> */}
-            {/* <Switch onChange={onToggle} checked={isOn} /> */}
-            <Switch
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={isOn ? '#f5dd4b' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={onToggle}
-                value={isOn}
-            />
-        </View>
+        <Swipeable renderRightActions={() => <RoomDeleteAction onPress={onPressDelete}></RoomDeleteAction>}>
+            <View style={styles.container}>
+                <TouchableOpacity>
+                    <Text style={{
+                        fontSize: color.fontSize,
+                    }}>{item.id}</Text>
+                </TouchableOpacity>
+                <Switch
+                    trackColor={{ false: '#767577', true: '#81b0ff' }}
+                    thumbColor={isOn ? '#f5dd4b' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={onToggle}
+                    value={isOn}
+                />
+            </View>
+        </Swipeable>
     );
 }
 

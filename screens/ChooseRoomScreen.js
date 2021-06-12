@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import AppButton from '../components/AppButton';
 import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
@@ -8,9 +8,13 @@ import AccountItemSeparator from '../components/AccountItemSeparator';
 import firebase from '../firebase/connectFirebase'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import InputField from '../components/InputField';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import RoomDeleteAction from '../components/RoomDeleteAction';
+
 
 function ChooseRoomScreen({ navigation }) {
-    const [rooms, setRooms] = useState()
+    const [rooms, setRooms] = useState([])
 
     useEffect(() => {
         const roomsRef = firebase.database().ref('rooms')
@@ -18,6 +22,9 @@ function ChooseRoomScreen({ navigation }) {
             if (snapshot.val()) {
                 let data = Object.values(snapshot.val())
                 setRooms(Object.values(data))
+            }
+            else{
+                setRooms([])
             }
         })
     }, [])
@@ -33,28 +40,60 @@ function ChooseRoomScreen({ navigation }) {
         navigation.navigate('AddRoom')
     }
 
+    const createAlertDelete = (room) =>
+        Alert.alert(
+            "Delete ?",
+            "Please ensure and confirm!",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Yes", onPress: () => {
+                        firebase.database().ref('rooms/' + room.name).remove()
+                        if (room.listFans) 
+                            room.listFans.forEach(fan => firebase.database().ref('fans/' + fan).remove())
+                        if (room.listAirCon)
+                            room.listAirCon.forEach(airCon => firebase.database().ref('airCons/' + airCon).remove())
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
 
     return (
         <ScreenApp style={styles.container}>
-            <Text style={styles.logo}>YOUR ROOMS</Text>
+            <Text style={styles.logo}>Dashboard</Text>
             <AppButton
                 title='Add new room'
                 onPress={handleAdd}
             ></AppButton>
+
+            <InputField
+                placeholder='Search room'
+            ></InputField>
+
             <FlatList
                 style={styles.listRooms}
                 data={rooms}
                 keyExtractor={item => item.name.toString()}
                 ItemSeparatorComponent={AccountItemSeparator}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={
-                        () => navigation.navigate('ControlRoom', { room: item.name.toString() })
-                    }>
-                        <View style={styles.room}>
-                            <Text style={{ fontSize: color.fontSize }}>{item.name.toString()}</Text>
-                            <MaterialCommunityIcons name='chevron-right' size={30} ></MaterialCommunityIcons>
-                        </View>
-                    </TouchableOpacity>
+                    <Swipeable renderRightActions={() => <RoomDeleteAction onPress={() => {
+                        console.log('Delete room ' + item.name.toString())
+                        createAlertDelete(item)
+                    }} />}>
+                        <TouchableOpacity onPress={
+                            () => navigation.navigate('ControlRoom', { room: item.name.toString() })
+                        }>
+                            <View style={styles.room}>
+                                <Text style={{ fontSize: color.fontSize }}>{item.name.toString()}</Text>
+                                <MaterialCommunityIcons name='chevron-right' size={30} ></MaterialCommunityIcons>
+                            </View>
+                        </TouchableOpacity>
+                    </Swipeable>
                 )}
             ></FlatList>
         </ScreenApp>

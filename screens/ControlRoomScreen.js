@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { View, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import AppButton from '../components/AppButton';
 import ScreenApp from '../components/ScreenApp';
@@ -12,6 +12,8 @@ import firebase from '../firebase/connectFirebase'
 import AccountItem from '../components/AccountItem';
 import CancelButton from '../components/CancelButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import SettingButton from '../components/SettingButton';
+import AddButton from '../components/AddButton';
 
 function ControlRoomScreen({ route, navigation }) {
     const [room, setRoom] = useState()
@@ -24,6 +26,7 @@ function ControlRoomScreen({ route, navigation }) {
 
     const initData = () => {
         const { room } = route.params;
+        // const room = 'H1-101'
         const roomRef = firebase.database().ref('rooms/' + room)
 
         roomRef.on('value', snapshot => {
@@ -60,10 +63,64 @@ function ControlRoomScreen({ route, navigation }) {
                         })
                     })
                 }
-
                 setDevices(devices.sort())
             }
         })
+    }
+
+    const createAlert = () =>
+        Alert.alert(
+            "Nope",
+            "You have to define fan's feed",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => navigation.navigate('RoomFeed', { roomName: roomName }) }
+            ],
+            { cancelable: false }
+        );
+
+    const createAlertDelete = (item, room) =>
+        Alert.alert(
+            "Delete ?",
+            "Please ensure and confirm!",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Yes", onPress: () => {
+                        console.log('Delete device ' + item.id + ' from room ' + room.name)
+                        console.log(item.id)
+                        if (item.type == 'fan') {
+                            let newListFans = room.listFans.filter(fan => fan != item.id)
+                            firebase.database().ref('rooms/' + room.name).child('listFans').set(newListFans)
+                            firebase.database().ref('fans/' + item.id).remove()
+                        }
+                        else if (item.type == 'airCon') {
+                            let newListAirCons = room.listAirCon.filter(airCon => airCon != item.id)
+                            firebase.database().ref('rooms/' + room.name).child('listAirCon').set(newListAirCons)
+                            firebase.database().ref('airCons/' + item.id).remove()
+                        }
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+
+    const handleAdd = () => {
+        if (!room.fanFeed || !room.airConFeed) {
+            console.log(room)
+            createAlert()
+        }
+        else {
+            navigation.navigate('AddDevice', { room: room })
+        }
     }
 
 
@@ -71,30 +128,17 @@ function ControlRoomScreen({ route, navigation }) {
         initData()
     }, [])
 
-
-    const handleAdd = () => {
-        navigation.navigate('AddDevice', { room: room })
-    }
-
     return (
         <ScreenApp style={styles.container}>
             <View style={styles.logoContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <MaterialCommunityIcons name='chevron-left' size={25} color={color.primary}></MaterialCommunityIcons>
-                    <Text style={{ fontSize: color.fontSize, color: color.primary }}>Back</Text>
+                    <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <Text style={styles.logo}>{roomName}</Text>
-            </View>
-            <AppButton
-                style={styles.button}
-                title='Add new device'
-                onPress={handleAdd}
-            ></AppButton>
-            <View style={{ width: '100%', marginBottom: 20, }}>
-                <CancelButton
-                    title='Manage room feed'
-                    onPress={() => navigation.navigate('RoomFeed', { roomName: roomName })}
-                ></CancelButton>
+                <View style={{ flexDirection: 'row', }}>
+                    <AddButton onPress={handleAdd}></AddButton>
+                    <SettingButton onPress={() => navigation.navigate('RoomFeed', { roomName: roomName })}></SettingButton>
+                </View>
             </View>
             <View style={styles.temperature}>
                 <Text style={{ fontSize: color.fontSize, color: color.danger, fontWeight: 'bold', }}>Temperature</Text>
@@ -112,6 +156,7 @@ function ControlRoomScreen({ route, navigation }) {
                 renderItem={({ item }) => (
                     <DeviceItem
                         item={item}
+                        onPressDelete={() => createAlertDelete(item, room)}
                     ></DeviceItem>
                 )}
             ></FlatList>

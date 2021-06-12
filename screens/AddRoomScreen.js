@@ -54,9 +54,10 @@ function AddRoomScreen({ navigation }) {
         firebase.database().ref('rooms')
             .child(newRoomName).set({
                 sensorFeed: newFeed.key,
-                humidity: 30,
-                temperature: 30,
+                humidity: 0,
+                temperature: 0,
                 name: newRoomName,
+                mode: 'Auto'
             }).then(() => {
                 alert
             })

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { View, StyleSheet, Text, Image, FlatList } from 'react-native';
+import { View, StyleSheet, Text, Image, FlatList, Alert } from 'react-native';
 import AccountItem from '../components/AccountItem';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import Icon from '../components/Icon';
@@ -24,7 +24,7 @@ const menuItems = [
             name: 'bell',
             backGroundColor: '#fed766',
         },
-        route: '',
+        route: 'Notification',
     },
     {
         title: "Password",
@@ -32,7 +32,7 @@ const menuItems = [
             name: 'onepassword',
             backGroundColor: '#e6e6ea',
         },
-        route: '',
+        route: 'Password',
     },
     {
         title: "Phone",
@@ -40,7 +40,7 @@ const menuItems = [
             name: 'cellphone',
             backGroundColor: color.secondary,
         },
-        route: '',
+        route: 'Phone',
     },
 ]
 
@@ -69,6 +69,21 @@ function AccountScreen({ navigation }) {
             console.log(error.message)
         });
     }
+
+    const createAlertLogOut = () =>
+        Alert.alert(
+            "Log out",
+            "You will be returned to the login screen",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: handleSignOut }
+            ],
+            { cancelable: false }
+        );
 
     return (
         <ScreenApp style={{
@@ -109,7 +124,7 @@ function AccountScreen({ navigation }) {
                     <Icon name='logout' size={40} style={styles.icon} backgroundColor={color.danger}></Icon>
                 }
                 title='Log out'
-                onPress={handleSignOut}
+                onPress={createAlertLogOut}
             ></AccountItem>
         </ScreenApp>
     );
