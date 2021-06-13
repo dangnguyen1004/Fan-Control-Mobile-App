@@ -14,7 +14,6 @@ import { useEffect } from 'react';
 import CancelButton from '../components/CancelButton';
 import InputLabel from '../components/InputLabel';
 import AppPicker from '../components/AppPicker'
-import DeleteButton from '../components/DeleteButton';
 
 const validationSchema = Yup.object().shape({
     sensorFeed: Yup.string().required().label('Sensor feed'),
@@ -43,7 +42,6 @@ function RoomFeedScreen({ navigation, route }) {
     const roomRef = firebase.database().ref('rooms/' + roomName)
     const [selectedMode, setSelectedMode] = useState()
 
-
     const handleFeedChange = (values) => {
         if (room.sensorFeed) {
             firebase.database().ref('feeds/' + room.sensorFeed)
@@ -52,7 +50,6 @@ function RoomFeedScreen({ navigation, route }) {
             let newKey = firebase.database().ref('feeds').push({ feed: values.sensorFeed })
             roomRef.child('sensorFeed').set(newKey.key)
         }
-
 
         if (room.fanFeed) {
             firebase.database().ref('feeds/' + room.fanFeed)
@@ -73,10 +70,7 @@ function RoomFeedScreen({ navigation, route }) {
 
         firebase.database().ref('rooms/' + room.name).child('mode').set(selectedMode.label)
 
-
-        // firebase.database.ref('rooms/' + roomName).child('mode').set(selectedMode.label)
-
-        // navigation.goBack()
+        navigation.goBack()
     }
 
     const GetRoomInfo = () => {
@@ -110,11 +104,11 @@ function RoomFeedScreen({ navigation, route }) {
     }, [])
 
     return (
-            <ScrollView contentContainerStyle={styles.scrollView}>
-        <ScreenApp style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+            <ScreenApp style={styles.container}>
                 <ScreenTitle style={styles.logo}>Room setting</ScreenTitle>
                 <Formik
-                    initialValues={{ sensorFeed: '', fanFeed: '', airConFeed: '',}}
+                    initialValues={{ sensorFeed: '', fanFeed: '', airConFeed: '', }}
                     onSubmit={handleFeedChange}
                     validationSchema={validationSchema}
                 >{({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
@@ -176,8 +170,8 @@ function RoomFeedScreen({ navigation, route }) {
                         ></CancelButton>
                     </>
                 )}</Formik>
-        </ScreenApp>
-            </ScrollView>
+            </ScreenApp>
+        </ScrollView>
     );
 }
 

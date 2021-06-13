@@ -11,7 +11,6 @@ import RoomDeleteAction from './RoomDeleteAction';
 
 
 function DeviceItem({ item, onPressDelete }) {
-    const [device, setDevice] = useState()
     const [isOn, setIsOn] = useState(false)
 
     const typeDevice = item.type === 'fan' ? 'fans' : 'airCons'
@@ -21,7 +20,6 @@ function DeviceItem({ item, onPressDelete }) {
     const getDeviceFromFireBase = () => {
         deviceRef.on('value', (snapshot) => {
             if (snapshot.val()) {
-                setDevice(snapshot.val())
                 setIsOn(snapshot.val().isOn)
             }
         })

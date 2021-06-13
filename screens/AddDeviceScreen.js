@@ -33,7 +33,6 @@ function AddDeviceScreen({ route, navigation }) {
             setErrorType('Type is required')
             return
         }
-
         
         let listAllDevicesName = listFansName.concat(listAirConsName)
         if (listAllDevicesName.includes(values.name)){
@@ -74,7 +73,7 @@ function AddDeviceScreen({ route, navigation }) {
         navigation.navigate('ControlRoom')
     }
 
-    const getAllDevicesName = () => {
+    const getAllDevicesName = async () => {
         firebase.database().ref()
             .child('fans').on('value', snapshot => {
                 if (snapshot.val()) {

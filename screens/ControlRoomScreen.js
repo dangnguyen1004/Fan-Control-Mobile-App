@@ -24,12 +24,12 @@ function ControlRoomScreen({ route, navigation }) {
 
     // let listFans, listAirCons
 
-    const initData = () => {
+    const initData = async () => {
         const { room } = route.params;
         // const room = 'H1-101'
         const roomRef = firebase.database().ref('rooms/' + room)
 
-        roomRef.on('value', snapshot => {
+        roomRef.once('value', snapshot => {
             if (snapshot.val()) {
                 setRoom(snapshot.val())
                 setRoomName(snapshot.val().name)
