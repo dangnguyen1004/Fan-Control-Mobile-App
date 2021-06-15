@@ -8,16 +8,15 @@ import DeviceItem from '../components/DeviceItem';
 import { useEffect } from 'react';
 import firebase from '../firebase/connectFirebase'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import SettingButton from '../components/SettingButton';
-import AddButton from '../components/AddButton';
+import ClientDeviceItem from '../components/ClientDeviceItem';
 
-function ControlRoomScreen({ route, navigation }) {
+
+function ClientControlRoomScreen({ route, navigation }) {
     const { roomName } = route.params
     const [room, setRoom] = useState()
-    const [temperature, setTemperature] = useState()
-    const [humidity, setHumidity] = useState()
+    const [temperature, setTemperature] = useState(0)
+    const [humidity, setHumidity] = useState(0)
     const [devices, setDevices] = useState([])
-
 
     // let listFans, listAirCons
 
@@ -25,7 +24,6 @@ function ControlRoomScreen({ route, navigation }) {
         firebase.database().ref('rooms/' + roomName).on('value', snapshot => {
             if (snapshot.val()) {
                 setRoom(snapshot.val())
-                console.log(snapshot.val())
                 setHumidity(snapshot.val().humidity)
                 setTemperature(snapshot.val().temperature)
                 let room = snapshot.val()
@@ -53,62 +51,6 @@ function ControlRoomScreen({ route, navigation }) {
 
     }
 
-    const createAlert = () =>
-        Alert.alert(
-            "Nope",
-            "You have to define fan's feed",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "OK", onPress: () => navigation.navigate('RoomFeed', { roomName: roomName }) }
-            ],
-            { cancelable: false }
-        );
-
-    const createAlertDelete = (item, room) =>
-        Alert.alert(
-            "Delete ?",
-            "Please ensure and confirm!",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Yes", onPress: () => {
-                        console.log('Delete device ' + item.id + ' from room ' + room.name)
-                        console.log(item.id)
-                        if (item.type == 'fan') {
-                            let newListFans = room.listFans.filter(fan => fan != item.id)
-                            firebase.database().ref('rooms/' + room.name).child('listFans').set(newListFans)
-                            firebase.database().ref('fans/' + item.id).remove()
-                        }
-                        else if (item.type == 'airCon') {
-                            let newListAirCons = room.listAirCon.filter(airCon => airCon != item.id)
-                            firebase.database().ref('rooms/' + room.name).child('listAirCon').set(newListAirCons)
-                            firebase.database().ref('airCons/' + item.id).remove()
-                        }
-                    }
-                }
-            ],
-            { cancelable: false }
-        );
-
-    const handleAdd = () => {
-        if (!room.fanFeed || !room.airConFeed) {
-            console.log(room)
-            createAlert()
-        }
-        else {
-            navigation.navigate('AddDevice', { room: room })
-        }
-    }
-
-
     useEffect(() => {
         initData()
     }, [])
@@ -119,11 +61,7 @@ function ControlRoomScreen({ route, navigation }) {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
-                <Text style={styles.logo}>{room ? room.name : ''}</Text>
-                <View style={{ flexDirection: 'row', }}>
-                    <AddButton onPress={handleAdd}></AddButton>
-                    <SettingButton onPress={() => navigation.navigate('RoomFeed', { roomName: roomName })}></SettingButton>
-                </View>
+                <Text style={styles.logo}>{room ? room.name : 'H1 -101'}</Text>
             </View>
             <View style={styles.temperature}>
                 <Text style={{ fontSize: color.fontSize, color: color.danger, fontWeight: 'bold', }}>Temperature</Text>
@@ -143,10 +81,9 @@ function ControlRoomScreen({ route, navigation }) {
                     <Text style={{fontSize: 17, fontWeight: 'bold'}}>{title}</Text>
                 )}
                 renderItem={({ item }) => (
-                    <DeviceItem
+                    <ClientDeviceItem
                         item={item}
-                        onPressDelete={() => createAlertDelete(item, room)}
-                    ></DeviceItem>
+                    ></ClientDeviceItem>
                 )}
             ></SectionList>
         </ScreenApp>
@@ -163,7 +100,7 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginRight: 10,
+        marginRight: '30%',
     },
     temperature: {
         flexDirection: 'row',
@@ -187,7 +124,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ControlRoomScreen;
+export default ClientControlRoomScreen;
 
 const devicesDeleted = [
     {

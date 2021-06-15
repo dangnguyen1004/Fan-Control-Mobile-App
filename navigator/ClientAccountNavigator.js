@@ -1,23 +1,25 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack'
-import AccountScreen from '../screens/AccountScreen';
+import ClientAccountScreen from '../screens/ClientAccountScreen';
 import AdaAccountScreen from '../screens/AdaAccountScreen';
+import ControlRoomScreen from '../screens/ControlRoomScreen';
 import PasswordScreen from '../screens/PasswordScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import PhoneScreen from '../screens/PhoneScreen';
+import ClientActivityScreen from '../screens/ClientActivityScreen';
 
 const Stack = createStackNavigator()
 
-const AccountNavigator = () => (
+const ClientAccountNavigator = () => (
     <Stack.Navigator screenOptions={{
         headerShown: false,
     }}>
-        <Stack.Screen name='Account' component={AccountScreen}></Stack.Screen>
-        <Stack.Screen name='AdaAccount' component={AdaAccountScreen}></Stack.Screen>
+        <Stack.Screen name='ClientAccount' component={ClientAccountScreen}></Stack.Screen>
         <Stack.Screen name='Password' component={PasswordScreen}></Stack.Screen>
         <Stack.Screen name='Notification' component={NotificationScreen}></Stack.Screen>
         <Stack.Screen name='Phone' component={PhoneScreen}></Stack.Screen>
+        <Stack.Screen name='ClientActivity' component={ClientActivityScreen}></Stack.Screen>
     </Stack.Navigator>
 )
 
-export default AccountNavigator;
+export default ClientAccountNavigator;

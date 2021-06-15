@@ -32,6 +32,7 @@ const deviceModes = [
     }
 ]
 
+
 function RoomFeedScreen({ navigation, route }) {
     const [room, setRoom] = useState()
     const { roomName } = route.params
@@ -41,6 +42,8 @@ function RoomFeedScreen({ navigation, route }) {
     const [airConFeed, setAirConFeed] = useState()
     const roomRef = firebase.database().ref('rooms/' + roomName)
     const [selectedMode, setSelectedMode] = useState()
+    const [thresholdTemp, setThresholdTemp] = useState()
+    const [thresholdHumid, setThresholdHumid] = useState()
 
     const handleFeedChange = (values) => {
         if (room.sensorFeed) {
@@ -69,6 +72,8 @@ function RoomFeedScreen({ navigation, route }) {
         }
 
         firebase.database().ref('rooms/' + room.name).child('mode').set(selectedMode.label)
+        firebase.database().ref('rooms/' + room.name).child('thresholdTemp').set(thresholdTemp.value)
+        firebase.database().ref('rooms/' + room.name).child('thresholdHumid').set(thresholdHumid.value)
 
         navigation.goBack()
     }
@@ -80,6 +85,9 @@ function RoomFeedScreen({ navigation, route }) {
 
                 if (snapshot.val().mode == 'Auto') setSelectedMode(deviceModes[0])
                 else setSelectedMode(deviceModes[1])
+
+                if (snapshot.val().thresholdTemp) setThresholdTemp(listThresholdTemp[snapshot.val().thresholdTemp - 23])
+                if (snapshot.val().thresholdHumid) setThresholdHumid(listThresholdHumid[Math.floor((snapshot.val().thresholdHumid - 40) / 5)])
 
                 let sensorFeedId = snapshot.val().sensorFeed
                 firebase.database().ref('feeds/' + sensorFeedId).on('value', snapshot => {
@@ -122,6 +130,28 @@ function RoomFeedScreen({ navigation, route }) {
                                 setSelectedMode(item)
                             }}
                         ></AppPicker>
+
+                        <>
+                            <InputLabel label='Threshold Temperature'></InputLabel>
+                            <AppPicker
+                                items={listThresholdTemp}
+                                selectedItem={thresholdTemp}
+                                placeholder='Threshold Temperature'
+                                onSelectItem={item => {
+                                    setThresholdTemp(item)
+                                }}
+                            ></AppPicker>
+
+                            <InputLabel label='Threshold Humidity'></InputLabel>
+                            <AppPicker
+                                items={listThresholdHumid}
+                                selectedItem={thresholdHumid}
+                                placeholder='Threshold Humidity'
+                                onSelectItem={item => {
+                                    setThresholdHumid(item)
+                                }}
+                            ></AppPicker>
+                        </>
 
                         <InputLabel label='Sensor feed'></InputLabel>
                         <InputField
@@ -179,7 +209,8 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         backgroundColor: color.white,
-        paddingHorizontal: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     logo: {
         marginBottom: 30,
@@ -195,3 +226,129 @@ const styles = StyleSheet.create({
 });
 
 export default RoomFeedScreen;
+
+const listThresholdTemp = [
+    {
+        value: 23,
+        label: 23,
+    },
+    {
+        value: 24,
+        label: 24,
+    },
+    {
+        value: 25,
+        label: 25,
+    },
+    {
+        value: 26,
+        label: 26,
+    },
+    {
+        value: 27,
+        label: 27,
+    },
+    {
+        value: 28,
+        label: 28,
+    },
+    {
+        value: 29,
+        label: 29,
+    },
+    {
+        value: 30,
+        label: 30,
+    },
+    {
+        value: 31,
+        label: 31,
+    },
+    {
+        value: 32,
+        label: 32,
+    },
+    {
+        value: 33,
+        label: 33,
+    },
+    {
+        value: 34,
+        label: 34,
+    },
+    {
+        value: 35,
+        label: 35,
+    },
+    {
+        value: 36,
+        label: 36,
+    },
+    {
+        value: 37,
+        label: 37,
+    },
+    {
+        value: 38,
+        label: 38
+    },
+    {
+        value: 39,
+        label: 39,
+    },
+    {
+        value: 40,
+        label: 40,
+    },
+]
+
+const listThresholdHumid = [
+    {
+        value: 40,
+        label: 40,
+    },
+    {
+        value: 45,
+        label: 45,
+    },
+    {
+        value: 50,
+        label: 50,
+    },
+    {
+        value: 55,
+        label: 55,
+    },
+    {
+        value: 60,
+        label: 60,
+    },
+    {
+        value: 65,
+        label: 65,
+    },
+    {
+        value: 70,
+        label: 70,
+    },
+    {
+        value: 75,
+        label: 75,
+    },
+    {
+        value: 80,
+        label: 80,
+    },
+    {
+        value: 85,
+        label: 85,
+    },
+    {
+        value: 90,
+        label: 90,
+    },
+    {
+        value: 95,
+        label: 95,
+    },
+]

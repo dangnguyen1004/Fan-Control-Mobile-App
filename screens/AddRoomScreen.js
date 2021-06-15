@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { View, StyleSheet, Text, TextInput } from 'react-native';
+import { View, StyleSheet, Text, TextInput, ScrollView } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppPicker from '../components/AppPicker';
 import CancelButton from '../components/CancelButton';
@@ -57,7 +57,9 @@ function AddRoomScreen({ navigation }) {
                 humidity: 0,
                 temperature: 0,
                 name: newRoomName,
-                mode: 'Auto'
+                mode: 'Auto',
+                thresholdTemp: 30,
+                thresholdHumid: 70,
             }).then(() => {
                 alert
             })
@@ -78,70 +80,73 @@ function AddRoomScreen({ navigation }) {
     }, [])
 
     return (
-        <ScreenApp style={styles.container}>
-            <ScreenTitle style={styles.logo}>ADD NEW ROOM</ScreenTitle>
-            <ErrorMessage
-                title={errorAdd}
-                visible={true}
-            ></ErrorMessage>
-            <AppPicker
-                items={buildings}
-                selectedItem={selectedBuilding}
-                placeholder='Choose building'
-                onSelectItem={item => {
-                    setSelectedBuilding(item)
-                    setErrorBuilding(null)
-                }}
-            ></AppPicker>
-            <ErrorMessage
-                title={errorBuilding}
-                visible={true}
-            ></ErrorMessage>
+        <ScrollView>
+            <ScreenApp style={styles.container}>
 
-            <AppPicker
-                items={rooms}
-                selectedItem={selectedRoom}
-                onSelectItem={item => {
-                    setSelectedRoom(item)
-                    setErrorRoom(null)
-                }}
-                placeholder='Choose room'
-            ></AppPicker>
-            <ErrorMessage
-                title={errorRoom}
-                visible={true}
-            ></ErrorMessage>
+                <ScreenTitle style={styles.logo}>ADD NEW ROOM</ScreenTitle>
+                <ErrorMessage
+                    title={errorAdd}
+                    visible={true}
+                ></ErrorMessage>
+                <AppPicker
+                    items={buildings}
+                    selectedItem={selectedBuilding}
+                    placeholder='Choose building'
+                    onSelectItem={item => {
+                        setSelectedBuilding(item)
+                        setErrorBuilding(null)
+                    }}
+                ></AppPicker>
+                <ErrorMessage
+                    title={errorBuilding}
+                    visible={true}
+                ></ErrorMessage>
 
-            <Formik
-                initialValues={{ sensor: '', }}
-                onSubmit={handleAdd}
-                validationSchema={validationSchema}
-            >
-                {({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
-                    <>
-                        <InputField
-                            placeholder='Sensors feed'
-                            onChangeText={handleChange('sensor')}
-                            onBlur={() => setFieldTouched('sensor')}
-                        ></InputField>
-                        <ErrorMessage
-                            title={errorSensor}
-                            visible={touched.sensor}
-                        ></ErrorMessage>
-                        <AppButton
-                            style={styles.button}
-                            title='ADD'
-                            onPress={handleSubmit}
-                        ></AppButton>
-                    </>
-                )}
-            </Formik>
+                <AppPicker
+                    items={rooms}
+                    selectedItem={selectedRoom}
+                    onSelectItem={item => {
+                        setSelectedRoom(item)
+                        setErrorRoom(null)
+                    }}
+                    placeholder='Choose room'
+                ></AppPicker>
+                <ErrorMessage
+                    title={errorRoom}
+                    visible={true}
+                ></ErrorMessage>
 
-            <CancelButton
-                title="Cancel"
-                onPress={() => navigation.goBack()}
-            ></CancelButton>
-        </ScreenApp>
+                <Formik
+                    initialValues={{ sensor: '', }}
+                    onSubmit={handleAdd}
+                    validationSchema={validationSchema}
+                >
+                    {({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
+                        <>
+                            <InputField
+                                placeholder='Sensors feed'
+                                onChangeText={handleChange('sensor')}
+                                onBlur={() => setFieldTouched('sensor')}
+                            ></InputField>
+                            <ErrorMessage
+                                title={errorSensor}
+                                visible={touched.sensor}
+                            ></ErrorMessage>
+                            <AppButton
+                                style={styles.button}
+                                title='ADD'
+                                onPress={handleSubmit}
+                            ></AppButton>
+                        </>
+                    )}
+                </Formik>
+
+                <CancelButton
+                    title="Cancel"
+                    onPress={() => navigation.goBack()}
+                ></CancelButton>
+            </ScreenApp>
+        </ScrollView>
     );
 }
 

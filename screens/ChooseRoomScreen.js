@@ -20,10 +20,9 @@ function ChooseRoomScreen({ navigation }) {
         const roomsRef = firebase.database().ref('rooms')
         roomsRef.on('value', snapshot => {
             if (snapshot.val()) {
-                let data = Object.values(snapshot.val())
-                setRooms(Object.values(data))
+                setRooms(Object.values(snapshot.val()))
             }
-            else{
+            else {
                 setRooms([])
             }
         })
@@ -52,11 +51,11 @@ function ChooseRoomScreen({ navigation }) {
                 },
                 {
                     text: "Yes", onPress: () => {
-                        firebase.database().ref('rooms/' + room.name).remove()
-                        if (room.listFans) 
+                        if (room.listFans)
                             room.listFans.forEach(fan => firebase.database().ref('fans/' + fan).remove())
                         if (room.listAirCon)
                             room.listAirCon.forEach(airCon => firebase.database().ref('airCons/' + airCon).remove())
+                        firebase.database().ref('rooms/' + room.name).remove()
                     }
                 }
             ],
@@ -86,7 +85,7 @@ function ChooseRoomScreen({ navigation }) {
                         createAlertDelete(item)
                     }} />}>
                         <TouchableOpacity onPress={
-                            () => navigation.navigate('ControlRoom', { room: item.name.toString() })
+                            () => navigation.navigate('ControlRoom', { roomName: item.name.toString() })
                         }>
                             <View style={styles.room}>
                                 <Text style={{ fontSize: color.fontSize }}>{item.name.toString()}</Text>
@@ -130,60 +129,3 @@ const styles = StyleSheet.create({
 
 export default ChooseRoomScreen;
 
-const rooms = [
-    {
-        value: 1,
-        name: 'H2 - 105',
-    },
-    {
-        value: 2,
-        name: 'H2 - 105',
-    },
-    {
-        value: 3,
-        name: 'H2 - 105',
-    },
-    {
-        value: 4,
-        name: 'H2 - 105',
-    },
-    {
-        value: 5,
-        name: 'H2 - 105',
-    },
-    {
-        value: 6,
-        name: 'H2 - 105',
-    },
-    {
-        value: 7,
-        name: 'H2 - 105',
-    }, {
-        value: 8,
-        name: 'H2 - 105',
-    }, {
-        value: 9,
-        name: 'H2 - 105',
-    }, {
-        value: 10,
-        name: 'H2 - 105',
-    }, {
-        value: 11,
-        name: 'H2 - 105',
-    }, {
-        value: 12,
-        name: 'H2 - 105',
-    }, {
-        value: 13,
-        name: 'H2 - 105',
-    }, {
-        value: 14,
-        name: 'H2 - 105',
-    }, {
-        value: 15,
-        name: 'H2 - 105',
-    }, {
-        value: 16,
-        name: 'H2 - 105',
-    },
-]

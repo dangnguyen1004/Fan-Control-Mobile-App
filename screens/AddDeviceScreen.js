@@ -33,20 +33,18 @@ function AddDeviceScreen({ route, navigation }) {
             setErrorType('Type is required')
             return
         }
-        
+
         let listAllDevicesName = listFansName.concat(listAirConsName)
-        if (listAllDevicesName.includes(values.name)){
+        if (listAllDevicesName.includes(values.name)) {
             setErrorAdd('Device already exists')
             return
         }
-        
+
         if (deviceType.type === 'fan') {
             let newDevices = []
             if (room.listFans) newDevices = [...room.listFans, values.name]
             else newDevices = [values.name]
 
-            firebase.database().ref('rooms/' + room.name)
-                .child('listFans').set(newDevices)
             firebase.database().ref('fans')
                 .child(values.name).set({
                     feed: room.fanFeed,
@@ -54,13 +52,13 @@ function AddDeviceScreen({ route, navigation }) {
                     isOn: false,
                     type: 'fan',
                 })
+            firebase.database().ref('rooms/' + room.name)
+                .child('listFans').set(newDevices)
         } else {
             let newDevices = []
             if (room.listAirCon) newDevices = [...room.listAirCon, values.name]
             else newDevices = [values.name]
 
-            firebase.database().ref('rooms/' + room.name)
-                .child('listAirCon').set(newDevices)
             firebase.database().ref('airCons')
                 .child(values.name).set({
                     feed: room.airConFeed,
@@ -68,6 +66,8 @@ function AddDeviceScreen({ route, navigation }) {
                     isOn: false,
                     type: 'airCon',
                 })
+            firebase.database().ref('rooms/' + room.name)
+                .child('listAirCon').set(newDevices)
         }
 
         navigation.navigate('ControlRoom')

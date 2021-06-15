@@ -40,9 +40,9 @@ function ActivityLogScreen({ navigation }) {
 
     return (
         <ScreenApp style={styles.container}>
-            <ScreenTitle style={{ marginBottom: 20, }}>Activity Log</ScreenTitle>
+            <Text style={styles.logo}>Activity log</Text>
             <InputField
-                style={{marginBottom: 30,}}
+                style={{marginBottom: 30, marginTop: 30,}}
                 placeholder="Search"
             ></InputField>
 
@@ -72,6 +72,10 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
         alignItems: 'center',
     },
+    logo: {
+        fontSize: color.fontSizeTitle,
+        fontWeight: 'bold',
+    }
 });
 
 export default ActivityLogScreen;

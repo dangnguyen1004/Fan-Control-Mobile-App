@@ -6,6 +6,9 @@ import AccountNavigator from './AccountNavigator'
 import color from '../config/color';
 import ControlNavigator from './ControlNavigator';
 import ActivityLogScreen from '../screens/ActivityLogScreen';
+import GrantRoomsScreen from '../screens/GrantRoomsScreen';
+import { Entypo } from '@expo/vector-icons';
+import ManageAccessNavigator from './ManageAccessNavigator';
 
 const Tab = createBottomTabNavigator()
 const AppNavigator = () => (
@@ -17,6 +20,11 @@ const AppNavigator = () => (
         <Tab.Screen name='ControlNavigator' component={ControlNavigator} options={{
             tabBarLabel: 'Control', tabBarIcon: () => (
                 <MaterialCommunityIcons name='remote' size={25} color={color.primary}></MaterialCommunityIcons>
+            )
+        }}></Tab.Screen>
+        <Tab.Screen name='ManageAccessNavigator' component={ManageAccessNavigator} options={{
+            tabBarLabel: 'ManageAccess', tabBarIcon: () => (
+                <Entypo name="key" size={25} color={color.primary} />
             )
         }}></Tab.Screen>
         <Tab.Screen name='ActivityLog' component={ActivityLogScreen} options={{

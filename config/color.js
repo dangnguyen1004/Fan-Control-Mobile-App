@@ -10,4 +10,5 @@ export default {
     fontSize: 20,
     padding: 10,
     fontSizeTitle: 30,
+    accept: '#00ff00',
 }

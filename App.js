@@ -20,10 +20,15 @@ import AppNavigator from './navigator/AppNavigator';
 import { useEffect } from 'react';
 import firebase from './firebase/connectFirebase'
 import PasswordScreen from './screens/PasswordScreen';
+import ClientAccountScreen from './screens/ClientAccountScreen';
+import ClientChooseRoomScreen from './screens/ClientChooseRoomScreen'
+import ClientControlRoomScreen from './screens/ClientControlRoomScreen'
+import ClientAppNavigator from './navigator/ClientAppNavigator';
 
 
 function App(props) {
    const [user, setUser] = useState()
+
    useEffect(() => {
       firebase.auth().onAuthStateChanged(user => {
          setUser(user)
@@ -32,9 +37,8 @@ function App(props) {
 
    return (
       <NavigationContainer>
-         {user ? <AppNavigator></AppNavigator> : <AuthNavigator></AuthNavigator>}
+         {user ? (user.email === 'admin@gmail.com' ? <AppNavigator /> : <ClientAppNavigator />) : <AuthNavigator />}
       </NavigationContainer>
-      // <PasswordScreen></PasswordScreen>
    );
 }
 

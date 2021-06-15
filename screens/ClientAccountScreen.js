@@ -11,14 +11,6 @@ import firebase from '../firebase/connectFirebase'
 
 const menuItems = [
     {
-        title: "Adafruit Account",
-        icon: {
-            name: 'server',
-            backGroundColor: color.primary,
-        },
-        route: 'AdaAccount',
-    },
-    {
         title: "Notification",
         icon: {
             name: 'bell',
@@ -30,7 +22,7 @@ const menuItems = [
         title: "Password",
         icon: {
             name: 'onepassword',
-            backGroundColor: '#e6e6ea',
+            backGroundColor: '#10b9e8',
         },
         route: 'Password',
     },
@@ -42,17 +34,25 @@ const menuItems = [
         },
         route: 'Phone',
     },
+    {
+        title: 'Recent Activity',
+        icon: {
+            name: 'history',
+            backgroundColor: '#e87510'
+        },
+        route: 'ClientActivity'
+    }
 ]
 
-function AccountScreen({ navigation }) {
+function ClientAccountScreen({ navigation }) {
     const [userEmail, setUserEmail] = useState()
     const [userName, setUserName] = useState()
-    const [userId, setUserId] = useState()
+    const [uid, setUid] = useState()
 
     useEffect(() => {
         let user = firebase.auth().currentUser
         setUserEmail(user.email)
-        setUserId(user.uid)
+        setUid(user.uid)
         const userRef = firebase.database().ref('users/' + user.uid)
         userRef.once('value').then((snapshot) => {
             let data = snapshot.val()
@@ -71,19 +71,19 @@ function AccountScreen({ navigation }) {
     }
 
     const createAlertLogOut = () => handleSignOut()
-        // Alert.alert(
-        //     "Log out",
-        //     "You will be returned to the login screen",
-        //     [
-        //         {
-        //             text: "Cancel",
-        //             onPress: () => console.log("Cancel Pressed"),
-        //             style: "cancel"
-        //         },
-        //         { text: "OK", onPress: handleSignOut }
-        //     ],
-        //     { cancelable: false }
-        // );
+    // Alert.alert(
+    //     "Log out",
+    //     "You will be returned to the login screen",
+    //     [
+    //         {
+    //             text: "Cancel",
+    //             onPress: () => console.log("Cancel Pressed"),
+    //             style: "cancel"
+    //         },
+    //         { text: "OK", onPress: handleSignOut }
+    //     ],
+    //     { cancelable: false }
+    // );
 
     return (
         <ScreenApp style={{
@@ -163,4 +163,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default AccountScreen;
+export default ClientAccountScreen;
