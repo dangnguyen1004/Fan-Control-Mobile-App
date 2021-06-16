@@ -23,6 +23,16 @@ function ClientChooseRoomScreen({ navigation }) {
         })
     }
 
+    const handleSearch = async (text) => {
+        if (!text) {
+            getRooms()
+            return
+        }
+        let pattern = new RegExp(text, 'g');
+        let searchResult = await rooms.filter(item => item.toString().match(pattern))
+        setRooms(searchResult)
+    }
+
     useEffect(() => {
         getRooms()
     }, [])
@@ -40,6 +50,7 @@ function ClientChooseRoomScreen({ navigation }) {
 
             <InputField
                 placeholder='Search room'
+                onChangeText={handleSearch}
             ></InputField>
 
             <FlatList

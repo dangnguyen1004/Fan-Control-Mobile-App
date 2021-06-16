@@ -17,9 +17,7 @@ import AppPicker from '../components/AppPicker'
 import moment from 'moment'
 
 const validationSchema = Yup.object().shape({
-    sensorFeed: Yup.string().required().label('Sensor feed'),
-    fanFeed: Yup.string().required().label('Fan feed'),
-    airConFeed: Yup.string().required().label('Air-conditioner feed'),
+    sensorFeed: Yup.string().label('Sensor feed'),
 })
 
 const deviceModes = [
@@ -37,10 +35,7 @@ const deviceModes = [
 function RoomFeedScreen({ navigation, route }) {
     const [room, setRoom] = useState()
     const { roomName } = route.params
-    // const roomName = 'H1-101'
     const [sensorFeed, setSensorFeed] = useState()
-    const [fanFeed, setFanFeed] = useState()
-    const [airConFeed, setAirConFeed] = useState()
     const roomRef = firebase.database().ref('rooms/' + roomName)
     const [selectedMode, setSelectedMode] = useState()
     const [thresholdTemp, setThresholdTemp] = useState()
@@ -57,23 +52,6 @@ function RoomFeedScreen({ navigation, route }) {
         } else {
             let newKey = firebase.database().ref('feeds').push({ feed: values.sensorFeed })
             roomRef.child('sensorFeed').set(newKey.key)
-        }
-
-        if (room.fanFeed) {
-            firebase.database().ref('feeds/' + room.fanFeed)
-                .child('feed').set(values.fanFeed)
-        } else {
-            let newKey = firebase.database().ref('feeds').push({ feed: values.fanFeed })
-            roomRef.child('fanFeed').set(newKey.key)
-        }
-
-
-        if (room.airConFeed) {
-            firebase.database().ref('feeds/' + room.airConFeed)
-                .child('feed').set(values.airConFeed)
-        } else {
-            let newKey = firebase.database().ref('feeds').push({ feed: values.airConFeed })
-            roomRef.child('airConFeed').set(newKey.key)
         }
 
         firebase.database().ref('rooms/' + room.name).child('mode').set(selectedMode.label)
@@ -93,27 +71,14 @@ function RoomFeedScreen({ navigation, route }) {
         roomRef.on('value', (snapshot) => {
             if (snapshot.val()) {
                 setRoom(snapshot.val())
+                
+                if (snapshot.val().sensorFeed) setSensorFeed(snapshot.val().sensorFeed)
 
                 if (snapshot.val().mode == 'Auto') setSelectedMode(deviceModes[0])
                 else setSelectedMode(deviceModes[1])
 
                 if (snapshot.val().thresholdTemp) setThresholdTemp(listThresholdTemp[snapshot.val().thresholdTemp - 23])
                 if (snapshot.val().thresholdHumid) setThresholdHumid(listThresholdHumid[Math.floor((snapshot.val().thresholdHumid - 40) / 5)])
-
-                let sensorFeedId = snapshot.val().sensorFeed
-                firebase.database().ref('feeds/' + sensorFeedId).on('value', snapshot => {
-                    if (snapshot.val()) setSensorFeed(snapshot.val().feed)
-                })
-
-                let fanFeedId = snapshot.val().fanFeed
-                firebase.database().ref('feeds/' + fanFeedId).on('value', snapshot => {
-                    if (snapshot.val()) setFanFeed(snapshot.val().feed)
-                })
-
-                let airConFeedId = snapshot.val().airConFeed
-                firebase.database().ref('feeds/' + airConFeedId).on('value', snapshot => {
-                    if (snapshot.val()) setAirConFeed(snapshot.val().feed)
-                })
             }
         })
     }
@@ -127,7 +92,7 @@ function RoomFeedScreen({ navigation, route }) {
             <ScreenApp style={styles.container}>
                 <ScreenTitle style={styles.logo}>Room setting</ScreenTitle>
                 <Formik
-                    initialValues={{ sensorFeed: '', fanFeed: '', airConFeed: '', }}
+                    initialValues={{ sensorFeed: '', }}
                     onSubmit={handleFeedChange}
                     validationSchema={validationSchema}
                 >{({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
@@ -174,30 +139,6 @@ function RoomFeedScreen({ navigation, route }) {
                         <ErrorMessage
                             title={errors.sensorFeed}
                             visible={touched.sensorFeed}
-                        ></ErrorMessage>
-
-                        <InputLabel label='Fan feed'></InputLabel>
-                        <InputField
-                            placeholder='Fan Feed'
-                            defaultValue={fanFeed}
-                            onChangeText={handleChange('fanFeed')}
-                            onBlur={() => setFieldTouched('fanFeed')}
-                        ></InputField>
-                        <ErrorMessage
-                            title={errors.fanFeed}
-                            visible={touched.fanFeed}
-                        ></ErrorMessage>
-
-                        <InputLabel label='Air-conditioner feed'></InputLabel>
-                        <InputField
-                            placeholder='Air-conditioner Feed'
-                            defaultValue={airConFeed}
-                            onChangeText={handleChange('airConFeed')}
-                            onBlur={() => setFieldTouched('airConFeed')}
-                        ></InputField>
-                        <ErrorMessage
-                            title={errors.airConFeed}
-                            visible={touched.airConFeed}
                         ></ErrorMessage>
 
                         <AppButton

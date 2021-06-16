@@ -17,12 +17,12 @@ import moment from 'moment'
 
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().required().label('Device name'),
+    name: Yup.string().required().label("Device's name"),
+    feed: Yup.string().required().label("Device's feed")
 })
 
 function AddDeviceScreen({ route, navigation }) {
     const { room } = route.params
-    console.log(room)
     const [deviceType, setDeviceType] = useState()
     const [errorType, setErrorType] = useState()
     const [errorAdd, setErrorAdd] = useState()
@@ -45,6 +45,7 @@ function AddDeviceScreen({ route, navigation }) {
             return
         }
 
+        // add to fans / airCons firebase
         if (deviceType.type === 'fan') {
             let newDevices = []
             if (room.listFans) newDevices = [...room.listFans, values.name]
@@ -56,6 +57,7 @@ function AddDeviceScreen({ route, navigation }) {
                     id: values.name,
                     isOn: false,
                     type: 'fan',
+                    feed: values.feed,
                 })
             firebase.database().ref('rooms/' + room.name)
                 .child('listFans').set(newDevices)
@@ -70,6 +72,7 @@ function AddDeviceScreen({ route, navigation }) {
                     id: values.name,
                     isOn: false,
                     type: 'airCon',
+                    feed: values.feed,
                 })
             firebase.database().ref('rooms/' + room.name)
                 .child('listAirCon').set(newDevices)
@@ -78,7 +81,7 @@ function AddDeviceScreen({ route, navigation }) {
         // write admin log
         firebase.database().ref('logs/' + color.adminUid).push({
             time: getCurrentTime(),
-            log: 'You added device ' + values.name + ' to room ' + room.name
+            log: 'You added device ' + values.name + ' to room ' + room.name + ' with feed ' + values.feed
         })
 
         navigation.navigate('ControlRoom')
@@ -109,7 +112,7 @@ function AddDeviceScreen({ route, navigation }) {
         <ScreenApp style={styles.container}>
             <ScreenTitle style={styles.logo}>ADD NEW DEVICE</ScreenTitle>
             <Formik
-                initialValues={{ name: '' }}
+                initialValues={{ name: '', feed: '', }}
                 onSubmit={handleAdd}
                 validationSchema={validationSchema}
             >
@@ -119,6 +122,7 @@ function AddDeviceScreen({ route, navigation }) {
                             title={errorAdd}
                             visible={true}
                         ></ErrorMessage>
+
                         <AppPicker
                             items={deviceTypes}
                             selectedItem={deviceType}
@@ -134,13 +138,23 @@ function AddDeviceScreen({ route, navigation }) {
                         ></ErrorMessage>
 
                         <InputField
-                            placeholder='Device name'
+                            placeholder="Device's name"
                             onChangeText={handleChange('name')}
                             onBlur={() => setFieldTouched('name')}
                         ></InputField>
                         <ErrorMessage
                             title={errors.name}
                             visible={touched.name}
+                        ></ErrorMessage>
+
+                        <InputField
+                            placeholder="Device's feed"
+                            onChangeText={handleChange('feed')}
+                            onBlur={() => setFieldTouched('feed')}
+                        ></InputField>
+                        <ErrorMessage
+                            title={errors.feed}
+                            visible={touched.feed}
                         ></ErrorMessage>
 
                         <AppButton

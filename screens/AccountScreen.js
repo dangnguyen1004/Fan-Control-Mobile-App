@@ -19,14 +19,6 @@ const menuItems = [
         route: 'AdaAccount',
     },
     {
-        title: "Notification",
-        icon: {
-            name: 'bell',
-            backGroundColor: '#fed766',
-        },
-        route: 'Notification',
-    },
-    {
         title: "Password",
         icon: {
             name: 'onepassword',

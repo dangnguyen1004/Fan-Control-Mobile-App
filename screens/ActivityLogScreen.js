@@ -6,6 +6,7 @@ import InputField from '../components/InputField';
 import { useState } from 'react';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import { useEffect } from 'react';
+import firebase from '../firebase/connectFirebase'
 
 
 function ActivityLogScreen({ navigation }) {
@@ -37,18 +38,33 @@ function ActivityLogScreen({ navigation }) {
 
     ])
 
+    const getLogs = async () => {
+        firebase.database().ref('logs/' + color.adminUid).on('value', snapshot => {
+            if (snapshot.val()) setLogs(Object.values(snapshot.val()).reverse())
+        })
+    }
+
+    const handleSearch = async (text) => {
+        if (!text) {
+            getLogs()
+            return
+        }
+        let pattern = new RegExp(text, 'g');
+        let searchResult = await logs.filter(item => item.time.toString().match(pattern) || item.log.toString().match(pattern))
+        setLogs(searchResult)
+    }
 
     useEffect(() => {
+        getLogs()
     }, [])
-
-
 
     return (
         <ScreenApp style={styles.container}>
             <Text style={styles.logo}>Activity log</Text>
             <InputField
-                style={{ marginBottom: 30, marginTop: 30, }}
+                style={{ marginBottom: 30, marginTop: 30, padding: 10, }}
                 placeholder="Search"
+                onChangeText={handleSearch}
             ></InputField>
 
             <FlatList
@@ -80,6 +96,10 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
+    },
+    room: {
+        marginTop: 10,
+        marginBottom: 10,
     }
 });
 

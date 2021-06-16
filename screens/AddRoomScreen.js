@@ -55,10 +55,9 @@ function AddRoomScreen({ navigation }) {
             return
         }
 
-        let newFeed = firebase.database().ref('feeds').push({ feed: values.sensor })
         firebase.database().ref('rooms')
             .child(newRoomName).set({
-                sensorFeed: newFeed.key,
+                sensorFeed: values.sensor,
                 humidity: 0,
                 temperature: 0,
                 name: newRoomName,
@@ -66,7 +65,7 @@ function AddRoomScreen({ navigation }) {
                 thresholdTemp: 30,
                 thresholdHumid: 70,
             }).then(() => {
-                alert
+                
             })
 
         // write admin log

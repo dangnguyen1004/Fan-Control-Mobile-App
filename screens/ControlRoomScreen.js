@@ -22,7 +22,6 @@ function ControlRoomScreen({ route, navigation }) {
     const getCurrentTime = () => {
         return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
     }
-    // let listFans, listAirCons
 
     const initData = async () => {
         firebase.database().ref('rooms/' + roomName).on('value', snapshot => {
@@ -56,21 +55,6 @@ function ControlRoomScreen({ route, navigation }) {
 
     }
 
-    const createAlert = () =>
-        Alert.alert(
-            "Nope",
-            "You have to define fan's feed",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "OK", onPress: () => navigation.navigate('RoomFeed', { roomName: roomName }) }
-            ],
-            { cancelable: false }
-        );
-
     const createAlertDelete = (item, room) =>
         Alert.alert(
             "Delete ?",
@@ -86,7 +70,7 @@ function ControlRoomScreen({ route, navigation }) {
                         // write admin log
                         firebase.database().ref('logs/' + color.adminUid).push({
                             time: getCurrentTime(),
-                            log: 'You deleted device ' + item.id + ' from room ' + room.name 
+                            log: 'You deleted device ' + item.id + ' from room ' + room.name
                         })
 
                         if (item.type == 'fan') {
@@ -107,15 +91,8 @@ function ControlRoomScreen({ route, navigation }) {
         );
 
     const handleAdd = () => {
-        if (!room.fanFeed || !room.airConFeed) {
-            console.log(room)
-            createAlert()
-        }
-        else {
-            navigation.navigate('AddDevice', { room: room })
-        }
+        navigation.navigate('AddDevice', { room: room })
     }
-
 
     useEffect(() => {
         initData()
@@ -146,9 +123,9 @@ function ControlRoomScreen({ route, navigation }) {
                 sections={devices}
                 keyExtractor={(item, index) => item + index}
                 ItemSeparatorComponent={AccountItemSeparator}
-                SectionSeparatorComponent={() => <View style={{marginTop: 10,}}></View>}
+                SectionSeparatorComponent={() => <View style={{ marginTop: 10, }}></View>}
                 renderSectionHeader={({ section: { title } }) => (
-                    <Text style={{fontSize: 17, fontWeight: 'bold'}}>{title}</Text>
+                    <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{title}</Text>
                 )}
                 renderItem={({ item }) => (
                     <DeviceItem

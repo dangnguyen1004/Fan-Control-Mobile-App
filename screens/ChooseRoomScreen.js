@@ -16,12 +16,19 @@ import moment from 'moment'
 
 function ChooseRoomScreen({ navigation }) {
     const [rooms, setRooms] = useState([])
+    const [allUsers, setAllUsers] = useState()
+
+    const getAllUsers = async () => {
+        firebase.database().ref('users').on('value', snapshot => {
+            if (snapshot.val()) setAllUsers(snapshot.val())
+        })
+    }
 
     const getCurrentTime = () => {
         return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
     }
 
-    useEffect(() => {
+    const getRooms = async () => {
         const roomsRef = firebase.database().ref('rooms')
         roomsRef.on('value', snapshot => {
             if (snapshot.val()) {
@@ -31,10 +38,41 @@ function ChooseRoomScreen({ navigation }) {
                 setRooms([])
             }
         })
+    }
+
+    useEffect(() => {
+        getRooms()
+        getAllUsers()
     }, [])
 
     const handleAdd = () => {
         navigation.navigate('AddRoom')
+    }
+
+    const handleDelete = async (room) => {
+        // write admin log
+        firebase.database().ref('logs/' + color.adminUid).push({
+            time: getCurrentTime(),
+            log: 'You deleted room ' + room.name,
+        })
+
+        // remove from controllableRoom of all users
+        let listUid = Object.keys(allUsers)
+        for (let i = 0; i < listUid.length; i++) {
+            let user = await firebase.database().ref('users/' + listUid[i]).once('value')
+            if (user.val().controllableRooms) {
+                firebase.database().ref('users/' + listUid[i]).child('controllableRooms').set(user.val().controllableRooms.filter(item => item != room.name))
+            }
+        }
+
+        // remove room's devices
+        if (room.listFans)
+            room.listFans.forEach(fan => firebase.database().ref('fans/' + fan).remove())
+        if (room.listAirCon)
+            room.listAirCon.forEach(airCon => firebase.database().ref('airCons/' + airCon).remove())
+
+        // remove room
+        firebase.database().ref('rooms/' + room.name).remove()
     }
 
     const createAlertDelete = (room) =>
@@ -48,23 +86,21 @@ function ChooseRoomScreen({ navigation }) {
                     style: "cancel"
                 },
                 {
-                    text: "Yes", onPress: () => {
-                        // write admin log
-                        firebase.database().ref('logs/' + color.adminUid).push({
-                            time: getCurrentTime(),
-                            log: 'You deleted room ' + room.name,
-                        })
-
-                        if (room.listFans)
-                            room.listFans.forEach(fan => firebase.database().ref('fans/' + fan).remove())
-                        if (room.listAirCon)
-                            room.listAirCon.forEach(airCon => firebase.database().ref('airCons/' + airCon).remove())
-                        firebase.database().ref('rooms/' + room.name).remove()
-                    }
+                    text: "Yes", onPress: () => handleDelete(room)
                 }
             ],
             { cancelable: false }
         );
+
+    const handleSearch = async (text) => {
+        if (!text) {
+            getRooms()
+            return
+        }
+        let pattern = new RegExp(text, 'g');
+        let searchResult = await rooms.filter(item => item.name.toString().match(pattern))
+        setRooms(searchResult)
+    }
 
     return (
         <ScreenApp style={styles.container}>
@@ -76,6 +112,7 @@ function ChooseRoomScreen({ navigation }) {
 
             <InputField
                 placeholder='Search room'
+                onChangeText={handleSearch}
             ></InputField>
 
             <FlatList

@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import firebase from '../firebase/connectFirebase';
+import InputField from '../components/InputField';
 
 
 function ClientActivityScreen({ navigation }) {
@@ -17,6 +18,16 @@ function ClientActivityScreen({ navigation }) {
         firebase.database().ref('logs/' + user.uid).on('value', snapshot => {
             if (snapshot.val()) setLogs(Object.values(snapshot.val()).reverse())
         })
+    }
+
+    const handleSearch = async (text) => {
+        if (!text) {
+            getActivityLogs()
+            return
+        }
+        let pattern = new RegExp(text, 'g');
+        let searchResult = await logs.filter(item => item.time.toString().match(pattern) || item.log.toString().match(pattern))
+        setLogs(searchResult)
     }
 
     useEffect(() => {
@@ -31,6 +42,11 @@ function ClientActivityScreen({ navigation }) {
                 </TouchableOpacity>
                 <Text style={styles.logo}>Recent Activity</Text>
             </View>
+            
+            <InputField
+                placeholder="Search"
+                onChangeText={handleSearch}
+            ></InputField>
 
             <FlatList
                 style={styles.listRooms}
