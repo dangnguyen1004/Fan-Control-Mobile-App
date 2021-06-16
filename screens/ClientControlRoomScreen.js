@@ -83,6 +83,7 @@ function ClientControlRoomScreen({ route, navigation }) {
                 renderItem={({ item }) => (
                     <ClientDeviceItem
                         item={item}
+                        roomName={roomName}
                     ></ClientDeviceItem>
                 )}
             ></SectionList>

@@ -13,6 +13,7 @@ import color from '../config/color';
 import ErrorMessage from '../components/ErrorMessage';
 import CancelButton from '../components/CancelButton';
 import { useEffect } from 'react';
+import moment from 'moment'
 
 
 const validationSchema = Yup.object().shape({
@@ -27,6 +28,10 @@ function AddDeviceScreen({ route, navigation }) {
     const [errorAdd, setErrorAdd] = useState()
     const [listFansName, setListFansName] = useState([])
     const [listAirConsName, setListAirConsName] = useState([])
+
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
 
     const handleAdd = (values) => {
         if (!deviceType) {
@@ -69,6 +74,12 @@ function AddDeviceScreen({ route, navigation }) {
             firebase.database().ref('rooms/' + room.name)
                 .child('listAirCon').set(newDevices)
         }
+
+        // write admin log
+        firebase.database().ref('logs/' + color.adminUid).push({
+            time: getCurrentTime(),
+            log: 'You added device ' + values.name + ' to room ' + room.name
+        })
 
         navigation.navigate('ControlRoom')
     }

@@ -2,11 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Text, FlatList } from 'react-native';
 import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import ScreenTitle from '../components/ScreenTitle';
 import InputField from '../components/InputField';
 import { useState } from 'react';
 import AccountItemSeparator from '../components/AccountItemSeparator';
+import { useEffect } from 'react';
 
 
 function ActivityLogScreen({ navigation }) {
@@ -38,11 +37,17 @@ function ActivityLogScreen({ navigation }) {
 
     ])
 
+
+    useEffect(() => {
+    }, [])
+
+
+
     return (
         <ScreenApp style={styles.container}>
             <Text style={styles.logo}>Activity log</Text>
             <InputField
-                style={{marginBottom: 30, marginTop: 30,}}
+                style={{ marginBottom: 30, marginTop: 30, }}
                 placeholder="Search"
             ></InputField>
 

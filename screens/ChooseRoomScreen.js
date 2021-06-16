@@ -11,10 +11,15 @@ import { useEffect } from 'react';
 import InputField from '../components/InputField';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import RoomDeleteAction from '../components/RoomDeleteAction';
+import moment from 'moment'
 
 
 function ChooseRoomScreen({ navigation }) {
     const [rooms, setRooms] = useState([])
+
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
 
     useEffect(() => {
         const roomsRef = firebase.database().ref('rooms')
@@ -27,13 +32,6 @@ function ChooseRoomScreen({ navigation }) {
             }
         })
     }, [])
-    // const roomsRef = firebase.database().ref('rooms')
-    // roomsRef.on("value", function (snapshot) {
-    //     console.log(snapshot.val());
-    //     setRoomsNew(snapshot.val())
-    // }, function (error) {
-    //     console.log("Error: " + error.code);
-    // });
 
     const handleAdd = () => {
         navigation.navigate('AddRoom')
@@ -51,6 +49,12 @@ function ChooseRoomScreen({ navigation }) {
                 },
                 {
                     text: "Yes", onPress: () => {
+                        // write admin log
+                        firebase.database().ref('logs/' + color.adminUid).push({
+                            time: getCurrentTime(),
+                            log: 'You deleted room ' + room.name,
+                        })
+
                         if (room.listFans)
                             room.listFans.forEach(fan => firebase.database().ref('fans/' + fan).remove())
                         if (room.listAirCon)

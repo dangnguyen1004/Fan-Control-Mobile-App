@@ -10,6 +10,7 @@ import firebase from '../firebase/connectFirebase'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import SettingButton from '../components/SettingButton';
 import AddButton from '../components/AddButton';
+import moment from 'moment'
 
 function ControlRoomScreen({ route, navigation }) {
     const { roomName } = route.params
@@ -18,7 +19,9 @@ function ControlRoomScreen({ route, navigation }) {
     const [humidity, setHumidity] = useState()
     const [devices, setDevices] = useState([])
 
-
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
     // let listFans, listAirCons
 
     const initData = async () => {
@@ -80,8 +83,12 @@ function ControlRoomScreen({ route, navigation }) {
                 },
                 {
                     text: "Yes", onPress: () => {
-                        console.log('Delete device ' + item.id + ' from room ' + room.name)
-                        console.log(item.id)
+                        // write admin log
+                        firebase.database().ref('logs/' + color.adminUid).push({
+                            time: getCurrentTime(),
+                            log: 'You deleted device ' + item.id + ' from room ' + room.name 
+                        })
+
                         if (item.type == 'fan') {
                             let newListFans = room.listFans.filter(fan => fan != item.id)
                             firebase.database().ref('rooms/' + room.name).child('listFans').set(newListFans)
@@ -92,6 +99,7 @@ function ControlRoomScreen({ route, navigation }) {
                             firebase.database().ref('rooms/' + room.name).child('listAirCon').set(newListAirCons)
                             firebase.database().ref('airCons/' + item.id).remove()
                         }
+
                     }
                 }
             ],
@@ -146,6 +154,7 @@ function ControlRoomScreen({ route, navigation }) {
                     <DeviceItem
                         item={item}
                         onPressDelete={() => createAlertDelete(item, room)}
+                        roomName={roomName}
                     ></DeviceItem>
                 )}
             ></SectionList>

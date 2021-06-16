@@ -11,10 +11,15 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import firebase from '../firebase/connectFirebase';
 import RequestItem from '../components/RequestItem';
 import AppButton from '../components/AppButton';
+import moment from 'moment'
 
 
 function GrantRoomsScreen({ navigation }) {
     const [requests, setRequests] = useState([])
+
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
 
     const handleAccept = async (email, uid, room, key) => {
         // remove from pending requests list 
@@ -29,11 +34,18 @@ function GrantRoomsScreen({ navigation }) {
 
         // append user to list user of room
         let listUsersOfRoom = await firebase.database().ref('rooms/' + room).child('users').once('value')
-        let newListUsers = listUsersOfRoom.val() ? [...listUsersOfRoom.val(), {uid: uid, email: email}] : [{uid: uid, email: email}]
+        let newListUsers = listUsersOfRoom.val() ? [...listUsersOfRoom.val(), { uid: uid, email: email }] : [{ uid: uid, email: email }]
         firebase.database().ref('rooms/' + room).child('users').set(newListUsers)
 
         // Notice to user
         firebase.database().ref('users/' + uid).child('notifications').push('Admin has accepted your request to control room ' + room)
+
+        // Write log of admin
+        let admin = await firebase.auth().currentUser
+        firebase.database().ref('logs/' + admin.uid).push({
+            time: getCurrentTime(),
+            log: 'You accepted request to control room of ' + email,
+        })
     }
 
     const handleDeny = async (email, uid, room, key) => {
@@ -47,6 +59,14 @@ function GrantRoomsScreen({ navigation }) {
 
         // notice to user
         firebase.database().ref('users/' + uid).child('notifications').push('Admin has denied you request to control room ' + room)
+
+        // Write log of admin
+        let admin = await firebase.auth().currentUser
+        firebase.database().ref('logs/' + admin.uid).push({
+            time: getCurrentTime(),
+            log: 'You denied request to control room of ' + email,
+        })
+
     }
 
     const getRequests = async () => {

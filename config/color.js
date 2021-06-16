@@ -11,4 +11,5 @@ export default {
     padding: 10,
     fontSizeTitle: 30,
     accept: '#00ff00',
+    adminUid: 'nEjXfLjaY6VwR0oxqUnGHtUbeEZ2',
 }

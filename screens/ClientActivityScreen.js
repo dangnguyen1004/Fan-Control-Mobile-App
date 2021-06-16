@@ -15,7 +15,7 @@ function ClientActivityScreen({ navigation }) {
     const getActivityLogs = async () => {
         let user = await firebase.auth().currentUser
         firebase.database().ref('logs/' + user.uid).on('value', snapshot => {
-            if (snapshot.val()) setLogs(Object.values(snapshot.val()))
+            if (snapshot.val()) setLogs(Object.values(snapshot.val()).reverse())
         })
     }
 
@@ -35,7 +35,7 @@ function ClientActivityScreen({ navigation }) {
             <FlatList
                 style={styles.listRooms}
                 data={logs}
-                keyExtractor={item => item.time}
+                keyExtractor={item => item.time + item.log}
                 ItemSeparatorComponent={AccountItemSeparator}
                 renderItem={({ item }) => (
                         <View style={styles.room}>
@@ -67,6 +67,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginRight: '25%',
     },
+    room: {
+        marginTop: 10,
+        marginBottom: 10,
+    }
 });
 
 export default ClientActivityScreen;

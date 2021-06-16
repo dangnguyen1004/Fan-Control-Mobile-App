@@ -13,6 +13,7 @@ import firebase from '../firebase/connectFirebase'
 import { Formik } from 'formik';
 import ErrorMessage from '../components/ErrorMessage';
 import { useEffect } from 'react';
+import moment from 'moment'
 
 const validationSchema = Yup.object().shape({
     sensor: Yup.string().label('Sensor'),
@@ -26,6 +27,10 @@ function AddRoomScreen({ navigation }) {
     const [allRoomsName, setAllRoomsName] = useState([])
     const [errorAdd, setErrorAdd] = useState()
     const [errorSensor, setErrorSensor] = useState()
+
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
 
     const handleAdd = (values) => {
         if (!selectedBuilding) {
@@ -63,6 +68,12 @@ function AddRoomScreen({ navigation }) {
             }).then(() => {
                 alert
             })
+
+        // write admin log
+        firebase.database().ref('logs/' + color.adminUid).push({
+            time: getCurrentTime(),
+            log: 'You created room ' + newRoomName,
+        })
 
         navigation.goBack()
     }
@@ -155,6 +166,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginRight: 10,
         marginLeft: 10,
+        backgroundColor: color.white,
     },
     logo: {
         marginBottom: 20,

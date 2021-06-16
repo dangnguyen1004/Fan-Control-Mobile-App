@@ -9,13 +9,23 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import firebase from '../firebase/connectFirebase'
+import moment from 'moment'
 
 
 function ManageAccessScreen({ navigation }) {
     const [data, setData] = useState([])
 
-    const handleRevoke = async (uid, roomName) => {
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
+
+    const handleRevoke = async (email, uid, roomName) => {
+        //write admin log
         console.log('Revoke ' + uid + ' from room ' + roomName)
+        firebase.database().ref('logs/' + color.adminUid).push({
+            time: getCurrentTime(),
+            log: 'You revoked control room ' + roomName + ' of ' + email, 
+        })
 
         // remove uid from list user of this room
         let room = await firebase.database().ref('rooms/' + roomName).once('value')
@@ -67,7 +77,7 @@ function ManageAccessScreen({ navigation }) {
                     <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{title}</Text>
                 )}
                 renderItem={({ item, section }) => (
-                    <Swipeable renderRightActions={() => <RequestDenyAction onPress={() => handleRevoke(item.uid, section.title)} />}>
+                    <Swipeable renderRightActions={() => <RequestDenyAction onPress={() => handleRevoke(item.email, item.uid, section.title)} />}>
                         <View style={{ marginTop: 10, marginBottom: 10, }}>
                             <Text style={{ fontSize: color.fontSize }}>{item.email}</Text>
                         </View>

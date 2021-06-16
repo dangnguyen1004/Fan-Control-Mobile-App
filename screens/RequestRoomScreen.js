@@ -9,6 +9,8 @@ import ScreenTitle from '../components/ScreenTitle';
 import firebase from '../firebase/connectFirebase'
 import ErrorMessage from '../components/ErrorMessage';
 import { useEffect } from 'react';
+import moment from 'moment'
+
 
 
 function RequestRoomScreen({ navigation }) {
@@ -20,6 +22,9 @@ function RequestRoomScreen({ navigation }) {
     const [user, setUser] = useState()
     const [availableRooms, setAvailableRooms] = useState([])
 
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
 
     const handleRequest = async () => {
         if (!selectedBuilding) {
@@ -31,9 +36,13 @@ function RequestRoomScreen({ navigation }) {
             return
         }
 
-        // log 
+        // write log 
         let requestRoomName = selectedBuilding.label + '-' + selectedRoom.label
         console.log(user.name + 'request room ' + requestRoomName)
+        firebase.database().ref('logs/' + user.uid).push({
+            time: getCurrentTime(),
+            log: 'You requested to access room ' + requestRoomName,
+        }) 
         
         // check room is available
         if (!availableRooms.includes(requestRoomName)) {

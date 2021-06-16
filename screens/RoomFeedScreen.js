@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import CancelButton from '../components/CancelButton';
 import InputLabel from '../components/InputLabel';
 import AppPicker from '../components/AppPicker'
+import moment from 'moment'
 
 const validationSchema = Yup.object().shape({
     sensorFeed: Yup.string().required().label('Sensor feed'),
@@ -45,6 +46,10 @@ function RoomFeedScreen({ navigation, route }) {
     const [thresholdTemp, setThresholdTemp] = useState()
     const [thresholdHumid, setThresholdHumid] = useState()
 
+    const getCurrentTime = () => {
+        return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
+    }
+
     const handleFeedChange = (values) => {
         if (room.sensorFeed) {
             firebase.database().ref('feeds/' + room.sensorFeed)
@@ -74,6 +79,12 @@ function RoomFeedScreen({ navigation, route }) {
         firebase.database().ref('rooms/' + room.name).child('mode').set(selectedMode.label)
         firebase.database().ref('rooms/' + room.name).child('thresholdTemp').set(thresholdTemp.value)
         firebase.database().ref('rooms/' + room.name).child('thresholdHumid').set(thresholdHumid.value)
+
+        // write admin log
+        firebase.database().ref('logs/' + color.adminUid).push({
+            time: getCurrentTime(),
+            log: 'You updated settings of room ' + room.name,
+        })
 
         navigation.goBack()
     }
