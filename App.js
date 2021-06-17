@@ -24,6 +24,7 @@ import ClientAccountScreen from './screens/ClientAccountScreen';
 import ClientChooseRoomScreen from './screens/ClientChooseRoomScreen'
 import ClientControlRoomScreen from './screens/ClientControlRoomScreen'
 import ClientAppNavigator from './navigator/ClientAppNavigator';
+import WelcomeScreen from './screens/WelcomeScreen';
 
 
 function App(props) {
@@ -39,6 +40,7 @@ function App(props) {
       <NavigationContainer>
          {user ? (user.email === 'admin@gmail.com' ? <AppNavigator /> : <ClientAppNavigator />) : <AuthNavigator />}
       </NavigationContainer>
+      // <WelcomeScreen></WelcomeScreen>
    );
 }
 

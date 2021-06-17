@@ -13,7 +13,7 @@ function CancelButton({ style, onPress, title }) {
 const styles = StyleSheet.create({
     button: {
         width: '100%',
-        backgroundColor: color.light,
+        backgroundColor: color.white,
         borderRadius: 10,
         alignItems: 'center',
         height: 50,

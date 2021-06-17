@@ -12,7 +12,7 @@ function TextButton({ onPress, title, style }) {
 
 const styles = StyleSheet.create({
     text: {
-        fontSize: color.fontSize,
+        fontSize: color.fontSizeLight,
         textDecorationLine: 'underline',
         textDecorationColor: color.medium
     },
