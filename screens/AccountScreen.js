@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { View, StyleSheet, Text, Image, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, Text, Image, FlatList, Alert, TouchableOpacity } from 'react-native';
 import AccountItem from '../components/AccountItem';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import Icon from '../components/Icon';
@@ -22,7 +22,7 @@ const menuItems = [
         title: "Password",
         icon: {
             name: 'onepassword',
-            backGroundColor: '#e6e6ea',
+            backGroundColor: '#00C2BA',
         },
         route: 'Password',
     },
@@ -30,7 +30,7 @@ const menuItems = [
         title: "Phone",
         icon: {
             name: 'cellphone',
-            backGroundColor: color.secondary,
+            backGroundColor: '#652EC7',
         },
         route: 'Phone',
     },
@@ -40,17 +40,23 @@ function AccountScreen({ navigation }) {
     const [userEmail, setUserEmail] = useState()
     const [userName, setUserName] = useState()
     const [userId, setUserId] = useState()
-
-    useEffect(() => {
-        let user = firebase.auth().currentUser
+    const [avatarUrl, setAvatarUrl] = useState()
+    
+    
+    const getUserInfo = async () => {
+        let user = await firebase.auth().currentUser
         setUserEmail(user.email)
         setUserId(user.uid)
-        const userRef = firebase.database().ref('users/' + user.uid)
-        userRef.once('value').then((snapshot) => {
+        firebase.database().ref('users/' + user.uid).once('value').then((snapshot) => {
             let data = snapshot.val()
             console.log(data)
             setUserName(data.name)
         })
+        firebase.storage().ref().child('avatars/' + user.uid).getDownloadURL().then((url) => setAvatarUrl(url))
+    }
+
+    useEffect(() => {
+        getUserInfo()
     }, [])
 
 
@@ -63,29 +69,31 @@ function AccountScreen({ navigation }) {
     }
 
     const createAlertLogOut = () => handleSignOut()
-        // Alert.alert(
-        //     "Log out",
-        //     "You will be returned to the login screen",
-        //     [
-        //         {
-        //             text: "Cancel",
-        //             onPress: () => console.log("Cancel Pressed"),
-        //             style: "cancel"
-        //         },
-        //         { text: "OK", onPress: handleSignOut }
-        //     ],
-        //     { cancelable: false }
-        // );
+    // Alert.alert(
+    //     "Log out",
+    //     "You will be returned to the login screen",
+    //     [
+    //         {
+    //             text: "Cancel",
+    //             onPress: () => console.log("Cancel Pressed"),
+    //             style: "cancel"
+    //         },
+    //         { text: "OK", onPress: handleSignOut }
+    //     ],
+    //     { cancelable: false }
+    // );
 
     return (
         <ScreenApp style={{
             backgroundColor: color.light
         }}>
             <View style={styles.accountInfo}>
-                <Image
-                    source={require('../assets/account.png')}
-                    style={styles.avatar}
-                ></Image>
+                <TouchableOpacity onPress={() => navigation.navigate('UploadAvatar')}>
+                    <Image
+                        source={avatarUrl ? { uri: avatarUrl } : require('../assets/avatarPlaceholder.jpg')}
+                        style={styles.avatar}
+                    ></Image>
+                </TouchableOpacity>
                 <View style={styles.infoDetail}>
                     <Text style={styles.email}>{userEmail}</Text>
                     <Text style={styles.name}>{userName}</Text>

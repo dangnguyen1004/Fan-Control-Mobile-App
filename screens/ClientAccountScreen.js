@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { View, StyleSheet, Text, Image, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, Text, Image, FlatList, Alert, TouchableOpacity } from 'react-native';
 import AccountItem from '../components/AccountItem';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import Icon from '../components/Icon';
@@ -48,17 +48,22 @@ function ClientAccountScreen({ navigation }) {
     const [userEmail, setUserEmail] = useState()
     const [userName, setUserName] = useState()
     const [uid, setUid] = useState()
+    const [avatarUrl, setAvatarUrl] = useState()
 
-    useEffect(() => {
-        let user = firebase.auth().currentUser
+    const getUserInfo = async () => {
+        let user = await firebase.auth().currentUser
         setUserEmail(user.email)
         setUid(user.uid)
-        const userRef = firebase.database().ref('users/' + user.uid)
-        userRef.once('value').then((snapshot) => {
+        firebase.database().ref('users/' + user.uid).once('value').then((snapshot) => {
             let data = snapshot.val()
             console.log(data)
             setUserName(data.name)
         })
+        firebase.storage().ref().child('avatars/' + user.uid).getDownloadURL().then((url) => setAvatarUrl(url)).catch((error) => setAvatarUrl(null))
+    }
+
+    useEffect(() => {
+        getUserInfo()
     }, [])
 
 
@@ -90,10 +95,12 @@ function ClientAccountScreen({ navigation }) {
             backgroundColor: color.light
         }}>
             <View style={styles.accountInfo}>
-                <Image
-                    source={require('../assets/account.png')}
-                    style={styles.avatar}
-                ></Image>
+                <TouchableOpacity onPress={() => navigation.navigate('UploadAvatar')}>
+                    <Image
+                        source={avatarUrl ? { uri: avatarUrl } : require('../assets/avatarPlaceholder.jpg')}
+                        style={styles.avatar}
+                    ></Image>
+                </TouchableOpacity>
                 <View style={styles.infoDetail}>
                     <Text style={styles.email}>{userEmail}</Text>
                     <Text style={styles.name}>{userName}</Text>
