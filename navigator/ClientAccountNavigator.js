@@ -7,6 +7,7 @@ import PasswordScreen from '../screens/PasswordScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import PhoneScreen from '../screens/PhoneScreen';
 import ClientActivityScreen from '../screens/ClientActivityScreen';
+import UploadAvatarScreen from '../screens/UploadAvatarScreen';
 
 const Stack = createStackNavigator()
 
@@ -19,6 +20,7 @@ const ClientAccountNavigator = () => (
         <Stack.Screen name='Notification' component={NotificationScreen}></Stack.Screen>
         <Stack.Screen name='Phone' component={PhoneScreen}></Stack.Screen>
         <Stack.Screen name='ClientActivity' component={ClientActivityScreen}></Stack.Screen>
+        <Stack.Screen name='UploadAvatar' component={UploadAvatarScreen}></Stack.Screen>
     </Stack.Navigator>
 )
 
