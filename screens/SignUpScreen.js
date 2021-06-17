@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet, ImageBackground } from 'react-native';
 import AppButton from '../components/AppButton';
 import ErrorMessage from '../components/ErrorMessage';
 import InputField from '../components/InputField';
@@ -21,14 +21,6 @@ const validationSchema = Yup.object().shape({
 })
 
 function SignUpScreen({ navigation }) {
-    // const database = firebase.database()
-    // const ref = database.ref()
-    // ref.on('value', function (snapshot) {
-    //     // Code xử lí ở đây.
-    //     let data = snapshot.val();
-    //     console.log(data)
-    // });
-
     const [errorSignUp, setErrorSignUp] = useState()
     let userName = ''
 
@@ -52,96 +44,101 @@ function SignUpScreen({ navigation }) {
             .auth()
             .createUserWithEmailAndPassword(values.email, values.password)
             .then(createUserDatabase)
-            .catch(error => {setErrorSignUp(error.message); console.log(error.message)})
+            .catch(error => { setErrorSignUp(error.message); console.log(error.message) })
     }
 
     return (
-        <ScreenApp style={styles.container}>
-            <ScreenTitle style={styles.logo}>Sign Up</ScreenTitle>
-            <Formik
-                initialValues={{
-                    email: '',
-                    name: '',
-                    password: '',
-                    passwordConfirmation: '',
-                }}
-                onSubmit={handleSignUp}
-                validationSchema={validationSchema}
-            >{({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
-                <>
-                    <ErrorMessage
-                        title={errorSignUp}
-                        visible={true}
-                    ></ErrorMessage>
-                    <InputField
-                        placeholder='Email'
-                        keyboardType='email-address'
-                        textContentType='emailAddress'
-                        onChangeText={handleChange('email')}
-                        onBlur={() => setFieldTouched('email')}
-                    ></InputField>
-                    <ErrorMessage
-                        title={errors.email}
-                        visible={touched.email}
-                    ></ErrorMessage>
+        <ImageBackground style={styles.background} source={require('../assets/loginBackground.png')}>
+            <ScreenApp style={styles.container}>
+                <ScreenTitle style={styles.logo}>Sign Up</ScreenTitle>
+                <Formik
+                    initialValues={{
+                        email: '',
+                        name: '',
+                        password: '',
+                        passwordConfirmation: '',
+                    }}
+                    onSubmit={handleSignUp}
+                    validationSchema={validationSchema}
+                >{({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
+                    <>
+                        <ErrorMessage
+                            title={errorSignUp}
+                            visible={true}
+                        ></ErrorMessage>
+                        <InputField
+                            placeholder='Email'
+                            keyboardType='email-address'
+                            textContentType='emailAddress'
+                            onChangeText={handleChange('email')}
+                            onBlur={() => setFieldTouched('email')}
+                        ></InputField>
+                        <ErrorMessage
+                            title={errors.email}
+                            visible={touched.email}
+                        ></ErrorMessage>
 
-                    <InputField
-                        placeholder='Name'
-                        textContentType='name'
-                        onChangeText={handleChange('name')}
-                        onBlur={() => setFieldTouched('name')}
-                    ></InputField>
-                    <ErrorMessage
-                        title={errors.name}
-                        visible={touched.name}
-                    ></ErrorMessage>
+                        <InputField
+                            placeholder='Name'
+                            textContentType='name'
+                            onChangeText={handleChange('name')}
+                            onBlur={() => setFieldTouched('name')}
+                        ></InputField>
+                        <ErrorMessage
+                            title={errors.name}
+                            visible={touched.name}
+                        ></ErrorMessage>
 
-                    <InputField
-                        placeholder='Password'
-                        secureTextEntry={true}
-                        textContentType='password'
-                        onChangeText={handleChange('password')}
-                        onBlur={() => setFieldTouched('password')}
-                    ></InputField>
-                    <ErrorMessage
-                        title={errors.password}
-                        visible={touched.password}
-                    ></ErrorMessage>
+                        <InputField
+                            placeholder='Password'
+                            secureTextEntry={true}
+                            textContentType='password'
+                            onChangeText={handleChange('password')}
+                            onBlur={() => setFieldTouched('password')}
+                        ></InputField>
+                        <ErrorMessage
+                            title={errors.password}
+                            visible={touched.password}
+                        ></ErrorMessage>
 
-                    <InputField
-                        placeholder='Confirm Password'
-                        secureTextEntry={true}
-                        textContentType='password'
-                        onChangeText={handleChange('passwordConfirmation')}
-                        onBlur={() => setFieldTouched('passwordConfirmation')}
-                    ></InputField>
-                    <ErrorMessage
-                        title={errors.passwordConfirmation}
-                        visible={touched.passwordConfirmation}
-                    ></ErrorMessage>
+                        <InputField
+                            placeholder='Confirm Password'
+                            secureTextEntry={true}
+                            textContentType='password'
+                            onChangeText={handleChange('passwordConfirmation')}
+                            onBlur={() => setFieldTouched('passwordConfirmation')}
+                        ></InputField>
+                        <ErrorMessage
+                            title={errors.passwordConfirmation}
+                            visible={touched.passwordConfirmation}
+                        ></ErrorMessage>
 
-                    <AppButton
-                        style={styles.signup}
-                        title='SIGN UP'
-                        onPress={handleSubmit}
-                    ></AppButton>
-                    <TextButton
-                        style={styles.login}
-                        title='Login'
-                        onPress={() => navigation.navigate('Login')}
-                    ></TextButton>
-                </>
-            )}</Formik>
-        </ScreenApp>
+                        <AppButton
+                            style={styles.signup}
+                            title='SIGN UP'
+                            onPress={handleSubmit}
+                        ></AppButton>
+                        <TextButton
+                            style={styles.login}
+                            title='Login'
+                            onPress={() => navigation.navigate('Login')}
+                        ></TextButton>
+                    </>
+                )}</Formik>
+            </ScreenApp>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
     container: {
         paddingLeft: 10,
         paddingRight: 10,
         alignItems: 'center',
-        backgroundColor: color.white,
     },
     logo: {
         marginBottom: 30,
