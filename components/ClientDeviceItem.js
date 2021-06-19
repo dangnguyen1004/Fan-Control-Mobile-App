@@ -19,6 +19,28 @@ function ClientDeviceItem({ item, roomName }) {
     const endPoint = typeDevice + '/' + item.id
     const deviceRef = firebase.database().ref(endPoint)
 
+    const sendDataToServer = async (topic, isOn) => {
+        var data = {
+            topic: topic,
+            isOn: isOn,
+        }
+
+        fetch("http://192.168.1.17:3000/api/control", {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data)
+            });
+    }
+
     const getCurrentTime = () => {
         return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
     }
@@ -48,6 +70,9 @@ function ClientDeviceItem({ item, roomName }) {
             time: getCurrentTime(),
             log: 'You ' + turnTo + item.id + ' in room ' + roomName,
         })
+
+        // send to my server to send to adafruit server
+        sendDataToServer(item.feed, setStatus)
     }
 
     return (

@@ -10,6 +10,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import InputField from '../components/InputField';
 import PendingButton from '../components/PendingButton'
+import AddCircleButton from '../components/AddCircleButton';
+import ViewLogButton from '../components/ViewLogButton';
 
 
 function ClientChooseRoomScreen({ navigation }) {
@@ -39,19 +41,17 @@ function ClientChooseRoomScreen({ navigation }) {
 
     return (
         <ScreenApp style={styles.container}>
-            <View style={styles.logoContainer}>
-                <Text style={styles.logo}>Dashboard</Text>
-                <PendingButton onPress={() => navigation.navigate('PendingRooms')}></PendingButton>
-            </View>
-            <AppButton
-                title='Ask for access'
-                onPress={() => navigation.navigate('RequestRoom')}
-            ></AppButton>
+            <Text style={styles.logo}>Dashboard</Text>
 
-            <InputField
-                placeholder='Search room'
-                onChangeText={handleSearch}
-            ></InputField>
+            <View style={styles.searchContainer}>
+                <AddCircleButton onPress={() => navigation.navigate('RequestRoom')} ></AddCircleButton>
+                <ViewLogButton onPress={() => navigation.navigate('PendingRooms')} style={{ marginLeft: 10, marginRight: 10, }}></ViewLogButton>
+                <InputField
+                    style={{ flex: 1 }}
+                    placeholder='Search room'
+                    onChangeText={handleSearch}
+                ></InputField>
+            </View>
 
             <FlatList
                 style={styles.listRooms}
@@ -81,16 +81,20 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
     },
     logoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 20,
         width: '100%'
-    },  
+    },
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginLeft: '25%'
+        marginBottom: 20,
+    },
+    pendingButton: {
+        position: 'absolute',
+        right: 0,
     },
     listRooms: {
         width: '100%',
@@ -105,6 +109,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+    },
+    searchContainer: {
+        flexDirection: 'row-reverse',
+        width: '100%',
+        alignItems: 'center'
     }
 });
 

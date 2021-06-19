@@ -132,7 +132,7 @@ function AccountScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: color.light
+        backgroundColor: color.white
     },
     icon: {
         marginLeft: 10,

@@ -65,7 +65,7 @@ function AddRoomScreen({ navigation }) {
                 thresholdTemp: 30,
                 thresholdHumid: 70,
             }).then(() => {
-                
+
             })
 
         // write admin log
@@ -74,7 +74,31 @@ function AddRoomScreen({ navigation }) {
             log: 'You created room ' + newRoomName,
         })
 
+        // subscribe new topic
+        subscribeFeed(values.sensor)
+
         navigation.goBack()
+    }
+
+    const subscribeFeed = async (feed) => {
+        var data = {
+            feed: feed,
+        }
+
+        fetch("http://192.168.1.17:3000/api/subscribe", {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data)
+            });
     }
 
     const getAllRoomsName = () => {
@@ -90,9 +114,8 @@ function AddRoomScreen({ navigation }) {
     }, [])
 
     return (
-        <ScrollView>
+        <ScrollView style={{ flex: 1, backgroundColor: color.white }}>
             <ScreenApp style={styles.container}>
-
                 <ScreenTitle style={styles.logo}>ADD NEW ROOM</ScreenTitle>
                 <ErrorMessage
                     title={errorAdd}
@@ -162,10 +185,13 @@ function AddRoomScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         alignItems: 'center',
-        marginRight: 10,
-        marginLeft: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
         backgroundColor: color.white,
+        paddingBottom: 20,
+
     },
     logo: {
         marginBottom: 20,

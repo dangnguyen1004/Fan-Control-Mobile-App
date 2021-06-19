@@ -36,6 +36,7 @@ function RoomFeedScreen({ navigation, route }) {
     const [room, setRoom] = useState()
     const { roomName } = route.params
     const [sensorFeed, setSensorFeed] = useState()
+    const [errorSensorFeed, setErrorSensorFeed] = useState()
     const roomRef = firebase.database().ref('rooms/' + roomName)
     const [selectedMode, setSelectedMode] = useState()
     const [thresholdTemp, setThresholdTemp] = useState()
@@ -46,14 +47,12 @@ function RoomFeedScreen({ navigation, route }) {
     }
 
     const handleFeedChange = (values) => {
-        if (room.sensorFeed) {
-            firebase.database().ref('feeds/' + room.sensorFeed)
-                .child('feed').set(values.sensorFeed)
-        } else {
-            let newKey = firebase.database().ref('feeds').push({ feed: values.sensorFeed })
-            roomRef.child('sensorFeed').set(newKey.key)
+        if (!sensorFeed) {
+            setErrorSensorFeed('Sensor feed is required')
+            return null
         }
 
+        firebase.database().ref('rooms/' + room.name).child('sensorFeed').set(sensorFeed)
         firebase.database().ref('rooms/' + room.name).child('mode').set(selectedMode.label)
         firebase.database().ref('rooms/' + room.name).child('thresholdTemp').set(thresholdTemp.value)
         firebase.database().ref('rooms/' + room.name).child('thresholdHumid').set(thresholdHumid.value)
@@ -64,14 +63,38 @@ function RoomFeedScreen({ navigation, route }) {
             log: 'You updated settings of room ' + room.name,
         })
 
+        // subscribe new feed
+        subscribeFeed(sensorFeed)
+
         navigation.goBack()
+    }
+
+    const subscribeFeed = async (feed) => {
+        var data = {
+            feed: feed,
+        }
+
+        fetch("http://192.168.1.17:3000/api/subscribe", {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data)
+            });
     }
 
     const GetRoomInfo = () => {
         roomRef.on('value', (snapshot) => {
             if (snapshot.val()) {
                 setRoom(snapshot.val())
-                
+
                 if (snapshot.val().sensorFeed) setSensorFeed(snapshot.val().sensorFeed)
 
                 if (snapshot.val().mode == 'Auto') setSelectedMode(deviceModes[0])
@@ -95,7 +118,7 @@ function RoomFeedScreen({ navigation, route }) {
                     initialValues={{ sensorFeed: '', }}
                     onSubmit={handleFeedChange}
                     validationSchema={validationSchema}
-                >{({ handleChange, handleSubmit, errors, setFieldTouched, touched }) => (
+                >{({ handleChange, handleSubmit, errors, setFieldTouched, touched, setFieldValue }) => (
                     <>
                         <InputLabel label='Room mode'></InputLabel>
                         <AppPicker
@@ -133,12 +156,11 @@ function RoomFeedScreen({ navigation, route }) {
                         <InputField
                             placeholder='Sensor feed'
                             defaultValue={sensorFeed}
-                            onChangeText={handleChange('sensorFeed')}
-                            onBlur={() => setFieldTouched('sensorFeed')}
+                            onChangeText={(text) => { setSensorFeed(text); setErrorSensorFeed(null) }}
                         ></InputField>
                         <ErrorMessage
-                            title={errors.sensorFeed}
-                            visible={touched.sensorFeed}
+                            title={errorSensorFeed}
+                            visible={true}
                         ></ErrorMessage>
 
                         <AppButton

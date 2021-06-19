@@ -11,6 +11,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import SettingButton from '../components/SettingButton';
 import AddButton from '../components/AddButton';
 import moment from 'moment'
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 function ControlRoomScreen({ route, navigation }) {
     const { roomName } = route.params
@@ -27,7 +29,6 @@ function ControlRoomScreen({ route, navigation }) {
         firebase.database().ref('rooms/' + roomName).on('value', snapshot => {
             if (snapshot.val()) {
                 setRoom(snapshot.val())
-                console.log(snapshot.val())
                 setHumidity(snapshot.val().humidity)
                 setTemperature(snapshot.val().temperature)
                 let room = snapshot.val()
@@ -36,8 +37,8 @@ function ControlRoomScreen({ route, navigation }) {
                     if (snapshot.val()) {
                         let fanData = []
                         let airConData = []
-                        if (room.listFans) fanData = Object.values(snapshot.val().fans).filter(item => room.listFans.includes(item.id))
-                        if (room.listAirCon) airConData = Object.values(snapshot.val().airCons).filter(item => room.listAirCon.includes(item.id))
+                        if (room.listFans && snapshot.val().fans) fanData = Object.values(snapshot.val().fans).filter(item => room.listFans.includes(item.id))
+                        if (room.listAirCon && snapshot.val().airCons) airConData = Object.values(snapshot.val().airCons).filter(item => room.listAirCon.includes(item.id))
                         setDevices([
                             {
                                 title: 'Fans',
@@ -55,40 +56,41 @@ function ControlRoomScreen({ route, navigation }) {
 
     }
 
-    const createAlertDelete = (item, room) =>
-        Alert.alert(
-            "Delete ?",
-            "Please ensure and confirm!",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Yes", onPress: () => {
-                        // write admin log
-                        firebase.database().ref('logs/' + color.adminUid).push({
-                            time: getCurrentTime(),
-                            log: 'You deleted device ' + item.id + ' from room ' + room.name
-                        })
+    const handleDelete = async (item, room) => {
+        // write admin log
+        firebase.database().ref('logs/' + color.adminUid).push({
+            time: getCurrentTime(),
+            log: 'You deleted device ' + item.id + ' from room ' + room.name
+        })
 
-                        if (item.type == 'fan') {
-                            let newListFans = room.listFans.filter(fan => fan != item.id)
-                            firebase.database().ref('rooms/' + room.name).child('listFans').set(newListFans)
-                            firebase.database().ref('fans/' + item.id).remove()
-                        }
-                        else if (item.type == 'airCon') {
-                            let newListAirCons = room.listAirCon.filter(airCon => airCon != item.id)
-                            firebase.database().ref('rooms/' + room.name).child('listAirCon').set(newListAirCons)
-                            firebase.database().ref('airCons/' + item.id).remove()
-                        }
+        if (item.type == 'fan') {
+            let newListFans = room.listFans.filter(fan => fan != item.id)
+            firebase.database().ref('rooms/' + room.name).child('listFans').set(newListFans)
+            firebase.database().ref('fans/' + item.id).remove()
+        }
+        else if (item.type == 'airCon') {
+            let newListAirCons = room.listAirCon.filter(airCon => airCon != item.id)
+            firebase.database().ref('rooms/' + room.name).child('listAirCon').set(newListAirCons)
+            firebase.database().ref('airCons/' + item.id).remove()
+        }
+    }
 
-                    }
-                }
-            ],
-            { cancelable: false }
-        );
+    const createAlertDelete = (item, room) => handleDelete(item, room)
+    // Alert.alert(
+    //     "Delete ?",
+    //     "Please ensure and confirm!",
+    //     [
+    //         {
+    //             text: "Cancel",
+    //             onPress: () => console.log("Cancel Pressed"),
+    //             style: "cancel"
+    //         },
+    //         {
+    //             text: "Yes", onPress: () => handleDelete(item, room)
+    //         }
+    //     ],
+    //     { cancelable: false }
+    // );
 
     const handleAdd = () => {
         navigation.navigate('AddDevice', { room: room })
@@ -110,13 +112,15 @@ function ControlRoomScreen({ route, navigation }) {
                     <SettingButton onPress={() => navigation.navigate('RoomFeed', { roomName: roomName })}></SettingButton>
                 </View>
             </View>
-            <View style={styles.temperature}>
-                <Text style={{ fontSize: color.fontSize, color: color.danger, fontWeight: 'bold', }}>Temperature</Text>
-                <Text style={{ fontSize: color.fontSize, color: color.danger, fontWeight: 'bold', }}>{temperature}oC</Text>
-            </View>
-            <View style={styles.temperature}>
-                <Text style={{ fontSize: color.fontSize, color: color.primary, fontWeight: 'bold', }}>Humidity</Text>
-                <Text style={{ fontSize: color.fontSize, color: color.primary, fontWeight: 'bold', }}>{humidity}%</Text>
+            <View style={styles.tempHumid}>
+                <View style={styles.temperature}>
+                    <FontAwesome5 name="temperature-low" size={45} color='#3fd168' />
+                    <Text style={{ fontSize: 30, color: '#3fd168', fontWeight: 'bold', }}>{temperature}<Text style={{ fontSize: 20 }}>oC</Text></Text>
+                </View>
+                <View style={styles.temperature}>
+                    <Feather name="droplet" size={45} color={color.primary} />
+                    <Text style={{ fontSize: 30, color: color.primary, fontWeight: 'bold', }}>{humidity}%</Text>
+                </View>
             </View>
             <SectionList
                 style={styles.listDevices}
@@ -129,6 +133,7 @@ function ControlRoomScreen({ route, navigation }) {
                 )}
                 renderItem={({ item }) => (
                     <DeviceItem
+                        onPress={() => navigation.navigate('ControlDevice', { item: item })}
                         item={item}
                         onPressDelete={() => createAlertDelete(item, room)}
                         roomName={roomName}
@@ -151,12 +156,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginRight: 10,
     },
-    temperature: {
+    tempHumid: {
+        marginTop: 60,
+        marginBottom: 60,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         width: '100%',
-        marginBottom: 5,
-        height: 50,
+    },
+    temperature: {
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     button: {
         marginBottom: 10,

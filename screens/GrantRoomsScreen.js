@@ -17,6 +17,28 @@ import moment from 'moment'
 function GrantRoomsScreen({ navigation }) {
     const [requests, setRequests] = useState([])
 
+    const sendNotification = async (token, room, decision) => {
+        var data = {
+            token: token,
+            room: room,
+        }
+
+        fetch("http://192.168.1.17:3000/api/" + decision, {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data)
+            });
+    }
+
     const getCurrentTime = () => {
         return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
     }
@@ -39,6 +61,7 @@ function GrantRoomsScreen({ navigation }) {
 
         // Notice to user
         firebase.database().ref('users/' + uid).child('notifications').push('Admin has accepted your request to control room ' + room)
+        sendNotification(user.val().tokenPushNotifications, room, 'grantRoom')
 
         // Write log of admin
         let admin = await firebase.auth().currentUser
@@ -46,6 +69,7 @@ function GrantRoomsScreen({ navigation }) {
             time: getCurrentTime(),
             log: 'You accepted request to control room of ' + email,
         })
+
     }
 
     const handleDeny = async (email, uid, room, key) => {
@@ -59,6 +83,7 @@ function GrantRoomsScreen({ navigation }) {
 
         // notice to user
         firebase.database().ref('users/' + uid).child('notifications').push('Admin has denied you request to control room ' + room)
+        sendNotification(user.val().tokenPushNotifications, room, 'denyRoom')
 
         // Write log of admin
         let admin = await firebase.auth().currentUser

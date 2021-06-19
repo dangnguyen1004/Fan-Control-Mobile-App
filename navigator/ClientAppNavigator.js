@@ -65,7 +65,7 @@ const ClientAppNavigator = () => {
             let user = firebase.auth().currentUser
             firebase.database().ref('users/' + user.uid).child('tokenPushNotifications').set(token)
             console.log(token);
-        } else {    
+        } else {
             alert('Must use physical device for Push Notifications');
         }
 
@@ -85,18 +85,18 @@ const ClientAppNavigator = () => {
 
     return (
         <Tab.Navigator tabBarOptions={{
-            activeBackgroundColor: color.light,
+            activeBackgroundColor: color.white,
             showLabel: false,
         }
         }>
             <Tab.Screen name='ClientControlNavigator' component={ClientControlNavigator} options={{
-                tabBarLabel: 'Control', tabBarIcon: () => (
-                    <MaterialCommunityIcons name='remote' size={25} color={color.primary}></MaterialCommunityIcons>
+                tabBarLabel: 'Control', tabBarIcon: ({ size, color }) => (
+                    <MaterialCommunityIcons name='remote' size={size} color={color}></MaterialCommunityIcons>
                 )
             }}></Tab.Screen>
             <Tab.Screen name='ClientAccountNavigator' component={ClientAccountNavigator} options={{
-                tabBarLabel: 'Account', tabBarIcon: () => (
-                    <MaterialCommunityIcons name='account' size={25} color={color.primary}></MaterialCommunityIcons>
+                tabBarLabel: 'Account', tabBarIcon: ({ size, color }) => (
+                    <MaterialCommunityIcons name='account' size={size} color={color}></MaterialCommunityIcons>
                 )
             }}></Tab.Screen>
         </Tab.Navigator>

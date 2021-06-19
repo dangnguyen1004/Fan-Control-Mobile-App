@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import ScreenApp from '../components/ScreenApp';
 import { useState } from 'react';
 import AppButton from '../components/AppButton';
@@ -10,6 +10,7 @@ import firebase from '../firebase/connectFirebase'
 import ErrorMessage from '../components/ErrorMessage';
 import { useEffect } from 'react';
 import moment from 'moment'
+import color from '../config/color';
 
 
 
@@ -42,8 +43,8 @@ function RequestRoomScreen({ navigation }) {
         firebase.database().ref('logs/' + user.uid).push({
             time: getCurrentTime(),
             log: 'You requested to access room ' + requestRoomName,
-        }) 
-        
+        })
+
         // check room is available
         if (!availableRooms.includes(requestRoomName)) {
             setErrorAdd(requestRoomName + ' is not available')
@@ -96,8 +97,10 @@ function RequestRoomScreen({ navigation }) {
 
     return (
         <ScrollView style={styles.container}>
+            <View style={styles.logo}>
+                <ScreenTitle>Request room</ScreenTitle>
+            </View>
 
-            <ScreenTitle style={styles.logo}>Request room</ScreenTitle>
             <ErrorMessage
                 title={errorAdd}
                 visible={true}
@@ -149,9 +152,13 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 20,
         paddingHorizontal: 10,
+        backgroundColor: color.white,
     },
     logo: {
         marginBottom: 20,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     button: {
         marginTop: 20,

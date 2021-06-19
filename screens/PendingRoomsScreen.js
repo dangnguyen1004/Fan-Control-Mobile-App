@@ -18,7 +18,7 @@ function PendingRoomsScreen({ navigation }) {
         let user = await firebase.auth().currentUser
         console.log(user)
         firebase.database().ref('users/' + user.uid).on('value', snapshot => {
-            if (snapshot.val().pendingRooms) setPendingRooms(snapshot.val().pendingRooms) 
+            if (snapshot.val().pendingRooms) setPendingRooms(snapshot.val().pendingRooms)
         })
     }
 
@@ -29,7 +29,7 @@ function PendingRoomsScreen({ navigation }) {
     return (
         <ScreenApp style={styles.container}>
             <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <Text style={styles.logo}>Pending rooms</Text>
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
     },
     logoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         width: '100%',
         alignItems: 'center',
         marginBottom: 20,
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginRight: '30%',
     },
     listRooms: {
         width: '100%',
@@ -90,6 +89,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        left: 0,
+    }
 });
 
 export default PendingRoomsScreen;

@@ -29,7 +29,7 @@ function NotificationScreen({ navigation }) {
     return (
         <ScreenApp style={styles.container}>
             <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <Text style={styles.text}>Notification</Text>
@@ -55,19 +55,25 @@ const styles = StyleSheet.create({
         backgroundColor: color.white
     },
     logoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: 20,
     },
     text: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginRight: '35%',
     },
     listRooms: {
         width: '100%',
         marginTop: 20,
     },
+    backButton: {
+        alignItems: 'center', 
+        justifyContent: 'center',
+        position: 'absolute',
+        left: 0,
+    }
 });
 
 export default NotificationScreen;

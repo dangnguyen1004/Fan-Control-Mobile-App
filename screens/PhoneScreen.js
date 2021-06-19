@@ -10,7 +10,7 @@ function PhoneScreen({ navigation }) {
     return (
         <ScreenApp style={styles.container}>
             <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <Text style={styles.text}>Phone</Text>
@@ -26,14 +26,19 @@ const styles = StyleSheet.create({
         backgroundColor: color.white
     },
     logoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     text: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginRight: '30%',
+    },
+    backButton: {
+        alignItems: 'center', 
+        justifyContent: 'center',
+        position: 'absolute',
+        left: 0,
     }
 });
 

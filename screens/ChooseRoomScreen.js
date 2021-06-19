@@ -1,34 +1,39 @@
 import React from 'react';
-import { View, StyleSheet, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
-import AppButton from '../components/AppButton';
-import ScreenApp from '../components/ScreenApp';
-import color from '../config/color';
+import {
+    View, StyleSheet,
+    Text, FlatList,
+    TouchableOpacity, Alert
+} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useEffect } from 'react';
+import { useState } from 'react';
+import moment from 'moment'
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+
+import color from '../config/color';
+import ScreenApp from '../components/ScreenApp';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import firebase from '../firebase/connectFirebase'
-import { useState } from 'react';
-import { useEffect } from 'react';
 import InputField from '../components/InputField';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import RoomDeleteAction from '../components/RoomDeleteAction';
-import moment from 'moment'
+import AddCircleButton from '../components/AddCircleButton';
+import ViewLogButton from '../components/ViewLogButton';
 
 
 function ChooseRoomScreen({ navigation }) {
+    const [users, setUsers] = useState()
     const [rooms, setRooms] = useState([])
-    const [allUsers, setAllUsers] = useState()
-
-    const getAllUsers = async () => {
-        firebase.database().ref('users').on('value', snapshot => {
-            if (snapshot.val()) setAllUsers(snapshot.val())
-        })
-    }
 
     const getCurrentTime = () => {
         return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
     }
 
-    const getRooms = async () => {
+    const getRoomsAndAllUsers = async () => {
+        firebase.database().ref('users').on('value', snapshot => {
+            if (snapshot.val()) {
+                setUsers(snapshot.val())
+            }
+        })
         const roomsRef = firebase.database().ref('rooms')
         roomsRef.on('value', snapshot => {
             if (snapshot.val()) {
@@ -41,8 +46,7 @@ function ChooseRoomScreen({ navigation }) {
     }
 
     useEffect(() => {
-        getRooms()
-        getAllUsers()
+        getRoomsAndAllUsers()
     }, [])
 
     const handleAdd = () => {
@@ -50,6 +54,7 @@ function ChooseRoomScreen({ navigation }) {
     }
 
     const handleDelete = async (room) => {
+        console.log(users)
         // write admin log
         firebase.database().ref('logs/' + color.adminUid).push({
             time: getCurrentTime(),
@@ -57,7 +62,7 @@ function ChooseRoomScreen({ navigation }) {
         })
 
         // remove from controllableRoom of all users
-        let listUid = Object.keys(allUsers)
+        let listUid = Object.keys(users)
         for (let i = 0; i < listUid.length; i++) {
             let user = await firebase.database().ref('users/' + listUid[i]).once('value')
             if (user.val().controllableRooms) {
@@ -105,15 +110,16 @@ function ChooseRoomScreen({ navigation }) {
     return (
         <ScreenApp style={styles.container}>
             <Text style={styles.logo}>Dashboard</Text>
-            <AppButton
-                title='Add new room'
-                onPress={handleAdd}
-            ></AppButton>
 
-            <InputField
-                placeholder='Search room'
-                onChangeText={handleSearch}
-            ></InputField>
+            <View style={styles.searchContainer}>
+                <AddCircleButton onPress={handleAdd} ></AddCircleButton>
+                <ViewLogButton onPress={() => navigation.navigate('ActivityLog')} style={{ marginLeft: 10, marginRight: 10, }}></ViewLogButton>
+                <InputField
+                    style={{ flex: 1, }}
+                    placeholder='Room search'
+                    onChangeText={handleSearch}
+                ></InputField>
+            </View>
 
             <FlatList
                 style={styles.listRooms}
@@ -123,7 +129,7 @@ function ChooseRoomScreen({ navigation }) {
                 renderItem={({ item }) => (
                     <Swipeable renderRightActions={() => <RoomDeleteAction onPress={() => {
                         console.log('Delete room ' + item.name.toString())
-                        createAlertDelete(item)
+                        handleDelete(item)
                     }} />}>
                         <TouchableOpacity onPress={
                             () => navigation.navigate('ControlRoom', { roomName: item.name.toString() })
@@ -136,7 +142,7 @@ function ChooseRoomScreen({ navigation }) {
                     </Swipeable>
                 )}
             ></FlatList>
-        </ScreenApp>
+        </ScreenApp >
     );
 }
 
@@ -146,6 +152,12 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: color.white,
+        flex: 1,
+    },
+    searchContainer: {
+        flexDirection: 'row-reverse',
+        width: '100%',
+        alignItems: 'center'
     },
     logo: {
         fontSize: color.fontSizeTitle,
@@ -165,7 +177,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-    }
+    },
 });
 
 export default ChooseRoomScreen;

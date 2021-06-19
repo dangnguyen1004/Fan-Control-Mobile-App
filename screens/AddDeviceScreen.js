@@ -53,7 +53,6 @@ function AddDeviceScreen({ route, navigation }) {
 
             firebase.database().ref('fans')
                 .child(values.name).set({
-                    feed: room.fanFeed,
                     id: values.name,
                     isOn: false,
                     type: 'fan',
@@ -68,7 +67,6 @@ function AddDeviceScreen({ route, navigation }) {
 
             firebase.database().ref('airCons')
                 .child(values.name).set({
-                    feed: room.airConFeed,
                     id: values.name,
                     isOn: false,
                     type: 'airCon',

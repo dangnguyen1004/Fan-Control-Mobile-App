@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
 import firebase from '../firebase/connectFirebase'
+import ManageRoomButton from './ManageRoomButton';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -87,32 +88,30 @@ const AppNavigator = () => {
     }
 
     return (
-        <Tab.Navigator tabBarOptions={{
-            activeBackgroundColor: color.light,
-            showLabel: false,
-        }
-        }>
-            <Tab.Screen name='ControlNavigator' component={ControlNavigator} options={{
-                tabBarLabel: 'Control', tabBarIcon: () => (
-                    <MaterialCommunityIcons name='remote' size={25} color={color.primary}></MaterialCommunityIcons>
-                )
-            }}></Tab.Screen>
+        <Tab.Navigator
+            tabBarOptions={{
+                inactiveBackgroundColor: color.white,
+                showLabel: false,
+            }}
+            initialRouteName='ControlNavigator'
+        >
             <Tab.Screen name='ManageAccessNavigator' component={ManageAccessNavigator} options={{
-                tabBarLabel: 'ManageAccess', tabBarIcon: () => (
-                    <Entypo name="key" size={25} color={color.primary} />
+                tabBarLabel: 'ManageAccess', tabBarIcon: ({ size, color }) => (
+                    <Entypo name="key" size={size} color={color} />
                 )
             }}></Tab.Screen>
-            <Tab.Screen name='ActivityLog' component={ActivityLogScreen} options={{
-                tabBarLabel: 'Log', tabBarIcon: () => (
-                    <FontAwesome name='history' size={25} color={color.primary}></FontAwesome>
+            <Tab.Screen name='ControlNavigator' component={ControlNavigator} options={({ navigation }) => ({
+                tabBarButton: () => <ManageRoomButton onPress={() => navigation.navigate('ControlNavigator')} />,
+                tabBarLabel: 'Control', tabBarIcon: ({ size, color }) => (
+                    <MaterialCommunityIcons name='remote' size={size} color={color}></MaterialCommunityIcons>
                 )
-            }}></Tab.Screen>
+            })}></Tab.Screen>
             <Tab.Screen name='AccountNavigator' component={AccountNavigator} options={{
-                tabBarLabel: 'Account', tabBarIcon: () => (
-                    <MaterialCommunityIcons name='account' size={25} color={color.primary}></MaterialCommunityIcons>
+                tabBarLabel: 'Account', tabBarIcon: ({ size, color }) => (
+                    <MaterialCommunityIcons name='account' size={size} color={color}></MaterialCommunityIcons>
                 )
             }}></Tab.Screen>
-        </Tab.Navigator>
+        </Tab.Navigator >
     )
 }
 

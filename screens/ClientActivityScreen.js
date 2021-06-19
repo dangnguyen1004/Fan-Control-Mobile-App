@@ -37,12 +37,12 @@ function ClientActivityScreen({ navigation }) {
     return (
         <ScreenApp style={styles.container}>
             <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <Text style={styles.logo}>Recent Activity</Text>
             </View>
-            
+
             <InputField
                 placeholder="Search"
                 onChangeText={handleSearch}
@@ -54,10 +54,10 @@ function ClientActivityScreen({ navigation }) {
                 keyExtractor={item => item.time + item.log}
                 ItemSeparatorComponent={AccountItemSeparator}
                 renderItem={({ item }) => (
-                        <View style={styles.room}>
-                            <Text style={{ fontSize: 15 }}>{item.time.toString()}</Text>
-                            <Text style={{ fontSize: color.fontSize }}>{item.log.toString()}</Text>
-                        </View>
+                    <View style={styles.room}>
+                        <Text style={{ fontSize: 15 }}>{item.time.toString()}</Text>
+                        <Text style={{ fontSize: color.fontSize }}>{item.log.toString()}</Text>
+                    </View>
                 )}
             ></FlatList>
 
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
         paddingRight: 10,
     },
     logoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         width: '100%',
         alignItems: 'center',
         marginBottom: 20,
@@ -81,11 +81,16 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginRight: '25%',
     },
     room: {
         marginTop: 10,
         marginBottom: 10,
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        left: 0
     }
 });
 

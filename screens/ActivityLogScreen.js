@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, FlatList } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
 import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
 import InputField from '../components/InputField';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import { useEffect } from 'react';
 import firebase from '../firebase/connectFirebase'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 
 function ActivityLogScreen({ navigation }) {
@@ -60,7 +61,12 @@ function ActivityLogScreen({ navigation }) {
 
     return (
         <ScreenApp style={styles.container}>
-            <Text style={styles.logo}>Activity log</Text>
+            <View style={styles.logoContainer}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
+                </TouchableOpacity>
+                <Text style={styles.logo}>Recent Activity</Text>
+            </View>
             <InputField
                 style={{ marginBottom: 30, marginTop: 30, padding: 10, }}
                 placeholder="Search"
@@ -93,14 +99,26 @@ const styles = StyleSheet.create({
         backgroundColor: color.white,
         alignItems: 'center',
     },
+    logoContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        width: '100%',
+        alignItems: 'center',
+    },
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
     },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        left: 0,
+    },
     room: {
         marginTop: 10,
         marginBottom: 10,
-    }
+    },
 });
 
 export default ActivityLogScreen;

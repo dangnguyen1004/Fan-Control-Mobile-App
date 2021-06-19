@@ -9,6 +9,9 @@ import { useEffect } from 'react';
 import firebase from '../firebase/connectFirebase'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import ClientDeviceItem from '../components/ClientDeviceItem';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+
 
 
 function ClientControlRoomScreen({ route, navigation }) {
@@ -32,8 +35,8 @@ function ClientControlRoomScreen({ route, navigation }) {
                     if (snapshot.val()) {
                         let fanData = []
                         let airConData = []
-                        if (room.listFans) fanData = Object.values(snapshot.val().fans).filter(item => room.listFans.includes(item.id))
-                        if (room.listAirCon) airConData = Object.values(snapshot.val().airCons).filter(item => room.listAirCon.includes(item.id))
+                        if (room.listFans && snapshot.val().fans) fanData = Object.values(snapshot.val().fans).filter(item => room.listFans.includes(item.id))
+                        if (room.listAirCon && snapshot.val().airCons) airConData = Object.values(snapshot.val().airCons).filter(item => room.listAirCon.includes(item.id))
                         setDevices([
                             {
                                 title: 'Fans',
@@ -58,27 +61,30 @@ function ClientControlRoomScreen({ route, navigation }) {
     return (
         <ScreenApp style={styles.container}>
             <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <Text style={styles.logo}>{room ? room.name : 'H1 -101'}</Text>
             </View>
-            <View style={styles.temperature}>
-                <Text style={{ fontSize: color.fontSize, color: color.danger, fontWeight: 'bold', }}>Temperature</Text>
-                <Text style={{ fontSize: color.fontSize, color: color.danger, fontWeight: 'bold', }}>{temperature}oC</Text>
-            </View>
-            <View style={styles.temperature}>
-                <Text style={{ fontSize: color.fontSize, color: color.primary, fontWeight: 'bold', }}>Humidity</Text>
-                <Text style={{ fontSize: color.fontSize, color: color.primary, fontWeight: 'bold', }}>{humidity}%</Text>
+            <View style={styles.tempHumid}>
+                <View style={styles.temperature}>
+                    <FontAwesome5 name="temperature-low" size={45} color='#3fd168' />
+                    <Text style={{ fontSize: 30, color: '#3fd168', fontWeight: 'bold', }}>{temperature}<Text style={{ fontSize: 20 }}>oC</Text></Text>
+                </View>
+                <View style={styles.temperature}>
+                    <Feather name="droplet" size={45} color={color.primary} />
+                    <Text style={{ fontSize: 30, color: color.primary, fontWeight: 'bold', }}>{humidity}%</Text>
+
+                </View>
             </View>
             <SectionList
                 style={styles.listDevices}
                 sections={devices}
                 keyExtractor={(item, index) => item + index}
                 ItemSeparatorComponent={AccountItemSeparator}
-                SectionSeparatorComponent={() => <View style={{marginTop: 10,}}></View>}
+                SectionSeparatorComponent={() => <View style={{ marginTop: 10, }}></View>}
                 renderSectionHeader={({ section: { title } }) => (
-                    <Text style={{fontSize: 17, fontWeight: 'bold'}}>{title}</Text>
+                    <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{title}</Text>
                 )}
                 renderItem={({ item }) => (
                     <ClientDeviceItem
@@ -98,17 +104,33 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         backgroundColor: color.white,
     },
+    logoContainer: {
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginRight: '30%',
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        left: 0,
+    },
+    tempHumid: {
+        marginTop: 60,
+        marginBottom: 60,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
     },
     temperature: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        marginBottom: 5,
-        height: 50,
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     button: {
         marginBottom: 10,
@@ -116,13 +138,6 @@ const styles = StyleSheet.create({
     listDevices: {
         width: '100%',
     },
-    logoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        alignItems: 'center',
-        marginBottom: 20,
-    }
 });
 
 export default ClientControlRoomScreen;

@@ -19,13 +19,40 @@ function ManageAccessScreen({ navigation }) {
         return moment().utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss')
     }
 
+    const sendNotification = async (token, room) => {
+        var data = {
+            token: token,
+            room: room,
+        }
+
+        fetch("http://192.168.1.17:3000/api/revoke", {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data)
+            });
+    }
+
     const handleRevoke = async (email, uid, roomName) => {
         //write admin log
         console.log('Revoke ' + uid + ' from room ' + roomName)
         firebase.database().ref('logs/' + color.adminUid).push({
             time: getCurrentTime(),
-            log: 'You revoked control room ' + roomName + ' of ' + email, 
+            log: 'You revoked control room ' + roomName + ' of ' + email,
         })
+
+        // notify to user
+        let user = await firebase.database().ref('users/' + uid).once('value')
+        sendNotification(user.val().tokenPushNotifications, roomName)
+        firebase.database().ref('users/' + user.val().uid).child('notifications').push('You have been revoked control of room ' + roomName)
 
         // remove uid from list user of this room
         let room = await firebase.database().ref('rooms/' + roomName).once('value')
@@ -34,10 +61,11 @@ function ManageAccessScreen({ navigation }) {
         )
 
         // remove room from controllableRooms of user
-        let user = await firebase.database().ref('users/' + uid).once('value')
         firebase.database().ref('users/' + uid).child('controllableRooms').set(
             user.val().controllableRooms.filter(item => item != roomName)
         )
+
+
     }
 
     const getData = async () => {
@@ -62,7 +90,7 @@ function ManageAccessScreen({ navigation }) {
     return (
         <ScreenApp style={styles.container}>
             <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <Text style={styles.logo}>Manage Access</Text>
@@ -96,21 +124,25 @@ const styles = StyleSheet.create({
         paddingRight: 10,
     },
     logoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         width: '100%',
         alignItems: 'center',
         marginBottom: 20,
-
     },
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
-        marginRight: '25%',
     },
     listDevices: {
         width: '100%',
     },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        left: 0,
+    }
 });
 
 export default ManageAccessScreen;
