@@ -1,18 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native';
 import color from '../config/color';
 
 function DeviceButton({ onPress, state, style }) {
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableWithoutFeedback onPress={onPress}>
             <View style={[styles.first, style]}>
-                <View style={[styles.second, state ? { backgroundColor: color.primary } : { backgroundColor: color.white }]}>
+                <View style={[styles.second, state ? { backgroundColor: color.primary } : { backgroundColor: color.light }]}>
                     <View style={styles.third}>
                         <Text style={styles.text}>{state ? 'ON' : 'OFF'}</Text>
                     </View>
                 </View>
             </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         height: 120,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: color.light,
+        backgroundColor: color.white,
         borderRadius: 60,
 
     },
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         height: 80,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: color.light,
+        backgroundColor: color.white,
         borderRadius: 40,
     },
     text: {

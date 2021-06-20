@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, DeviceEventEmitter } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ImageBackground } from 'react-native';
 import ScreenApp from '../components/ScreenApp';
 import color from '../config/color';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -11,6 +11,8 @@ import InputField from '../components/InputField';
 import ErrorMessage from '../components/ErrorMessage';
 import AppButton from '../components/AppButton';
 import moment from 'moment'
+import { FontAwesome5 } from '@expo/vector-icons';
+
 
 function ControlDeviceScreen({ navigation, route }) {
     const { item } = route.params
@@ -97,46 +99,58 @@ function ControlDeviceScreen({ navigation, route }) {
     }, [])
 
     return (
-        <ScreenApp style={styles.container}>
-            <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <MaterialCommunityIcons name='chevron-left' size={40} color={color.black}></MaterialCommunityIcons>
-                </TouchableOpacity>
-                <Text style={styles.logo}>Device settings</Text>
+        <>
+            <View style={styles.headerContainer}>
+                <ImageBackground style={styles.image} source={require('../assets/BackgroundDevice.png')}>
+                    <View style={styles.logoContainer}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                            <MaterialCommunityIcons name='chevron-left' size={40} color={color.white}></MaterialCommunityIcons>
+                        </TouchableOpacity>
+                        <Text style={styles.logo}>Device settings</Text>
+                    </View>
+                    <View style={styles.deviceIcon}>
+                        {item.type == 'airCon' ? <MaterialCommunityIcons name="air-conditioner" size={50} color="white" /> : <FontAwesome5 name="fan" size={50} color="white" />}
+                    </View>
+                    <View style={styles.deviceButton}>
+                        <DeviceButton
+                            onPress={handlePress}
+                            state={isOn}
+                        ></DeviceButton>
+                    </View>
+                </ImageBackground>
             </View>
+            <View style={styles.feedContainer}>
+                <InputField
+                    placeholder="Device's feed"
+                    onChangeText={(text) => { setFeed(text); setErrorFeed(null) }}
+                    defaultValue={feed}
+                    style={styles.input}
+                ></InputField>
+                <ErrorMessage
+                    title={errorFeed}
+                    visible={true}
+                ></ErrorMessage>
 
-            <DeviceButton
-                onPress={handlePress}
-                state={isOn}
-                style={styles.deviceButton}
-            ></DeviceButton>
-
-            <InputField
-                placeholder="Device's feed"
-                onChangeText={(text) => { setFeed(text); setErrorFeed(null) }}
-                defaultValue={feed}
-                style={styles.input}
-            ></InputField>
-            <ErrorMessage
-                title={errorFeed}
-                visible={true}
-            ></ErrorMessage>
-
-            <AppButton
-                title='Update device feed'
-                onPress={handleUpdate}
-            ></AppButton>
-        </ScreenApp>
+                <AppButton
+                    title='Update device feed'
+                    onPress={handleUpdate}
+                ></AppButton>
+            </View>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: color.white,
+    headerContainer: {
+        flex: 0.3,
+        width: '100%',
         alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
+        backgroundColor: color.primary
+    },
+    image: {
+        flex: 1,
+        resizeMode: 'cover',
+        width: '100%',
     },
     logoContainer: {
         flexDirection: 'column',
@@ -147,6 +161,7 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: color.fontSizeTitle,
         fontWeight: 'bold',
+        color: color.white,
     },
     backButton: {
         flexDirection: 'row',
@@ -154,8 +169,27 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
     },
-    deviceButton: {
+    deviceIcon: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
         marginTop: 30,
+    },
+    deviceButton: {
+        width: '100%',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: -60,
+    },
+    feedContainer: {
+        zIndex: -1,
+        flex: 0.7,
+        width: '100%',
+        alignItems: 'center',
+        paddingTop: 50,
+        backgroundColor: color.white,
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     input: {
         marginTop: 30,
