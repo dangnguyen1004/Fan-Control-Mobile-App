@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
-import { Platform, StyleSheet, View, StatusBar ,useWindowDimensions, Keyboard,TouchableWithoutFeedback,Dimensions  } from 'react-native';
+import { Platform, StyleSheet, View ,useWindowDimensions, Keyboard,TouchableWithoutFeedback,Dimensions,Animated,ActivityIndicator  } from 'react-native';
+import StatusBar from '../components/statusBar';
 import {Headline} from '../components/header';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,18 +9,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Value } from 'react-native-reanimated';
 import firebase from 'firebase/app';
 import "firebase/auth";
+import * as SplashScreen from "expo-splash-screen";
+import AppLoading from "expo-app-loading";
+import { Asset } from "expo-asset";
+import Constants from "expo-constants";
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 const textBold = 'Mulish-Bold';
 const textSemiBold = 'Mulish-SemiBold';
 const textMedium = 'Mulish-Medium';
 const textRegular = 'Mulish-Regular';
-export default function SignIn( { navigation }) {
-  const GradientAttribute = {
+const GradientAttribute = {
     colors: ['#2F80ED', '#56CCF2'],
     start: { x: 0, y: 0.5 },
     end: { x: 1, y: 0.5 },
   }
+
+
+export default function SignIn( { navigation , route}) {
     const [notFocusU,setFocusU] = React.useState(true)
     const [notFocusP,setFocusP] = React.useState(true)
     const [invisibleP,setvisibleP] = React.useState(true)
@@ -77,8 +84,7 @@ export default function SignIn( { navigation }) {
                             alert("User does not exist anymore.")
                             return;
                         }
-                        const user = firestoreDocument.data()
-                        navigation.navigate('Account', {userID: uid})
+                       
                     })
                     .catch(error => {
                         alert(error)
@@ -114,10 +120,7 @@ export default function SignIn( { navigation }) {
         onPress={() => Keyboard.dismiss()}>
 
     <View style={styles.container}>
-      <StatusBar   
-        backgroundColor = "#102542"
-        barStyle = "dark-content"   
-      />  
+      <StatusBar/> 
       <View style={styles.header}>
         <Headline/>
       </View>
@@ -169,7 +172,7 @@ export default function SignIn( { navigation }) {
           blurOnSubmit={false}
           leftIconContainerStyle = {styles.iconLeft}
           inputContainerStyle ={styles.input}
-          placeholder='Username'
+          placeholder='Email'
           leftIcon={
             <Icon
               name='user'

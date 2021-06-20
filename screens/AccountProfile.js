@@ -1,14 +1,15 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableWithoutFeedback,Keyboard,ScrollView  } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Platform, StyleSheet, View ,Dimensions,TouchableWithoutFeedback,Keyboard  } from 'react-native';
 import {Headline} from '../components/header';
 import {InfoBox} from '../components/infoBox';
+import StatusBar from '../components/statusBar';
 import {Text,Input,Button} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { LinearGradient } from 'expo-linear-gradient';
+import { HeaderText,SubHeaderText,HeaderDescription } from '../components/Text';
+import { GrayButton } from '../components/button';
 import Logout from '../assets/images/logout.svg';
 import { CommonActions } from '@react-navigation/native';
 import { TextInput } from 'react-native';
+import { ValueInput } from '../components/input';
 import firebase from 'firebase/app';
 const textBold = 'Mulish-Bold';
 const textSemiBold = 'Mulish-SemiBold';
@@ -68,7 +69,7 @@ export default function AccountProfile( {navigation, route}) {
               privacy: privacy
           })
           .then(
-             navigation.navigate('Account', {userID: userID})
+             navigation.navigate('Home')
           )
           .catch((error) => {
             alert(error)
@@ -83,23 +84,17 @@ export default function AccountProfile( {navigation, route}) {
     <TouchableWithoutFeedback 
         onPress={() => Keyboard.dismiss()}>
     <View style={styles.container}>
-        <StatusBar   
-          backgroundColor = "#102542"
-          barStyle = "dark-content"   
-        />
+        <StatusBar/>
         <View style={styles.header}>
             <Headline/>
         </View>
         <View  style={styles.body}>
           <View style={styles.usable}>
           <View style={styles.heading}>
-            <Text style={styles.account}>Account</Text>
-            <View style={styles.exit}>
-            <Logout width={60} height={30}/>
-            </View>
+            <HeaderText value="Account"/>
           </View>
-          <Text style={styles.completeP} >Please complete your profile</Text>
-          <Text style={styles.title}>Name</Text>
+          <HeaderDescription value="Please complete your profile"/>
+          <SubHeaderText value="Name"/>
           <View style={styles.holder}>
               <TextInput
                 defaultValue = {fullName}
@@ -111,7 +106,7 @@ export default function AccountProfile( {navigation, route}) {
                 onSubmitEditing={() => phoneInput.current.focus()}
         />
           </View>
-          <Text style={styles.title}>Phone</Text>
+          <SubHeaderText value="Phone"/>
           <View style={styles.holder}>
             <TextInput
               defaultValue = {phone}
@@ -122,26 +117,18 @@ export default function AccountProfile( {navigation, route}) {
               ref = {phoneInput}
               />
           </View>
-          <Text style={styles.title}>Privacy</Text>
+          <SubHeaderText value="Privacy"/>
           <View style={styles.holder}>
             <InfoBox value='Student' dropDown={true}/>
           </View>
-          <Button containerStyle = {styles.register}
-            buttonStyle = {styles.button}
+          <View style={{margin: 10}}>
+          <GrayButton
             title="Complete"
-            titleStyle={{fontFamily: textBold}}
             onPress={completeProfile}
-        />
-        <Text style ={{alignSelf: 'center',fontSize: 16, fontFamily: textMedium}}>Already have an account?</Text>
-        <Button
-  title="Back to sign in"
-  titleStyle={{fontFamily: textBold}}
-  type="clear"
-  onPress={handleSignInPress}
-/>
+          />
+          </View>
         </View>
         </View>
-       
       </View>
      </TouchableWithoutFeedback>
   );
@@ -175,58 +162,10 @@ const styles = StyleSheet.create({
   heading: {
     flexDirection: 'row'
   },
-  account: {
-    left: 0.04 * windowWidth,
-    fontSize: 30,
-    fontFamily: textBold,
-    color: '#2F81ED'
-  },
-  exit: {
-    alignSelf: 'center',
-    paddingLeft: 0.5 * windowWidth
-  },
-  completeP: {
-    left: 0.04 * windowWidth,
-    width: windowWidth,
-    color: '#C4C4C4',
-    fontSize: 18,
-    fontFamily: textSemiBold
-  },
-  title: {
-    left: 0.04 * windowWidth,
-    color: '#908C8C',
-    fontSize: 20,
-    fontFamily: textSemiBold,
-    paddingTop: 0.0015 * windowHeight
-
-  },
   holder: {
     alignSelf: 'center',
     paddingTop: 0.02 * windowHeight,
     width: 0.9 * windowWidth
-  },
-  register: 
-  {
-    width: 0.9 * windowWidth,
-    alignSelf: 'center',
-    paddingTop: 0.05 * windowHeight
-  },
-  button : 
-  {
-    borderRadius: 26,
-    backgroundColor: '#908C8C'
-  },
-  navigation: 
-  {
-    flexDirection: 'row',
-    width: windowWidth,
-    top: 0.9 * windowHeight,
-    height: 0.1 * windowHeight,
-    position: 'absolute'
-  },
-  navigationButton:
-  {
-    width: '50%'
   },
    input: {
     height: 40,
@@ -238,6 +177,7 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 1, width: 1 }, // IOS
     shadowOpacity: 1, // IOS
     shadowRadius: 1, //IOS
-    elevation: 2 // Android
+    elevation: 2,
+    backgroundColor:'white' // Android
   }
 });

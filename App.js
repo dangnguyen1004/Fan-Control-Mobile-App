@@ -1,25 +1,18 @@
 import React from 'react';
-import { TextInput } from 'react-native';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,ScrollView,Text,Button,LogBox } from 'react-native';
-import { processFontFamily, useFonts } from 'expo-font';
-import Account from './screens/Account';
-import AccountProfile from './screens/AccountProfile';
-import {SignIn} from './screens/SignIn';
-import SignUp from './screens/SignUp';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { StyleSheet, View,LogBox,ActivityIndicator } from 'react-native';
+import { isLoading, useFonts } from 'expo-font';
 import firebase from '@firebase/app';
-import RegisterRoom from './screens/RegisterRoom';
-import { AppNavigator } from './routes/homeStack';
-import { MainNavigator} from './routes/mainStack';
-import AppLoading from 'expo-app-loading';
-import { Asset } from 'expo-asset';
+import 'firebase/auth';
+import '@firebase/firestore';
+import { NavigationContainer } from "@react-navigation/native";
 import {firebaseConfig} from './config/firebaseConfig';
+import {AppNavigator, AuthenticationNavigator} from './routes/homeStack';
+import * as SecureStore from 'expo-secure-store';
 LogBox.ignoreLogs(['Setting a timer']);
 
 export default function App() {
-   const [authenticationReady,setAuthenticationReady] = React.useState(false)
+   const [loading,setLoading] = React.useState(true)
    const [authenticated,setAuthentication] = React.useState(false)
-   const [user,setUser] = React.useState({})
    let [fontsLoaded] = useFonts({
       'Mulish-Bold' : require('./assets/fonts/Mulish-Bold.ttf'),
       'Mulish-Medium' : require('./assets/fonts/Mulish-Medium.ttf'),
@@ -34,34 +27,48 @@ export default function App() {
    firebase.app(); // if already initialized, use that one
    };
 
-//    React.useEffect(() => {
-//     const usersRef = firebase.firestore().collection('users');
-//     firebase.auth().onAuthStateChanged(user => {
-//       if (user) {
-//         usersRef
-//           .doc(user.uid)
-//           .get()
-//           .then((document) => {
-//             const userData = document.data()
-//             setAuthentication(true)
-//             setUser(userData)
-//           })
-//           .catch((error) => {
-//             setAuthentication(false)
-//           });
-//       } else {
-//         setAuthentication(false)
-//       }
-//     });
-//   }, []);
-   if (!fontsLoaded) {
-      return <Text>Hello</Text>
+   React.useEffect(() => {
+    const usersRef = firebase.firestore().collection('users');
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        usersRef
+          .doc(user.uid)
+          .get()
+          .then((document) => {
+            const userData = document.data()
+            setLoading(false)
+            setAuthentication(true)
+          })
+          .catch((error) => {
+            setLoading(false)
+            setAuthentication(false)
+          });
+      } else {
+         setLoading(false)
+         setAuthentication(false)
+      }
+    });
+  }, []);
+
+   if (!fontsLoaded || loading) {
+      return (
+         <View style={{alignItems:'center', justifyContent: 'center', flex: 1}}>
+             <ActivityIndicator size={100}  animating={!fontsLoaded || loading ? true: false}/>
+         </View>
+      )
    }
    else
    {
    return(
       <View style ={styles.container}>
-       {(authenticated) ? <MainNavigator/> : <AppNavigator/>}
+         <NavigationContainer>
+       {(authenticated) ? (
+            <AppNavigator/>
+       ) : (
+            <AuthenticationNavigator/>
+       )
+      }
+         </NavigationContainer>
       </View>
    )
    }

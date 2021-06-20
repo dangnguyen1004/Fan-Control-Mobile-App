@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 1, width: 1 }, // IOS
     shadowOpacity: 1, // IOS
     shadowRadius: 1, //IOS
-    elevation: 2 // Android
-
+    elevation: 2, // Android
+      backgroundColor: 'white'
   }
 });

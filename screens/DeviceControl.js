@@ -1,17 +1,16 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableWithoutFeedback,Keyboard,ScrollView,SafeAreaView,SectionList,TouchableOpacity,Switch, Image  } from 'react-native';
-import SwitchToggle from "react-native-switch-toggle";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import {Headline} from '../components/header';
-import {InfoBox} from '../components/infoBox';
-import {Text,Input,Button, FAB} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {StyleSheet,View,Dimensions,TouchableOpacity, Image,Animated,ActivityIndicator } from 'react-native';
+import { NormalButtonText,OnButtonText } from '../components/text';
+import { InfoBoxGrid } from '../components/infoBoxGrid';
+import { GradientButton } from '../components/button';
+import StatusBar from '../components/statusBar';
+import {Text,Button} from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
+import { LoadingIndicator } from '../components/loadingIndicator';
 import WavyHeader from '../components/wave';
-import { TextInput } from 'react-native';
+import { getDevice } from '../requests/request';
 import firebase from '@firebase/app';
-import {getUserInformation} from '../requests/request';
-import { render } from 'react-dom';
+import '@firebase/firestore';
 const textBold = 'Mulish-Bold';
 const textSemiBold = 'Mulish-SemiBold';
 const textMedium = 'Mulish-Medium';
@@ -24,24 +23,66 @@ const GradientAttribute = {
     end: { x: 1, y: 0.5 },
 }
 export default function DeviceControl({navigation , route}) {
-    // const [device,setDevice] = React.useState(route.params[0])
-    // const [room,setRoom] = React.useState(route.params[1])
-    const [deviceName,setdeviceName] = React.useState('Quạt giữa')
-    const [upperLimit,setUpperLimit] = React.useState([30,40])
-    const [lowerLimit,setLowerLimit] = React.useState([20,30])
+    const fadeAnim= React.useRef(new Animated.Value(0)).current;
+    const [loading,setLoading] = React.useState(true)
+    const [device,setDevice] = React.useState()
     const [isOn,setOn] = React.useState('On')
+    const handleNamePress = () => {
+        navigation.navigate('DeviceName',device)
+    }
+    const handleUpLimitPress = () => {
+        navigation.navigate('DeviceLimit',{...device, limit : 1})
+    }
+    const handleDownLimitPress = () => {
+        navigation.navigate('DeviceLimit',{...device, limit : 0})
+    }
     const handleTogglePress = () => {
         setOn(isOn == 'On' ? 'Off' : 'On');
     }
     const handleConfirmPress = () => {
         navigation.goBack()
     }
+    React.useEffect(() => {
+        const getData = async () => {
+            setLoading(true)
+            const data = await getDevice(route.params.deviceId)
+            setDevice(data)
+            setLoading(false)
+        }
+        getData()
+    },[])
+    React.useEffect(() => {
+    const unsubscribe = firebase
+    .firestore().collection('device').doc(route.params.deviceId)
+    .onSnapshot(snapshot => {
+        const device = snapshot.data()
+        setDevice(device)
+    })
+    return () => {
+    unsubscribe()
+  }
+    }, [])
+    React.useEffect(() => {
+    Animated.timing(
+      fadeAnim,
+      {
+        toValue: 1,
+        duration: 1200,
+        useNativeDriver: false
+      }
+    ).start();
+  }, [fadeAnim])
+    if (loading)
+    {
+         return (
+            <LoadingIndicator visible={loading}/>
+         )
+    }
+    else
+    {
     return (
     <View style={styles.container}>
-        <StatusBar   
-            backgroundColor = "#102542"
-            barStyle = "dark-content"   
-        />
+        <StatusBar />
         <View style={styles.header}>
              <WavyHeader customStyles={styles.svgCurve} />
                  <Image
@@ -49,7 +90,7 @@ export default function DeviceControl({navigation , route}) {
                     source={require('../assets/images/fan.png')}
                 />
                   <TouchableOpacity style = {isOn == 'On'? styles.Button : {...styles.Button, ...styles.DisabledButton}}  onPress={() => handleTogglePress()}>
-                <Text style={styles.ButtonText}>{isOn == 'On' ? 'ON' : 'OFF'}</Text>
+                <OnButtonText value={isOn == 'On' ? 'ON' : 'OFF'} />
             </TouchableOpacity>
             
         </View>
@@ -57,78 +98,35 @@ export default function DeviceControl({navigation , route}) {
         <View style={styles.TextWrap}>
             <View style={styles.textHolder}>
                 <View style={styles.holder}>
-                    <View style={styles.contentHolder}>
-                        <View style={styles.holderHeader}>
-                            <Text style={styles.textHeader}>Name</Text>
-                           <Image
-                                style={styles.iconImage}
-                                source={require('../assets/images/icons8-room-64.png')}
-                            />
-                        </View>
-                        <View style={styles.holderValue}>
-                            <Text style={styles.textContent}>Testing</Text>
-                        </View>
-                    </View>
+                    <Animated.View style={{...styles.animationHolder,opacity: fadeAnim}}>
+                        <InfoBoxGrid onPress={handleNamePress} header="Name" source={require('../assets/images/icons8-room-64.png')} value={device.name} />
+                    </Animated.View>
                 </View>
                 <View style={styles.holder}>
-                    <View style={styles.contentHolder}>
-                        <View style={styles.holderHeader}>
-                            <Text style={styles.textHeader}>Mode</Text>
-                           <Image
-                                style={styles.iconImage}
-                                source={require('../assets/images/icons8-wrench-64.png')}
-                            />
-                        </View>
-                        <View style={styles.holderValue}>
-                            <Text style={styles.textContent}>Auto</Text>
-                        </View>
-                    </View>
+                    <Animated.View style={{...styles.animationHolder,opacity: fadeAnim}}>
+                        <InfoBoxGrid onPress={handleNamePress} header="Mode" source={require('../assets/images/icons8-wrench-64.png')} value={device.mode? 'Auto' : 'Manual'}/>
+                    </Animated.View>
                 </View>
             </View>
               <View style={styles.textHolder}>
                 <View style={styles.holder}>
-                    <View style={styles.contentHolder}>
-                        <View style={styles.holderHeader}>
-                            <Text style={styles.textHeader}>Turn on</Text>
-                            <Image
-                                style={styles.iconImage}
-                                source={require('../assets/images/icons8-chess-clock-64.png')}
-                            />
-                        </View>
-                        <View style={styles.holderValue}>
-                            <Text style={styles.textContent}>30°C</Text>
-                            <Text style={styles.textContent}>40%</Text>
-                        </View>
-                    </View>
+                    <Animated.View style={{...styles.animationHolder,opacity: fadeAnim}}>
+                        <InfoBoxGrid onPress={handleUpLimitPress} header="Turn on" source={require('../assets/images/icons8-chess-clock-64.png')} value= {`${device.upTemp}°C`} value2 = {`${device.upHumid}%`} />
+                    </Animated.View>
                 </View>
                 <View style={styles.holder}>
-                    <View style={styles.contentHolder}>
-                        <View style={styles.holderHeader}>
-                            <Text style={styles.textHeader}>Turn off</Text>
-                            <Image
-                                style={styles.iconImage}
-                                source={require('../assets/images/icons8-chess-clock-64.png')}
-                            />
-                        </View>
-                        <View style={styles.holderValue}>
-                             <Text style={styles.textContent}>26°C</Text>
-                            <Text style={styles.textContent}>50%</Text>
-                        </View>
-                    </View>
+                    <Animated.View style={{...styles.animationHolder,opacity: fadeAnim}}>
+                        <InfoBoxGrid onPress={handleDownLimitPress} header="Turn off" source={require('../assets/images/icons8-chess-clock-64.png')} value= {`${device.lowTemp}°C`} value2 = {`${device.lowHumid}%`} />
+                    </Animated.View>
                 </View>
             </View>
         </View>
-        <Button     containerStyle={styles.confirmButton}
-                    ViewComponent={LinearGradient}
-                    linearGradientProps = {GradientAttribute}
-                    title="Confirm"
-                    titleStyle={styles.confirmText}
-                    onPress = {handleConfirmPress}
-                />
+        <GradientButton title="Confirm" onPress= {handleConfirmPress}/>
         </View>
        
     </View>
     )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -158,7 +156,7 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 80/2,
-        backgroundColor: '#3287EE',
+        backgroundColor: '#5cdb5c',
         alignItems: 'center',
         alignSelf: 'center',
         justifyContent: 'center',
@@ -169,7 +167,7 @@ const styles = StyleSheet.create({
         elevation: 8// Android
     }, 
     DisabledButton: {
-        backgroundColor: '#000'
+        backgroundColor: '#ff0021'
     },
     ButtonText: {
         fontSize: 30,
@@ -179,11 +177,6 @@ const styles = StyleSheet.create({
     TextWrap: {
         paddingTop: 0,
         flex: 8,
-    },
-    TextHolder: {
-        margin: 10,
-        justifyContent:'space-between',
-        flexDirection: 'row'
     },
     svgCurve: {
     position: 'absolute',
@@ -200,48 +193,11 @@ const styles = StyleSheet.create({
   holder : {
       flex: 1,
       margin: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
   },
-  holderValue: {
+  animationHolder: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  contentHolder: {
-      width: '80%',
-      height: '60%',
-      backgroundColor: '#FFFFFF',
-      borderRadius: 12,
-      elevation: 10
-  },
-  textHeader: {
-      color: '#1e88e5',
-      fontSize: 16,
-      fontFamily: textSemiBold,
-      fontWeight: '400',
-      margin: 5
-  },
-  iconHeader: {
-      margin: 5
-  },
-  textContent: {
-      fontSize: 18,
-      fontFamily: textBold,
-      paddingLeft: 5,
-      color: '#005cb2'
-  },
-  confirmButton: {
-    margin: 10,
-    width : 0.5 * windowWidth,
-    alignSelf : 'center',
-    borderRadius: 26
-  },
-  confirmText: {
-    fontFamily: textBold
-  },
-  iconImage: {
-      height: 25,
-      width: 25,
-      margin: 5,
-
-  }
-
 });

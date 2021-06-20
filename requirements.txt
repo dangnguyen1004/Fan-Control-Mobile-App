@@ -29,3 +29,20 @@ expo install expo-app-loading
 npm i react-native-switch-toggle
 
 expo install expo-font @expo-google-fonts/inter
+
+expo install expo-splash-screen
+
+ npm i expo-app-loading
+
+expo install expo-asset
+
+expo install expo-updates
+
+expo install expo-constants
+
+npm install --save react-native-calendars
+
+npm install react-native-safe-area-context
+npm install rn-circular-slider
+
+expo install expo-secure-store

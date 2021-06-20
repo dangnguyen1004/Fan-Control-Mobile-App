@@ -1,7 +1,11 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableWithoutFeedback,Keyboard,ScrollView  } from 'react-native';
+import { Platform, StyleSheet, View,Dimensions,KeyboardAvoidingView,TouchableWithoutFeedback,Keyboard,ScrollView,ActivityIndicator,TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import StatusBar from '../components/statusBar';
 import {Headline} from '../components/header';
+import {HeaderText,SubHeaderText} from '../components/Text';
+import { GrayButton,GradientButton } from '../components/button';
+import { LoadingIndicator } from '../components/loadingIndicator';
 import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -12,41 +16,43 @@ import firebase from '@firebase/app';
 import {getUserInformation} from '../requests/request';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
+import font from '../config/font';
+import color from '../config/color';
 const textBold = 'Mulish-Bold';
 const textSemiBold = 'Mulish-SemiBold';
 const textMedium = 'Mulish-Medium';
 const textRegular = 'Mulish-Regular';
 export default function Account( {navigation,route}) {
-  const {userID} = route.params
   const [loading,setLoading] = React.useState(true)
   const [user,setUser] = React.useState({});
   React.useEffect(() => {
       const getData = async () => {
-        const userInfo = await getUserInformation(userID);
+        setLoading(true)
+        const userInfo = await getUserInformation();
         if(!userInfo.hasOwnProperty('fullName') || !userInfo.hasOwnProperty('phoneNumber') || !userInfo.hasOwnProperty('privacy'))
           {
-            navigation.navigate('AccountProfile',{userID : userID})
+            navigation.navigate('AccountProfile',{userID : userInfo.id})
           }
         else
-          {
+        {
             setUser(userInfo);
             setLoading(false);
-          }
+        }
       }
       getData();
-  },[route]);
+  },[]);
   const handleOnRegisterPress = () => {
     navigation.navigate('RegisterRoom',user)
   }
-  const handleControlPress = () => {
-    navigation.navigate('ChooseRoom',user)
+  const handleLogoutPress = () => {
+    firebase.auth().signOut().then(() => {
+    }
+    )
   }
   if (loading)
   {
     return (
-     <View style={styles.container}>  
-        <Headline/>
-      </View>
+         <LoadingIndicator visible={loading}/>
     )
   }
   else
@@ -55,55 +61,37 @@ export default function Account( {navigation,route}) {
     <TouchableWithoutFeedback 
         onPress={() => Keyboard.dismiss()}>
     <View style={styles.container}>
-        <StatusBar   
-          backgroundColor = "#102542"
-          barStyle = "dark-content"   
-        />
+        <StatusBar/>
         <View style={styles.header}>
             <Headline/>
         </View>
         <View  style={styles.body}>
           <View style={styles.usable}>
           <View style={styles.heading}>
-            <Text style={styles.account}>Account</Text>
+            <HeaderText value = 'Account'/>
             <View style={styles.exit}>
+            <TouchableOpacity onPress={handleLogoutPress}>
             <Logout width={60} height={30}/>
+            </TouchableOpacity>
             </View>
           </View>
-          <Text style={styles.title}>Name</Text>
+          <SubHeaderText value= 'Name'/>
           <View style={styles.holder}>
               <InfoBox value={user.fullName} dropDown={false}/>
           </View>
-          <Text style={styles.title}>Phone</Text>
+          <SubHeaderText value= 'Phone'/>
           <View style={styles.holder}>
                <InfoBox value={user.phoneNumber} dropDown={false}/>
           </View>
-          <Text style={styles.title}>Privacy</Text>
+          <SubHeaderText value= 'Privacy'/>
           <View style={styles.holder}>
             <InfoBox value={user.privacy} dropDown={false}/>
-          </View>
-          <Button containerStyle = {styles.register}
-            buttonStyle = {styles.button}
-            title="Register room"
-            titleStyle={{fontFamily: textBold}}
-            onPress = {handleOnRegisterPress}
-        />
+          </View>     
+            <GrayButton
+              title="Register room"
+              onPress = {handleOnRegisterPress} 
+            />
         </View>
-        </View>
-          <View style={styles.navigation}>
-          <Button
-            title="ACCOUNT"
-            titleStyle={{ fontSize: 20, fontFamily: textBold}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-          />
-          <Button
-            title="CONTROL"
-            titleStyle={{color: '#908C8C', fontSize: 20, fontFamily: textBold}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-            onPress={handleControlPress}
-          />
         </View>
       </View>
      </TouchableWithoutFeedback>
@@ -139,57 +127,13 @@ const styles = StyleSheet.create({
   heading: {
     flexDirection: 'row'
   },
-  account: {
-    left: 0.04 * windowWidth,
-    fontSize: 30,
-    fontFamily: textBold,
-    color: '#2F81ED'
-  },
   exit: {
     alignSelf: 'center',
     paddingLeft: 0.5 * windowWidth
-  },
-  title: {
-    left: 0.04 * windowWidth,
-    color: '#908C8C',
-    fontSize: 20,
-    fontFamily: textSemiBold,
-    paddingTop: 0.0015 * windowHeight
-
   },
   holder: {
     alignSelf: 'center',
     paddingTop: 0.02 * windowHeight,
     width: 0.9 * windowWidth
   },
-  register: 
-  {
-    width: 0.9 * windowWidth,
-    alignSelf: 'center',
-    paddingTop: 0.05 * windowHeight
-  },
-  button : 
-  {
-    borderRadius: 26,
-    backgroundColor: '#908C8C'
-  },
-  navigation: 
-  {
-    flexDirection: 'row',
-    width: windowWidth,
-    top: 0.9 * windowHeight,
-    position: 'absolute'
-  },
-  navigationButton:
-  {
-    width: '50%'
-  },
-   input: {
-    height: 40,
-    margin: 12,
-    paddingLeft: 0.05 * windowWidth,
-    fontSize: 16,
-    borderRadius: 26,
-    borderWidth: 1
-  }
 });

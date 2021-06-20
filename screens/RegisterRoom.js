@@ -1,26 +1,33 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard,SafeAreaView,FlatList,Animated  } from 'react-native';
+import { Platform, StyleSheet, View,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard,SafeAreaView,FlatList,Animated,ActivityIndicator  } from 'react-native';
+import StatusBar from '../components/statusBar';
 import {Headline} from '../components/header';
 import {InfoBox} from '../components/infoBox';
-import {Text,Input,Button, Overlay} from 'react-native-elements';
+import { FlatListItemSeparator } from '../components/separator';
+import {Text,Input,Button,Overlay} from 'react-native-elements';
+import { HeaderText,SubHeaderText,HeaderDescription,ListItemText } from '../components/Text';
+import { GrayButton } from '../components/button';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import Logout from '../assets/images/logout.svg';
-import {getRoomOfBuilding} from '../requests/request';
+import { LoadingIndicator } from '../components/loadingIndicator';
+import {getRoomAvailableUser, getRoomOfBuilding,sendRoomRequest} from '../requests/request';
+import Calendar from '../components/calendar';
 const textBold = 'Mulish-Bold';
 const textSemiBold = 'Mulish-SemiBold';
 const textMedium = 'Mulish-Medium';
 const textRegular = 'Mulish-Regular';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
-  const Item = ({ item, onPress}) => (
+const initialDate =new Date().toISOString().split('T')[0];
+const Item = ({ item, onPress}) => (
     <TouchableOpacity onPress={onPress} style={styles.item}>
-      <Text style={[styles.ItemText]}>{item.building}</Text>
+      <ListItemText value={item.building}/>
     </TouchableOpacity>
   );
- const Item1 = ({ item, onPress}) => (
+const Item1 = ({ item, onPress}) => (
     <TouchableOpacity onPress={onPress} style={styles.item}>
-      <Text style={[styles.title]}>{item.Name}</Text>
+      <ListItemText value={item.Name}/>
     </TouchableOpacity>
   );
 const buildingList = [
@@ -31,29 +38,16 @@ export default function RegisterRoom({ navigation, route}) {
   const [loading,setLoading] = React.useState(true)
   const [building,setBuilding] = React.useState({building : 'H1', key: '1'})
   const [room,setRoom] = React.useState({Name: '101', key: '1C37KpggUMI9GyuuK2sC'})
+  const [date,setDate] = React.useState({dateString: initialDate})
   const [visibleBuilding,setVisibleBuilding] = React.useState(false);
   const [visibleRoom,setVisibleRoom] = React.useState(false);
+  const [visibleDate,setVisibleDate] = React.useState(false);
   const [roomList,setRoomData] = React.useState([]);
-  const animate = new Animated.Value(1)
-  const [fadeAnimation,setFade] = React.useState(animate)
-   const fadeIn = () => {
-    Animated.timing(this.state.fadeAnimation, {
-      toValue: 1,
-      duration: 4000
-    }).start();
-  };
-
-  const fadeOut = () => {
-    Animated.timing(this.state.fadeAnimation, {
-      toValue: 0,
-      duration: 4000
-    }).start();
-  };
   const renderItem = ({ item  }) => {
     return (
       <Item
         item={item}
-        onPress={() => setBuilding(item)}
+        onPress={() => handleBuildingItemPress(item)}
       />
     );
   };
@@ -69,19 +63,25 @@ export default function RegisterRoom({ navigation, route}) {
     React.useEffect(() => {
     const getData = async () => {
       setLoading(true);
-      const roomList = await getRoomOfBuilding(building.building);
+      const roomList = await getRoomOfBuilding();
+      await new Promise(resolve => setTimeout(resolve, 2000));
       setRoomData(roomList);
-      setRoom(roomList[0]);
+      setRoom(roomList[0][0]);
       setLoading(false);
-      setVisibleBuilding(false);
     }
     getData();
-  },[building]);
-  const handleAccountPress = () => {
-    navigation.navigate('Account',route.params)
-  }
-  const handleControlPress = () => {
-    navigation.navigate('ChooseRoom',route.params)
+  },[]);
+  const handleBuildingItemPress = (item) => {
+    setBuilding(item)
+    setVisibleBuilding(!visibleBuilding)
+    if (item.key == 1)
+    {
+      setRoom(roomList[0][0])
+    }
+    else
+    {
+      setRoom(roomList[1][0])
+    }
   }
   const handleBuildingPress = () => {
     setVisibleBuilding(!visibleBuilding)
@@ -89,31 +89,28 @@ export default function RegisterRoom({ navigation, route}) {
   const handleRoomPress = () => {
     setVisibleRoom(!visibleRoom)
   }
+  const handleDatePress =() => {
+    setVisibleDate(!visibleDate)
+  }
+  const handleDateChoose = (date) => {
+      setDate(date);
+      setVisibleDate(!visibleDate);
+  }
   const handleOnRegisterPress =  async () => {
-      const data = { userId: route.params.id, roomId : room.key }
-      console.log(data)
-      navigation.navigate('ChooseRoom',route.params)
+      await sendRoomRequest(route.params.id,room.id,date.dateString)
+      navigation.goBack()
   }
   if (loading)
   {
     return (
-      <View style={styles.container}>
-        <Animated.View style={{opacity: 1}}>
-        <Headline/>
-        </Animated.View>
-      </View>
+         <LoadingIndicator visible={loading}/>
     )
   }
   else
   {
     return (
-      <TouchableWithoutFeedback 
-          onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView style={styles.container}>
-        <StatusBar   
-          backgroundColor = "#102542"
-          barStyle = "dark-content"   
-        />
+        <StatusBar/>
         <View style={styles.header}>
           <Headline/>
         </View>
@@ -121,62 +118,53 @@ export default function RegisterRoom({ navigation, route}) {
           <View style={styles.usable}>
             
           <View style={styles.heading}>
-            <Text style={styles.account}>Register room</Text>
+            <HeaderText value="Register room" />
           </View>
-          <Text style={styles.completeP} >Choose room</Text>
-          <Text style={styles.title}>Building</Text>
+            <HeaderDescription value="Choose room"/>
+          <SubHeaderText value="Building" />
           <View style={styles.holder}>
             <InfoBox value = {building.building} dropDown={true} onPress={handleBuildingPress}/>
           </View>
-          <Text style={styles.title}>Room</Text>
+          <SubHeaderText value="Room" />
           <View style={styles.holder}>
-            <InfoBox value = {room.Name} dropDown={true} onPress={handleRoomPress}/>
+          <InfoBox value = {room.Name} dropDown={true} onPress={handleRoomPress}/>
           </View>
-          <Button containerStyle = {styles.register}
-            buttonStyle = {styles.button}
-            title="Register room"
-            titleStyle= {{fontFamily: textBold}}
-            onPress= {handleOnRegisterPress}
-        />
+          <SubHeaderText value="Time" />
+          <View style={styles.holder}>
+            <InfoBox value = {date.dateString} dropDown={true} onPress={handleDatePress}/>
+          </View>
+          <GrayButton
+              title="Register room"
+              onPress={handleOnRegisterPress}
+          />
           <Overlay isVisible={visibleBuilding} onBackdropPress={handleBuildingPress} overlayStyle={styles.Overlay}>
-            <SafeAreaView >
+             <SafeAreaView style={styles.container}>
               <FlatList
                 data={buildingList}
                 renderItem={renderItem}
                 keyExtractor={item => item.key}
+                ItemSeparatorComponent={FlatListItemSeparator}
               />
             </SafeAreaView>
           </Overlay>
           <Overlay isVisible={visibleRoom} onBackdropPress={handleRoomPress} overlayStyle={styles.Overlay}>
             <SafeAreaView style={styles.container}>
               <FlatList
-                data={roomList}
+                data={building.building == 'H1' ? roomList[0] : roomList[1]}
                 renderItem={renderItem1}
-                keyExtractor={item => item.key}
+                keyExtractor={item => item.id}
+                ItemSeparatorComponent={FlatListItemSeparator}
               />
-            </SafeAreaView>
+              </SafeAreaView>
           </Overlay>
-
+            <Overlay isVisible={visibleDate} onBackdropPress={handleDatePress} overlayStyle={styles.Overlay}>
+              <SafeAreaView style={styles.container}>
+                <Calendar onPress={(date) => handleDateChoose(date)}/>
+              </SafeAreaView>
+          </Overlay>
         </View>
-        </View>
-        <View style={styles.navigation}>
-          <Button
-            title="ACCOUNT"
-            titleStyle={{ fontSize: 20, fontFamily: textBold}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-            onPress={()=>handleAccountPress()}
-          />
-          <Button
-            title="CONTROL"
-            titleStyle={{color: '#908C8C', fontSize: 20, fontFamily: textBold}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-            onPress={()=>handleControlPress()}
-          />
         </View>
         </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
     );
   }
 }
@@ -249,28 +237,22 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     backgroundColor: '#908C8C'
   },
-  navigation: 
-  {
-    flexDirection: 'row',
-    width: windowWidth,
-    top: 0.9 * windowHeight,
-    bottom: 0.005 * windowHeight,
+  Overlay: {
+    width: '60%',
+    height: '80%',
     position: 'absolute'
   },
-  navigationButton:
-  {
-    width: '50%'
-  },
-  Overlay: {
-    width: 0.8 * windowWidth,
-    height: 0.6 * windowHeight,
+  dateOverlay: {
+    height: '80%',
+    width: '80%'
   },
     item: {
-    alignContent: 'center',
-    justifyContent: 'center',
-    margin: 10
+      marginBottom: 10,
+      marginTop: 10, 
+      width: '100%',
   },
   ItemText: {
-    fontSize: 20
+    fontSize: 20,
+    fontFamily: textMedium
   }
 });

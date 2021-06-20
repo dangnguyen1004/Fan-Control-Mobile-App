@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions, Keyboard,TouchableWithoutFeedback,KeyboardAvoidingView,ScrollView,LogBox} from 'react-native';
+import { Platform, StyleSheet, View,Dimensions, Keyboard,TouchableWithoutFeedback,KeyboardAvoidingView,ScrollView,LogBox,ActivityIndicator} from 'react-native';
+import StatusBar from '../components/statusBar';
 import {Headline} from '../components/header';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,12 +17,12 @@ const textMedium = 'Mulish-Medium';
 const textRegular = 'Mulish-Regular';
 const windowHeight = Dimensions.get('window').height-StatusBar.currentHeight;
 const windowWidth = Dimensions.get('window').width;
-export default function SignUp({navigation}) {
-  const GradientAttribute = {
+const GradientAttribute = {
     colors: ['#2F80ED', '#56CCF2'],
     start: { x: 0, y: 0.5 },
     end: { x: 1, y: 0.5 },
-  };
+};
+export default function SignUp({navigation}) {
     const [notFocusU,setFocusU] = React.useState(true)
     const [notFocusP,setFocusP] = React.useState(true)
     const [notFocusCP,setFocusCP] = React.useState(true)
@@ -96,7 +97,7 @@ export default function SignUp({navigation}) {
         {
           setErrorCPass('')
         }
-        if ( err == true)
+        if (err)
         {
           return
         }
@@ -133,11 +134,7 @@ export default function SignUp({navigation}) {
     <View style = {styles.container}> 
       <KeyboardAwareScrollView>
           <View style={styles.container}>
-              <StatusBar   
-              backgroundColor = "#102542"
-              barStyle = "dark-content"   
-              />  
-              
+             <StatusBar/>     
                   <View style={styles.header}>
                     <Headline/>
                   </View>
@@ -169,7 +166,7 @@ export default function SignUp({navigation}) {
             </View>
         <View elevation={16} style={styles.signBox}>
           <View style={styles.smallHeader}>
-            <Text style={styles.textH1}>Lighting control</Text>
+            <Text style={styles.textH1}>Sign Up</Text>
           </View>
           <View style={styles.smallContainer}>
             <View style ={styles.inputContainer}>

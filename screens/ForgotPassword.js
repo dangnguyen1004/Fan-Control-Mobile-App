@@ -1,145 +1,251 @@
+
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard  } from 'react-native';
+import { Platform, StyleSheet, View,Dimensions, Keyboard,TouchableWithoutFeedback,KeyboardAvoidingView,ScrollView,LogBox,ActivityIndicator} from 'react-native';
+import StatusBar from '../components/statusBar';
 import {Headline} from '../components/header';
-import {InfoBox} from '../components/infoBox';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
-import Logout from '../assets/images/logout.svg';
-const windowHeight = Dimensions.get('window').height;
+import firebase from '@firebase/app';
+import "@firebase/auth";
+import '@firebase/firestore';
+import { CommonActions } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+const textBold = 'Mulish-Bold';
+const textSemiBold = 'Mulish-SemiBold';
+const textMedium = 'Mulish-Medium';
+const textRegular = 'Mulish-Regular';
+const windowHeight = Dimensions.get('window').height-StatusBar.currentHeight;
 const windowWidth = Dimensions.get('window').width;
-export default function RegisterRoom() {
-  const GradientAttribute = {
+const GradientAttribute = {
     colors: ['#2F80ED', '#56CCF2'],
     start: { x: 0, y: 0.5 },
     end: { x: 1, y: 0.5 },
-  }
+};
+export default function SignUp({navigation}) {
+    const [notFocusU,setFocusU] = React.useState(true)
+    const [userText,setUserText] = React.useState('')
+    const [errorUser,setErrorUser] = React.useState('')
+    const handleSignInPress = () => {
+      navigation.dispatch(
+        CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: 'SignIn' },
+          ],
+        })
+      );
+    }
+    const validateInput = () => {
+        var err = false
+        if (userText.trim() == '')
+        {
+          setErrorUser('Invalid username');
+          err = true
+        }
+        else if (userText.trim().length < 8)
+        {
+          setErrorUser('Username must be at least 8 characters')
+          err = true
+        }
+        else
+        {
+          setErrorUser('')
+        }
+        if (err)
+        {
+          return
+        }
+        else
+        {
+          firebase.auth().sendPasswordResetEmail(userText)
+          .then(() => {
+            // Password reset email sent!
+            // ..
+          })
+          .catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // ..
+          });
+        }
+    }
   return (
-    <TouchableWithoutFeedback 
-        onPress={() => Keyboard.dismiss()}>
-    <KeyboardAvoidingView style={styles.container}>
-      <StatusBar   
-        backgroundColor = "#102542"
-        barStyle = "dark-content"   
-      />
-      <View style={styles.header}>
-         <Headline/>
-      </View>
-      <View  style={styles.body}>
-        <View style={styles.usable}>
-          
-        <View style={styles.heading}>
-          <Text style={styles.account}>Register room</Text>
+    <View style = {styles.container}> 
+      <KeyboardAwareScrollView>
+          <View style={styles.container}>
+              <StatusBar/>  
+                  <View style={styles.header}>
+                    <Headline/>
+                  </View>
+              <View style={styles.body}> 
+                <View style={styles.j4f}>
+                  <Button containerStyle = {styles.signUp}
+                    title= "Sign in"
+                    titleStyle = {styles.graybutton}
+                    type="clear"
+                    onPress={() => handleSignInPress()}
+                  />
+                  <Button containerStyle = {styles.forgotPassword}
+                    title= "Forgot Password?"
+                    titleStyle = {styles.graybutton}
+                    type="clear"
+                    onPress={() => navigation.navigate('ForgotPassword')}
+                  />
+                </View>
+                  <Button containerStyle = {styles.signIn}
+                    title="Send"
+                    titleStyle= {{fontFamily: textBold}}
+                    ViewComponent={LinearGradient}
+                    linearGradientProps = {GradientAttribute}
+                    onPress = {validateInput}
+                  />
+                </View> 
+            <View style={styles.footer}>
+              <Headline/>
+            </View>
+        <View elevation={16} style={styles.signBox}>
+          <View style={styles.smallHeader}>
+            <Text style={styles.textH1}>Find account</Text>
+          </View>
+          <View>
+            <Text style={styles.content}>Enter your email </Text>
+          </View>
+          <View style={styles.smallContainer}>
+            <View style ={styles.inputContainer}>
+            <Input 
+              errorMessage={errorUser}
+              errorStyle={styles.errorStyle}
+              defaultValue={userText}
+              onChangeText={(text) => setUserText(text)}
+              onFocus={() => setFocusU(false)}
+              onBlur={() => setFocusU(true)}
+              leftIconContainerStyle = {styles.iconLeft}
+              inputContainerStyle ={styles.input}
+              placeholder='Email'
+              leftIcon={
+                <Icon
+                  name='user'
+                  size={24}
+                  color = {notFocusU ? '#908C8C' : '#2F81ED'}
+                />
+              }
+              rightIcon={
+                <Icon
+                  name= 'times-circle'
+                  size={22}
+                  color = {notFocusU ? '#fff' : '#908C8C'}
+                  onPress={() => setUserText('')}
+                />
+              }
+              />
+            </View>
+          </View>
+            </View>
         </View>
-        <Text style={styles.completeP} >Choose room</Text>
-        <Text style={styles.title}>Building</Text>
-        <View style={styles.holder}>
-          <InfoBox value = 'H1' />
-        </View>
-        <Text style={styles.title}>Room</Text>
-        <View style={styles.holder}>
-          <InfoBox value = '601' />
-        </View>
-        <Button containerStyle = {styles.register}
-          buttonStyle = {styles.button}
-          title="Register room"
-      />
-      </View>
-      </View>
-       <View style={styles.navigation}>
-        <Button
-          title="ACCOUNT"
-          titleStyle={{ fontSize: 20}}
-          containerStyle={styles.navigationButton}
-          type="clear"
-        />
-        <Button
-          title="CONTROL"
-          titleStyle={{color: '#908C8C', fontSize: 20}}
-          containerStyle={styles.navigationButton}
-          type="clear"
-        />
-      </View>
-      </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+      </KeyboardAwareScrollView>
+    </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
   header: {
-    width: windowWidth,
     height: 0.1 * windowHeight,
     backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   body: {
-    top: 0.05 * windowHeight,
-    width: windowWidth,
-    height: 0.95 * windowHeight,
-    position: 'absolute',
+    height: 0.8 * windowHeight,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 47,
-    borderTopRightRadius: 47
+    flexDirection: 'column-reverse'
   },
-  usable: {
-    top: 0.03 * windowHeight,
-    height: 0.92*windowHeight,
+  footer: {
+    height: 0.1 * windowHeight,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  signBox: {
+    alignItems:'center',
+    top : 0.05 * windowHeight,
+    left: 0.08 * windowWidth ,
+    right: 0.08 * windowWidth,
+    height: 0.64 * windowHeight,
+    position: 'absolute',
+    backgroundColor: "#fff",
+    borderRadius : 38,
+    shadowColor: "#000",
+  shadowOffset: {
+	  width: 5,
+  	height: 8,
+    },
+shadowOpacity: 0,
+shadowRadius: 10.32,
+  },
+  textH1 : {
+    fontFamily: textBold,
+    fontSize: 35 ,
+    color: '#2F81ED',
+  },
+  smallHeader: {
+    alignItems:'center',
+    paddingTop: '3%',
+    flex: 1
+  },
+  smallContainer: {
+    alignItems:'center',
+    flex: 1.5
+  },
+  inputContainer: {
+    flex: 1,
+    alignItems:'center',
+  },
+  iconLeft: {
+    paddingRight :'5%'
+  },
+  iconRight: {
+    paddingLeft : '5%',
+  },
+  input: {
+    width : '75%'
+  },
+  signIn: {
+    margin: 0.05 *windowHeight,
+    width : 0.5 * windowWidth,
+    alignSelf : 'center',
+    borderRadius: 26
+  },
+  j4f: {
     width: windowWidth,
-  },
-  heading: {
+    backgroundColor: '#fff',
     flexDirection: 'row'
   },
-  account: {
-    left: 0.04 * windowWidth,
-    fontSize: 30,
-    color: '#2F81ED'
+  signUp: {
+    width : 0.5 * windowWidth, 
+    alignSelf: 'flex-start',
   },
-  exit: {
-    alignSelf: 'center',
-    paddingLeft: 0.5 * windowWidth
+  forgotPassword: {
+    width : 0.5 * windowWidth, 
+    alignSelf: 'flex-end',
   },
-  completeP: {
-    left: 0.04 * windowWidth,
-    paddingBottom: 20,
-    width: windowWidth,
-    color: '#C4C4C4',
-    fontSize: 18
+  graybutton: {
+    color: '#615353',
+    fontFamily: textBold,
+    fontSize:15,
+    textDecorationLine: 'underline'
   },
-  title: {
-    left: 0.04 * windowWidth,
-    color: '#908C8C',
-    fontSize: 20,
-    paddingTop: 0.0015 * windowHeight
-
+  errorStyle: {
+    fontFamily: textSemiBold,
+    color: '#DB0000'
   },
-  holder: {
-    alignSelf: 'center',
-    paddingTop: 0.02 * windowHeight,
-    width: 0.9 * windowWidth
-  },
-  register: 
-  {
-    width: 0.9 * windowWidth,
-    alignSelf: 'center',
-    paddingTop: 0.05 * windowHeight
-  },
-  button : 
-  {
-    borderRadius: 26,
-    backgroundColor: '#908C8C'
-  },
-  navigation: 
-  {
-    flexDirection: 'row',
-    width: windowWidth,
-    top: 0.9 * windowHeight,
-    bottom: 0.005 * windowHeight,
-    position: 'absolute'
-  },
-  navigationButton:
-  {
-    width: '50%'
+  content: {
+    fontFamily: textBold,
+    fontSize: 18,
+    margin: 20
   }
 });

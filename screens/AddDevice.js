@@ -1,11 +1,13 @@
 import React from 'react';
-import { Platform, StyleSheet, View, StatusBar ,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard,SafeAreaView,FlatList,TextInput  } from 'react-native';
+import { Platform, StyleSheet, View,Dimensions,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard,SafeAreaView,FlatList,TextInput,ActivityIndicator  } from 'react-native';
 import {Headline} from '../components/header';
 import {InfoBox} from '../components/infoBox';
+import StatusBar from '../components/statusBar';
 import {Text,Input,Button, Overlay} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import Logout from '../assets/images/logout.svg';
+import {addDevice} from '../requests/request';
 const textBold = 'Mulish-Bold';
 const textSemiBold = 'Mulish-SemiBold';
 const textMedium = 'Mulish-Medium';
@@ -31,7 +33,6 @@ const ModeList = [
     </TouchableOpacity>
   );
 export default function AddDevice({ navigation, route}) {
-  console.log(route.params)
   const renderItem = ({ item  }) => {
     return (
       <Item
@@ -59,31 +60,33 @@ export default function AddDevice({ navigation, route}) {
     setVisibleType(!visibleType);
     setTimeout(() => nameRef.current.focus(),0);
   }
-  const handleAccountPress = () => {
-    navigation.navigate('Account',route.params[1])
-  }
-  const handleControlPress = () => {
-    navigation.navigate('ChooseRoom',route.params[1])
-  }
   const handleTypePress = () => {
     setVisibleType(!visibleType)
   }
   const handleModePress = () => {
     setVisibleMode(!visibleMode)
   }
-  const handleAddPress = () => {
-    const itemData = {Name: name, Mode: mode, Type: type}
-    console.log([itemData,route.params[0],route.params[1]])
-    navigation.navigate('RoomControl',route.params)
+  const handleAddPress = async () => {
+    if (name.length == 0 )
+    {
+
+      alert('Name can\'t be empty')
+    }
+    if (name.length > 24)
+    {
+      alert('Name can\'t be longer than 24 characters')
+    }
+    else
+    {
+      await addDevice(route.params.roomId,route.params.userId,name,type,mode)
+      navigation.goBack()
+    }
   }
     return (
       <TouchableWithoutFeedback 
           onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView style={styles.container}>
-        <StatusBar   
-          backgroundColor = "#102542"
-          barStyle = "dark-content"   
-        />
+        <StatusBar/>
         <View style={styles.header}>
           <Headline/>
         </View>
@@ -140,22 +143,6 @@ export default function AddDevice({ navigation, route}) {
           </Overlay>
 
         </View>
-        </View>
-        <View style={styles.navigation}>
-          <Button
-            title="ACCOUNT"
-            titleStyle={{color: '#908C8C', fontSize: 20, fontFamily: textBold}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-            onPress={handleAccountPress}
-          />
-          <Button
-            title="CONTROL"
-            titleStyle={{ fontSize: 20, fontFamily: textBold}}
-            containerStyle={styles.navigationButton}
-            type="clear"
-            onPress={handleControlPress}
-          />
         </View>
         </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
@@ -258,6 +245,7 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 1, width: 1 }, // IOS
     shadowOpacity: 1, // IOS
     shadowRadius: 1, //IOS
-    elevation: 2 // Android
+    elevation: 2,
+    backgroundColor:'white' // Android
   }
 });
