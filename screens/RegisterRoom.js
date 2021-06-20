@@ -5,7 +5,7 @@ import {Headline} from '../components/header';
 import {InfoBox} from '../components/infoBox';
 import { FlatListItemSeparator } from '../components/separator';
 import {Text,Input,Button,Overlay} from 'react-native-elements';
-import { HeaderText,SubHeaderText,HeaderDescription,ListItemText } from '../components/Text';
+import { HeaderText,SubHeaderText,HeaderDescription,ListItemText } from '../components/text';
 import { GrayButton } from '../components/button';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';

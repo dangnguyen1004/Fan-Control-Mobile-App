@@ -3,7 +3,7 @@ import {StyleSheet, View ,Dimensions,SafeAreaView,SectionList,ActivityIndicator 
 import StatusBar from '../components/statusBar';
 import {Headline} from '../components/header';
 import { SearchBar } from '../components/searchBar';
-import { HeaderText,HeaderDescription, SubHeaderText,ListItemText,ListEmptyText } from '../components/Text';
+import { HeaderText,HeaderDescription, SubHeaderText,ListItemText,ListEmptyText } from '../components/text';
 import { Touch } from '../components/button';
 import { LoadingIndicator} from '../components/loadingIndicator';
 import {getUserInformation,getRoomAvailableUser} from '../requests/request';

@@ -4,7 +4,7 @@ import {Headline} from '../components/header';
 import {InfoBox} from '../components/infoBox';
 import StatusBar from '../components/statusBar';
 import {Text,Input,Button} from 'react-native-elements';
-import { HeaderText,SubHeaderText,HeaderDescription } from '../components/Text';
+import { HeaderText,SubHeaderText,HeaderDescription } from '../components/text';
 import { GrayButton } from '../components/button';
 import Logout from '../assets/images/logout.svg';
 import { CommonActions } from '@react-navigation/native';
@@ -69,7 +69,7 @@ export default function AccountProfile( {navigation, route}) {
               privacy: privacy
           })
           .then(
-             navigation.navigate('Home')
+            navigation.replace('Home',{userId: userID})
           )
           .catch((error) => {
             alert(error)

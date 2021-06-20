@@ -3,7 +3,7 @@ import { Platform, StyleSheet, View,Dimensions,KeyboardAvoidingView,TouchableWit
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import StatusBar from '../components/statusBar';
 import {Headline} from '../components/header';
-import {HeaderText,SubHeaderText} from '../components/Text';
+import {HeaderText,SubHeaderText} from '../components/text';
 import { GrayButton,GradientButton } from '../components/button';
 import { LoadingIndicator } from '../components/loadingIndicator';
 import {InfoBox} from '../components/infoBox';
@@ -40,7 +40,7 @@ export default function Account( {navigation,route}) {
         }
       }
       getData();
-  },[]);
+  },[])
   const handleOnRegisterPress = () => {
     navigation.navigate('RegisterRoom',user)
   }

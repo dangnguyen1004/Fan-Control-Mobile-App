@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Platform, StyleSheet, View,Dimensions, Keyboard,TouchableWithoutFeedback,KeyboardAvoidingView,ScrollView,LogBox,ActivityIndicator} from 'react-native';
-import StatusBar from '../components/statusBar';
+import { Platform, StyleSheet, View,Dimensions,StatusBar, Keyboard,TouchableWithoutFeedback,KeyboardAvoidingView,ScrollView,LogBox,ActivityIndicator} from 'react-native';
+import StatusBarCustom from '../components/statusBar';
 import {Headline} from '../components/header';
 import {Text,Input,Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -74,7 +74,7 @@ export default function SignUp({navigation}) {
     <View style = {styles.container}> 
       <KeyboardAwareScrollView>
           <View style={styles.container}>
-              <StatusBar/>  
+              <StatusBarCustom/>  
                   <View style={styles.header}>
                     <Headline/>
                   </View>
