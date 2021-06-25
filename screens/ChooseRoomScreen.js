@@ -99,7 +99,7 @@ function ChooseRoomScreen({ navigation }) {
 
     const handleSearch = async (text) => {
         if (!text) {
-            getRooms()
+            getRoomsAndAllUsers()
             return
         }
         let pattern = new RegExp(text, 'g');
@@ -129,7 +129,7 @@ function ChooseRoomScreen({ navigation }) {
                 renderItem={({ item }) => (
                     <Swipeable renderRightActions={() => <RoomDeleteAction onPress={() => {
                         console.log('Delete room ' + item.name.toString())
-                        handleDelete(item)
+                        createAlertDelete(item)
                     }} />}>
                         <TouchableOpacity onPress={
                             () => navigation.navigate('ControlRoom', { roomName: item.name.toString() })

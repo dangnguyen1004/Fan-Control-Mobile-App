@@ -41,8 +41,8 @@ function AccountScreen({ navigation }) {
     const [userName, setUserName] = useState()
     const [userId, setUserId] = useState()
     const [avatarUrl, setAvatarUrl] = useState()
-    
-    
+
+
     const getUserInfo = async () => {
         let user = await firebase.auth().currentUser
         setUserEmail(user.email)
@@ -68,20 +68,20 @@ function AccountScreen({ navigation }) {
         });
     }
 
-    const createAlertLogOut = () => handleSignOut()
-    // Alert.alert(
-    //     "Log out",
-    //     "You will be returned to the login screen",
-    //     [
-    //         {
-    //             text: "Cancel",
-    //             onPress: () => console.log("Cancel Pressed"),
-    //             style: "cancel"
-    //         },
-    //         { text: "OK", onPress: handleSignOut }
-    //     ],
-    //     { cancelable: false }
-    // );
+    const createAlertLogOut = () =>
+        Alert.alert(
+            "Log out",
+            "You will be returned to the login screen",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: handleSignOut }
+            ],
+            { cancelable: false }
+        );
 
     return (
         <ScreenApp style={{

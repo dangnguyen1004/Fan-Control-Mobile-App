@@ -75,20 +75,20 @@ function ClientAccountScreen({ navigation }) {
         });
     }
 
-    const createAlertLogOut = () => handleSignOut()
-    // Alert.alert(
-    //     "Log out",
-    //     "You will be returned to the login screen",
-    //     [
-    //         {
-    //             text: "Cancel",
-    //             onPress: () => console.log("Cancel Pressed"),
-    //             style: "cancel"
-    //         },
-    //         { text: "OK", onPress: handleSignOut }
-    //     ],
-    //     { cancelable: false }
-    // );
+    const createAlertLogOut = () => 
+    Alert.alert(
+        "Log out",
+        "You will be returned to the login screen",
+        [
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+            },
+            { text: "OK", onPress: handleSignOut }
+        ],
+        { cancelable: false }
+    );
 
     return (
         <ScreenApp style={{

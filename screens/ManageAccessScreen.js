@@ -41,6 +41,23 @@ function ManageAccessScreen({ navigation }) {
             });
     }
 
+    const createAlertDelete = (email, uid, roomName) =>
+        Alert.alert(
+            "Delete ?",
+            "Please ensure and confirm!",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Yes", onPress: () => handleRevoke(email, uid, roomName)
+                }
+            ],
+            { cancelable: false }
+        );
+
     const handleRevoke = async (email, uid, roomName) => {
         //write admin log
         console.log('Revoke ' + uid + ' from room ' + roomName)
@@ -105,7 +122,7 @@ function ManageAccessScreen({ navigation }) {
                     <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{title}</Text>
                 )}
                 renderItem={({ item, section }) => (
-                    <Swipeable renderRightActions={() => <RequestDenyAction onPress={() => handleRevoke(item.email, item.uid, section.title)} />}>
+                    <Swipeable renderRightActions={() => <RequestDenyAction onPress={() => createAlertDelete(item.email, item.uid, section.title)} />}>
                         <View style={{ marginTop: 10, marginBottom: 10, }}>
                             <Text style={{ fontSize: color.fontSize }}>{item.email}</Text>
                         </View>

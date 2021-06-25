@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Alert } from 'react-native';
 import ScreenApp from '../components/ScreenApp'
 import ScreenTitle from '../components/ScreenTitle';
-import { Formik } from 'formik';
+import { Formik, validateYupSchema } from 'formik';
 import * as Yup from 'yup';
 import firebase from '../firebase/connectFirebase'
 import { useState } from 'react';
@@ -22,9 +22,25 @@ const validationSchema = Yup.object().shape({
 
 function PasswordScreen({ navigation }) {
     const [errorMessage, setErrorMessage] = useState()
-
+    
+    const reAuthentication = (currentPassword) => {
+        let user = firebase.auth().currentUser
+        let cred = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword)
+        return user.reauthenticateWithCredential(cred)
+    }
+    
     const handleChangePassword = (values) => {
-        console.log(values)
+        reAuthentication(values.oldPassword).then(() => {
+            let user = firebase.auth().currentUser
+            user.updatePassword(values.newPassword).then(() => {
+                Alert.alert('Password was changed')
+                navigation.goBack()
+            }).catch(error => {
+                setErrorMessage(error.message)
+            })
+        }).catch(error => {
+            setErrorMessage(error.message)
+        })
     }
 
     return (

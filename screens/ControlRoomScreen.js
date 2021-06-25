@@ -75,22 +75,22 @@ function ControlRoomScreen({ route, navigation }) {
         }
     }
 
-    const createAlertDelete = (item, room) => handleDelete(item, room)
-    // Alert.alert(
-    //     "Delete ?",
-    //     "Please ensure and confirm!",
-    //     [
-    //         {
-    //             text: "Cancel",
-    //             onPress: () => console.log("Cancel Pressed"),
-    //             style: "cancel"
-    //         },
-    //         {
-    //             text: "Yes", onPress: () => handleDelete(item, room)
-    //         }
-    //     ],
-    //     { cancelable: false }
-    // );
+    const createAlertDelete = (item, room) => 
+    Alert.alert(
+        "Delete ?",
+        "Please ensure and confirm!",
+        [
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+            },
+            {
+                text: "Yes", onPress: () => handleDelete(item, room)
+            }
+        ],
+        { cancelable: false }
+    );
 
     const handleAdd = () => {
         navigation.navigate('AddDevice', { room: room })
