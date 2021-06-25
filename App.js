@@ -36,40 +36,12 @@ function App(props) {
       })
    })
 
-<<<<<<< HEAD
-export default class App extends Component {
-	constructor() {
-		super()
-		this.initializeFirebase()
-	}
-	initializeFirebase = () => {
-		firebase.initializeApp(firebaseConfig)
-	}
-	render() {
-		return (
-			<NavigationContainer>
-				<StackScreen.Navigator screenOptions={{ headerShown: false }}>
-					<StackScreen.Screen name="SIGN IN" component={SignIn} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }} ></StackScreen.Screen>
-					<StackScreen.Screen name="ACCOUNT" component={Account} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="CONTROL DEVICE" component={ControlDevice} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="CHOOSE ROOM" component={ChooseRoom} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="SIGN UP" component={SignUp} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="Loading Screen SignIn" component={LoadingScreenSignIn} title=''></StackScreen.Screen>
-					<StackScreen.Screen name="ADD DEVICE" component={AddDevice} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="FAN CONTROL" component={FanControl} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-					<StackScreen.Screen name="SENSOR CONTROL" component={SensorControl} options={{ headerStyle: { backgroundColor: '#007AFF' }, headerTitleStyle: { fontWeight: 'light' }, headerTintColor: 'white' }}></StackScreen.Screen>
-				</StackScreen.Navigator>
-			</NavigationContainer>
-		);
-	}
-=======
    return (
       <NavigationContainer>
          {user ? (user.email === 'admin@gmail.com' ? <AppNavigator /> : <ClientAppNavigator />) : <AuthNavigator />}
       </NavigationContainer>
       // <WelcomeScreen></WelcomeScreen>
    );
->>>>>>> Enhence-UI
 }
 
 const styles = StyleSheet.create({

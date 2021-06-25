@@ -18,11 +18,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 50,
         justifyContent: 'center',
-<<<<<<< HEAD
-        marginTop: 10,
-        marginBottom: 10,
-=======
->>>>>>> Enhence-UI
     },
     text: {
         fontSize: color.fontSize,
