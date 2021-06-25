@@ -12,7 +12,11 @@ function TextButton({ onPress, title, style }) {
 
 const styles = StyleSheet.create({
     text: {
+<<<<<<< HEAD
         fontSize: color.fontSize,
+=======
+        fontSize: color.fontSizeLight,
+>>>>>>> Enhence-UI
         textDecorationLine: 'underline',
         textDecorationColor: color.medium
     },

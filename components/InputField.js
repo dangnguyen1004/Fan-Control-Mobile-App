@@ -10,6 +10,10 @@ function InputField({placeholder, style, keyboardType, autoCompleteType = 'off',
             placeholderTextColor={color.medium}
             keyboardType={keyboardType}
             secureTextEntry={secureTextEntry}
+<<<<<<< HEAD
+=======
+            autoCapitalize={'none'}
+>>>>>>> Enhence-UI
             {...otherProps}
         ></TextInput>
     );

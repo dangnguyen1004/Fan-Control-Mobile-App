@@ -8,6 +8,14 @@ export default {
     light: '#f8f4f4',
     danger: '#ff5252',
     fontSize: 20,
+<<<<<<< HEAD
     padding: 10,
     fontSizeTitle: 30,
+=======
+    fontSizeLight: 17,
+    padding: 10,
+    fontSizeTitle: 30,
+    accept: '#00ff00',
+    adminUid: 'nEjXfLjaY6VwR0oxqUnGHtUbeEZ2',
+>>>>>>> Enhence-UI
 }

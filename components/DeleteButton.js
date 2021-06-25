@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import color from '../config/color';
 
-function AppButton({ style, onPress, title, textColor = color.white }) {
+function DeleteButton({ style, onPress, title, textColor = color.white }) {
     return (
         <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
             <Text style={[styles.text, { color: textColor }]}>{title}</Text>
@@ -13,16 +13,12 @@ function AppButton({ style, onPress, title, textColor = color.white }) {
 const styles = StyleSheet.create({
     button: {
         width: '100%',
-        backgroundColor: color.primary,
+        backgroundColor: color.danger,
         borderRadius: 10,
         alignItems: 'center',
         height: 50,
         justifyContent: 'center',
-<<<<<<< HEAD
         marginTop: 10,
-        marginBottom: 10,
-=======
->>>>>>> Enhence-UI
     },
     text: {
         fontSize: color.fontSize,
@@ -30,4 +26,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AppButton;
+export default DeleteButton;

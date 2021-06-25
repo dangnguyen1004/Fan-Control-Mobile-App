@@ -1,26 +1,42 @@
-import React, { Component } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-
-import ControlDevice from './screens/ControlDevice.js';
-import ChooseRoom from './screens/ChooseRoom.js';
-import AddDevice from './components/AddDevice.js'
-import FanControl from './screens/FanControl.js';
-import SensorControl from './screens/SensorControl.js'
-import SignIn from './screens/SignIn.js'
-import Account from './screens/Account.js'
-import SignUp from './screens/SignUp.js'
-import RegisterRoom from './screens/RegisterRoom'
-import LoadingScreenSignIn from './screens/AppSwitchNavigator/LoadingScreenSignIn'
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
+import { useState } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import AppButton from './components/AppButton';
+import AppPicker from './components/AppPicker';
+import DeviceItem from './components/DeviceItem';
+import InputField from './components/InputField';
+import TextButton from './components/TextButton';
+import AccountScreen from './screens/AccountScreen';
+import AdaAccountScreen from './screens/AdaAccountScreen';
+import AddDeviceScreen from './screens/AddDeviceScreen';
+import AddRoomScreen from './screens/AddRoomScreen';
+import ChooseRoomScreen from './screens/ChooseRoomScreen';
+import ControlRoomScreen from './screens/ControlRoomScreen';
+import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignUpScreen';
+import AuthNavigator from './navigator/AuthNavigator'
+import AppNavigator from './navigator/AppNavigator';
+import { useEffect } from 'react';
+import firebase from './firebase/connectFirebase'
+import PasswordScreen from './screens/PasswordScreen';
+import ClientAccountScreen from './screens/ClientAccountScreen';
+import ClientChooseRoomScreen from './screens/ClientChooseRoomScreen'
+import ClientControlRoomScreen from './screens/ClientControlRoomScreen'
+import ClientAppNavigator from './navigator/ClientAppNavigator';
+import WelcomeScreen from './screens/WelcomeScreen';
 
 
-// ----------------- FIREBASE -------------------------
-import firebase from 'firebase/app'
-import { firebaseConfig } from './firebase/firebase.js'
-// ---------------------NAVIGATOR----------------------
-const StackScreen = createStackNavigator();
+function App(props) {
+   const [user, setUser] = useState()
 
+   useEffect(() => {
+      firebase.auth().onAuthStateChanged(user => {
+         setUser(user)
+      })
+   })
+
+<<<<<<< HEAD
 export default class App extends Component {
 	constructor() {
 		super()
@@ -46,4 +62,20 @@ export default class App extends Component {
 			</NavigationContainer>
 		);
 	}
+=======
+   return (
+      <NavigationContainer>
+         {user ? (user.email === 'admin@gmail.com' ? <AppNavigator /> : <ClientAppNavigator />) : <AuthNavigator />}
+      </NavigationContainer>
+      // <WelcomeScreen></WelcomeScreen>
+   );
+>>>>>>> Enhence-UI
 }
+
+const styles = StyleSheet.create({
+   container: {
+
+   },
+});
+
+export default App;
