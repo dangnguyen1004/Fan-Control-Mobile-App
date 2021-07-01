@@ -34,5 +34,5 @@ The server has 2 main modules which are:
 
 ## Review
 * App for admin
-![plot](./assets/git_app_screen/admin.png)
+![alt](./assets/git_app_screen/admin.png)
 * App for user
