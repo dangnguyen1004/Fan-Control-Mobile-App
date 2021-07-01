@@ -34,6 +34,7 @@ The server has 2 main modules which are:
 
 ## Review
 * Use "Expo go" application in IOS/Android and scan the QR below for testing app
+[FanControlApplicatioon In Expo](https://expo.io/@nguyen_dang/FanControl)
 <img src="https://user-images.githubusercontent.com/67234142/124096208-92e5bd00-da84-11eb-94c5-e38a3be70933.png" alt="..." width="250" />
 * App for admin
 <img src="https://user-images.githubusercontent.com/67234142/124093595-3386ad80-da82-11eb-8978-ebe1ef7326f4.jpg" alt="..." width="250" />
