@@ -33,6 +33,13 @@ The server has 2 main modules which are:
 ### MQTT server: We used Adafruit server to simulate real devices
 
 ## Review
+* Use "Expo go" application in IOS/Android and scan the QR below for testing app
+[FanControlApplicatioon In Expo](https://expo.io/@nguyen_dang/FanControl)
+<img src="https://user-images.githubusercontent.com/67234142/124096208-92e5bd00-da84-11eb-94c5-e38a3be70933.png" alt="..." width="250" />
 * App for admin
-![plot](./assets/git_app_screen/admin.png)
+<img src="https://user-images.githubusercontent.com/67234142/124093595-3386ad80-da82-11eb-8978-ebe1ef7326f4.jpg" alt="..." width="250" />
+<img src="https://user-images.githubusercontent.com/67234142/124093621-397c8e80-da82-11eb-9229-6623836ef7f6.jpg" alt="..." width="250" />
+<img src="https://user-images.githubusercontent.com/67234142/124093628-3bdee880-da82-11eb-9ce3-6f33e3100c13.jpg" alt="..." width="250" />
 * App for user
+<img src="https://user-images.githubusercontent.com/67234142/124093640-3ed9d900-da82-11eb-9170-456c9ded84ac.jpg" alt="..." width="250" />
+
