@@ -24,7 +24,8 @@ Use firebase to store user data as well as room data and devices, sensors
 The server has 2 main modules which are:
 **Notification module**: when the user sends a request for room access permission to the admin, the system will send a notification to the admin's account, and when the admin grants/deny/revokes room accessible, the system also sends notify to the respective user accounts.
 **IOT communication**: This module connects to adafruit server to send/receive device control signals/data from sensors.
-**MQTT server**: We used Adafruit server to simulate real devices
+### MQTT server: We used Adafruit server to simulate real devices
 ## Review
 * App for admin
+
 * App for user
