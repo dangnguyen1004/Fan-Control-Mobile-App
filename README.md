@@ -34,5 +34,8 @@ The server has 2 main modules which are:
 
 ## Review
 * App for admin
-![alt](./assets/git_app_screen/admin.png)
+![admin](https://user-images.githubusercontent.com/67234142/124093595-3386ad80-da82-11eb-8978-ebe1ef7326f4.jpg)
+![admin_account](https://user-images.githubusercontent.com/67234142/124093621-397c8e80-da82-11eb-9229-6623836ef7f6.jpg)
+![admin_dashboard](https://user-images.githubusercontent.com/67234142/124093628-3bdee880-da82-11eb-9ce3-6f33e3100c13.jpg)
 * App for user
+![user](https://user-images.githubusercontent.com/67234142/124093640-3ed9d900-da82-11eb-9170-456c9ded84ac.jpg)
