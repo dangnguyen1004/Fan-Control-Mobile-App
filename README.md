@@ -30,6 +30,8 @@ The server has 2 main modules which are:
 **Notification module**: when the user sends a request for room access permission to the admin, the system will send a notification to the admin's account, and when the admin grants/deny/revokes room accessible, the system also sends notify to the respective user accounts.
 **IOT communication**: This module connects to adafruit server to send/receive device control signals/data from sensors.
 
+Link server: https://github.com/dangnguyen1004/Server-Fan-Control-Mobile-App.git
+
 ### MQTT server: We used Adafruit server to simulate real devices
 
 ## Review
