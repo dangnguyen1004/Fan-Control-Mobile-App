@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import RoomDeleteAction from './RoomDeleteAction';
 import moment from 'moment'
+import apiUrl from '../config/apiUrl';
 
 
 function DeviceItem({ item, onPressDelete, roomName, onPress }) {
@@ -24,7 +25,7 @@ function DeviceItem({ item, onPressDelete, roomName, onPress }) {
             isOn: isOn,
         }
 
-        fetch("http://192.168.1.17:3000/api/control", {
+        fetch(`${apiUrl.apiUrl}/api/control`, {
             method: "POST",
             headers: {
                 Accept: 'application/json',
@@ -37,6 +38,8 @@ function DeviceItem({ item, onPressDelete, roomName, onPress }) {
             })
             .then(function (data) {
                 console.log(data)
+            }).catch(function(error){
+                console.log(error)
             });
     }
 

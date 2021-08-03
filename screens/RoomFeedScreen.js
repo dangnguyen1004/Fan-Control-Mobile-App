@@ -15,6 +15,7 @@ import CancelButton from '../components/CancelButton';
 import InputLabel from '../components/InputLabel';
 import AppPicker from '../components/AppPicker'
 import moment from 'moment'
+import apiUrl from '../config/apiUrl';
 
 const validationSchema = Yup.object().shape({
     sensorFeed: Yup.string().label('Sensor feed'),
@@ -74,7 +75,7 @@ function RoomFeedScreen({ navigation, route }) {
             feed: feed,
         }
 
-        fetch("http://192.168.1.17:3000/api/subscribe", {
+        fetch(`${apiUrl.apiUrl}/api/subscribe`, {
             method: "POST",
             headers: {
                 Accept: 'application/json',

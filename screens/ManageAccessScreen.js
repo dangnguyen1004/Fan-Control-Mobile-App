@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import AccountItemSeparator from '../components/AccountItemSeparator';
 import firebase from '../firebase/connectFirebase'
 import moment from 'moment'
+import apiUrl from '../config/apiUrl';
 
 
 function ManageAccessScreen({ navigation }) {
@@ -25,7 +26,7 @@ function ManageAccessScreen({ navigation }) {
             room: room,
         }
 
-        fetch("http://192.168.1.17:3000/api/revoke", {
+        fetch(`${apiUrl.apiUrl}/api/revoke`, {
             method: "POST",
             headers: {
                 Accept: 'application/json',

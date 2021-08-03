@@ -14,6 +14,7 @@ import { Formik } from 'formik';
 import ErrorMessage from '../components/ErrorMessage';
 import { useEffect } from 'react';
 import moment from 'moment'
+import apiUrl from '../config/apiUrl';
 
 const validationSchema = Yup.object().shape({
     sensor: Yup.string().label('Sensor'),
@@ -85,7 +86,7 @@ function AddRoomScreen({ navigation }) {
             feed: feed,
         }
 
-        fetch("http://192.168.1.17:3000/api/subscribe", {
+        fetch(`${apiUrl.apiUrl}/api/subscribe`, {
             method: "POST",
             headers: {
                 Accept: 'application/json',

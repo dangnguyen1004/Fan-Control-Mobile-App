@@ -12,6 +12,7 @@ import firebase from '../firebase/connectFirebase';
 import RequestItem from '../components/RequestItem';
 import AppButton from '../components/AppButton';
 import moment from 'moment'
+import apiUrl from '../config/apiUrl';
 
 
 function GrantRoomsScreen({ navigation }) {
@@ -23,7 +24,7 @@ function GrantRoomsScreen({ navigation }) {
             room: room,
         }
 
-        fetch("http://192.168.1.17:3000/api/" + decision, {
+        fetch(`${apiUrl.apiUrl}/api/${decision}`, {
             method: "POST",
             headers: {
                 Accept: 'application/json',

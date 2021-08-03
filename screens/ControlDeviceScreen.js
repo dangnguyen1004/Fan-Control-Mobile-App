@@ -12,6 +12,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import AppButton from '../components/AppButton';
 import moment from 'moment'
 import { FontAwesome5 } from '@expo/vector-icons';
+import apiUrl from '../config/apiUrl';
 
 
 function ControlDeviceScreen({ navigation, route }) {
@@ -59,7 +60,7 @@ function ControlDeviceScreen({ navigation, route }) {
             isOn: isOn,
         }
 
-        fetch("http://192.168.1.17:3000/api/control", {
+        fetch(`${apiUrl.apiUrl}/api/control`, {
             method: "POST",
             headers: {
                 Accept: 'application/json',
